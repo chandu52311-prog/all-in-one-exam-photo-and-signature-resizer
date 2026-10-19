@@ -2,12 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, NTA</title>
-  <meta name="description" content="Free online tool to resize, crop, and compress photo and signature for all Indian competitive exams including SSC, UPSC, IBPS, Railway RRB, NTA NEET/JEE, and State PSCs with 100% exact KB guidelines.">
-  <meta name="keywords" content="photo resizer, signature resizer, ssc photo resizer 20kb to 50kb, upsc photo resizer, ibps signature resizer 10 to 20 kb, rrb photo resizer, competitive exam photo compressor">
-  
-  <!-- Google Search Console Verification Tag -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>All Competitive Exams Photo & Signature Resizer (2026)</title>
+  <meta name="description" content="Free tool to resize Photo and Signature for SSC, UPSC, IBPS, RRB, and NTA exams according to official KB guidelines.">
   <meta name="google-site-verification" content="iId_f8e82ivBzeD_5ya7rZTJa2ama4Mkf80pJc08fws" />
 
   <style>
@@ -15,9 +12,7 @@
       --primary-maroon: #3d1318;
       --accent-saffron: #e06b3a;
       --btn-maroon: #7b242b;
-      --btn-maroon-hover: #5c1d24;
       --success-green: #15803d;
-      --success-bg: #ecfdf5;
       --bg-slate: #f8fafc;
       --card-white: #ffffff;
       --text-main: #1e293b;
@@ -29,7 +24,8 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -39,10 +35,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      line-height: 1.5;
     }
 
-    /* Portal Header */
     header {
       width: 100%;
       background-color: var(--primary-maroon);
@@ -50,7 +44,6 @@
       padding: 18px 16px;
       text-align: center;
       border-bottom: 4px solid var(--accent-saffron);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
     }
 
     .header-badge {
@@ -68,124 +61,110 @@
     }
 
     header h1 {
-      font-size: 1.35rem;
+      font-size: 1.25rem;
       font-weight: 800;
       letter-spacing: 0.3px;
     }
 
     header p {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       color: #f1d3d6;
       margin-top: 4px;
     }
 
-    /* Main Container */
     .container {
       width: 100%;
-      max-width: 520px;
-      padding: 20px 14px 40px;
+      max-width: 480px;
+      padding: 16px 14px 40px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
-    /* Exam Selector Pill Grid */
     .section-card {
       background: var(--card-white);
       border-radius: 12px;
       border: 1px solid var(--border-color);
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      padding: 16px;
+      padding: 14px;
     }
 
     .section-title {
-      font-size: 0.85rem;
-      font-weight: 700;
+      font-size: 0.82rem;
+      font-weight: 800;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
     }
 
-    .exam-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .exam-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
     }
 
-    .chip-btn {
-      flex: 1 1 calc(33.333% - 6px);
-      min-width: 90px;
-      padding: 8px 6px;
+    .exam-btn {
+      padding: 12px 6px;
       border: 1px solid var(--border-color);
       border-radius: 8px;
       background: #f1f5f9;
       color: var(--text-main);
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      transition: all 0.2s ease;
+      touch-action: manipulation;
     }
 
-    .chip-btn:hover {
-      background: #e2e8f0;
+    .exam-btn.active {
+      background: var(--primary-maroon) !important;
+      color: #ffffff !important;
+      border-color: var(--primary-maroon) !important;
+      box-shadow: 0 2px 6px rgba(61, 19, 24, 0.3);
     }
 
-    .chip-btn.active {
-      background: var(--primary-maroon);
-      color: #ffffff;
-      border-color: var(--primary-maroon);
-      box-shadow: 0 2px 6px rgba(61, 19, 24, 0.25);
-    }
-
-    /* Mode Tabs */
-    .tab-container {
+    .tab-pills {
       display: flex;
       background: #f1f5f9;
-      border-radius: 10px;
+      border-radius: 8px;
       padding: 4px;
       gap: 4px;
-      margin-top: 10px;
+      margin-top: 12px;
     }
 
     .tab-btn {
       flex: 1;
-      padding: 10px;
+      padding: 12px;
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       background: transparent;
       font-size: 0.86rem;
       font-weight: 700;
       cursor: pointer;
       color: var(--text-muted);
-      transition: all 0.2s ease;
+      touch-action: manipulation;
     }
 
     .tab-btn.active {
-      background: var(--btn-maroon);
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      background: var(--btn-maroon) !important;
+      color: #ffffff !important;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     }
 
-    /* Guideline Spec Alert */
     .spec-banner {
       background: #fff8f5;
       border-left: 4px solid var(--accent-saffron);
       border-radius: 6px;
-      padding: 10px 14px;
-      font-size: 0.8rem;
+      padding: 10px 12px;
+      font-size: 0.78rem;
       color: #9a3412;
       font-weight: 600;
-      display: flex;
-      align-items: center;
-      gap: 8px;
     }
 
-    /* Upload Frame */
     .upload-frame {
       width: 100%;
       height: 200px;
@@ -197,13 +176,8 @@
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      position: relative;
       overflow: hidden;
-      transition: background 0.2s ease;
-    }
-
-    .upload-frame:hover {
-      background: #fff1ef;
+      touch-action: manipulation;
     }
 
     .upload-frame img {
@@ -211,7 +185,7 @@
       max-height: 100%;
       object-fit: contain;
       display: none;
-      padding: 6px;
+      padding: 4px;
     }
 
     .upload-content {
@@ -219,11 +193,11 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      padding: 10px;
+      padding: 8px;
     }
 
     .upload-icon {
-      font-size: 2.4rem;
+      font-size: 2.2rem;
       margin-bottom: 6px;
     }
 
@@ -234,46 +208,36 @@
     }
 
     .upload-sub {
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       color: var(--text-muted);
-      margin-top: 3px;
+      margin-top: 4px;
     }
 
-    /* Action Buttons */
     .btn {
       width: 100%;
       padding: 14px;
       border: none;
       border-radius: 8px;
-      font-weight: 700;
+      font-weight: 800;
       font-size: 0.95rem;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-    }
-
-    .btn:hover {
-      opacity: 0.93;
-      transform: translateY(-1px);
+      touch-action: manipulation;
     }
 
     .btn-generate {
       background: var(--btn-maroon);
       color: #ffffff;
-      box-shadow: 0 4px 10px rgba(123, 36, 43, 0.25);
     }
 
     .btn-download {
       background: var(--success-green);
       color: #ffffff;
-      box-shadow: 0 4px 10px rgba(21, 128, 61, 0.25);
       margin-top: 12px;
     }
 
-    /* Result Output Card */
     .output-card {
       display: none;
       flex-direction: column;
@@ -281,105 +245,40 @@
       background: var(--card-white);
       border-radius: 12px;
       border: 1px solid var(--border-color);
-      padding: 16px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      padding: 14px;
     }
 
     .verified-pill {
-      background: var(--success-bg);
+      background: #ecfdf5;
       border: 1px solid var(--success-green);
       color: var(--success-green);
-      padding: 6px 14px;
-      border-radius: 9999px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      margin-bottom: 12px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      margin-bottom: 10px;
       text-align: center;
     }
 
     .output-preview {
       max-width: 100%;
-      max-height: 220px;
+      max-height: 200px;
       border-radius: 6px;
       border: 2px solid var(--success-green);
       object-fit: contain;
-      background: #ffffff;
     }
 
-    /* Specs Reference Table */
-    .reference-section {
-      background: var(--card-white);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      padding: 16px;
-      font-size: 0.8rem;
-    }
-
-    .reference-section h3 {
-      font-size: 0.95rem;
-      font-weight: 800;
-      margin-bottom: 10px;
-      color: var(--primary-maroon);
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.75rem;
-      margin-top: 8px;
-    }
-
-    th, td {
-      border: 1px solid var(--border-color);
-      padding: 8px;
-      text-align: left;
-    }
-
-    th {
-      background-color: #f1f5f9;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    /* FAQ */
-    .faq-item {
-      border-bottom: 1px solid var(--border-color);
-      padding: 10px 0;
-    }
-
-    .faq-q {
-      font-weight: 700;
-      font-size: 0.82rem;
-      color: var(--text-main);
-      display: flex;
-      justify-content: space-between;
-    }
-
-    .faq-a {
-      font-size: 0.77rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-      line-height: 1.4;
-    }
-
-    /* Footer */
     footer {
       text-align: center;
       font-size: 0.72rem;
       color: var(--text-muted);
-      padding: 20px 14px;
-      line-height: 1.6;
-    }
-
-    .footer-highlight {
-      color: var(--success-green);
-      font-weight: 700;
+      padding: 16px 14px;
+      line-height: 1.5;
     }
   </style>
 </head>
 <body>
 
-  <!-- Official Style Header -->
   <header>
     <div class="header-badge">Government Job Aspirant Portal</div>
     <h1>ALL EXAMS PHOTO & SIGNATURE RESIZER</h1>
@@ -387,130 +286,59 @@
   </header>
 
   <div class="container">
-    <!-- Exam Select Card -->
     <div class="section-card">
       <div class="section-title">
         <span>Select Target Examination</span>
         <span id="activeExamIndicator" style="color: var(--accent-saffron); font-weight: 800;">SSC</span>
       </div>
-      <div class="exam-chips">
-        <button class="chip-btn active" onclick="selectExam('SSC', this)">SSC</button>
-        <button class="chip-btn" onclick="selectExam('UPSC', this)">UPSC</button>
-        <button class="chip-btn" onclick="selectExam('IBPS', this)">IBPS / SBI</button>
-        <button class="chip-btn" onclick="selectExam('RRB', this)">Railway RRB</button>
-        <button class="chip-btn" onclick="selectExam('NTA', this)">NTA NEET/JEE</button>
-        <button class="chip-btn" onclick="selectExam('GATE', this)">GATE / PSC</button>
+      
+      <div class="exam-grid">
+        <button type="button" class="exam-btn active" data-exam="SSC">SSC</button>
+        <button type="button" class="exam-btn" data-exam="UPSC">UPSC</button>
+        <button type="button" class="exam-btn" data-exam="IBPS">IBPS / SBI</button>
+        <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
+        <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
+        <button type="button" class="exam-btn" data-exam="GATE">GATE / PSC</button>
       </div>
 
-      <!-- Mode Tabs -->
-      <div class="tab-container">
-        <button class="tab-btn active" id="tabPhoto" onclick="switchMode('photo')">📷 Passport Photo</button>
-        <button class="tab-btn" id="tabSign" onclick="switchMode('sign')">✍️ Signature</button>
+      <div class="tab-pills">
+        <button type="button" class="tab-btn active" id="tabPhoto">📷 Passport Photo</button>
+        <button type="button" class="tab-btn" id="tabSign">✍️ Signature</button>
       </div>
     </div>
 
-    <!-- Live Rule Guideline -->
     <div class="spec-banner" id="specInfo">
       ⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm
     </div>
 
-    <!-- Upload Box -->
-    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" style="display: none;" onchange="handleFileSelect(event)">
-    <div class="upload-frame" onclick="document.getElementById('fileInput').click()">
+    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    
+    <div class="upload-frame" id="uploadBox">
       <div class="upload-content" id="uploadPrompt">
         <span class="upload-icon" id="modeIcon">📷</span>
         <span class="upload-text" id="uploadMainText">Tap to Select Passport Photo</span>
-        <span class="upload-sub">Supports JPG, JPEG, PNG • Maximum 15 MB</span>
+        <span class="upload-sub">Supports JPG, JPEG, PNG</span>
       </div>
-      <img id="inputPreview" alt="Selected Preview">
+      <img id="inputPreview" alt="Preview">
     </div>
 
-    <!-- Trigger Button -->
-    <button class="btn btn-generate" id="generateBtn" onclick="processExamImage()">
+    <button type="button" class="btn btn-generate" id="generateBtn">
       ⚡ GENERATE SSC PASSPORT PHOTO
     </button>
 
-    <!-- Result Box -->
     <div class="output-card" id="outputCard">
-      <div class="verified-pill" id="verifiedPill">
-        ✅ APPROVED READY
-      </div>
+      <div class="verified-pill" id="verifiedPill">✅ APPROVED READY</div>
       <img id="outputImg" class="output-preview" alt="Exam Ready File">
-      
-      <button class="btn btn-download" id="downloadBtn" onclick="triggerDownload()">
-        📥 Download Resized File
-      </button>
-    </div>
-
-    <!-- Official Guidelines Table -->
-    <div class="reference-section">
-      <h3>Official Examination Specifications Matrix</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Exam Body</th>
-            <th>Photo Size (KB)</th>
-            <th>Signature Size (KB)</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
-          </tr>
-          <tr>
-            <td><strong>UPSC</strong> (Civil Services, NDA, CDS)</td>
-            <td>20 KB – 300 KB</td>
-            <td>20 KB – 300 KB</td>
-          </tr>
-          <tr>
-            <td><strong>IBPS / SBI</strong> (PO, Clerk, SO)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
-          </tr>
-          <tr>
-            <td><strong>Railway RRB</strong> (ALP, NTPC, Group D)</td>
-            <td>30 KB – 70 KB</td>
-            <td>15 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>NTA</strong> (NEET, JEE Main, CUET)</td>
-            <td>10 KB – 200 KB</td>
-            <td>4 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>GATE / State PSCs</strong></td>
-            <td>10 KB – 200 KB</td>
-            <td>5 KB – 100 KB</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Quick FAQs -->
-    <div class="reference-section">
-      <h3>Frequently Asked Questions</h3>
-      <div class="faq-item">
-        <div class="faq-q">Are files uploaded to any external server?</div>
-        <div class="faq-a">No. All photo resizing, aspect cropping, and file compression happens strictly inside your browser using HTML5 Canvas technology. Your personal identity data never leaves your device.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Why is exact KB size crucial for SSC & UPSC?</div>
-        <div class="faq-a">Government recruitment portals automatically reject files that deviate even by 0.1 KB outside the prescribed bounds (e.g., 50.1 KB for SSC photo will trigger an immediate portal upload rejection).</div>
-      </div>
+      <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
-    <p><span class="footer-highlight">Client-Side Privacy Shield:</span> 100% Offline Processing Guarantee.</p>
-    <p>Disclaimer: Unofficial utility designed to assist aspirants with exam document formatting.</p>
+    <p>Client-Side Privacy Shield: 100% Offline Processing Guarantee.</p>
     <p>© 2026 Competitive Exam Tools. All rights reserved.</p>
   </footer>
 
   <script>
-    // Examination configuration dictionary
     const EXAM_PRESETS = {
       SSC: {
         photo: { maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
@@ -521,7 +349,7 @@
         sign:  { maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" }
       },
       IBPS: {
-        photo: { maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 4.5 cm × 3.5 cm" },
+        photo: { maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 200×230 px" },
         sign:  { maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | Black Ink on White" }
       },
       RRB: {
@@ -543,72 +371,83 @@
     let rawImage = null;
     let base64Output = null;
 
-    // Traffic build ayyaka 'ENABLE_ADS = true' chesi link pettandi
-    const ENABLE_ADS = false;
-    const ADSTERRA_DIRECT_LINK = "https://www.profitablecpmrate.com/your-direct-link-id";
-
-    function selectExam(examKey, element) {
-      currentExam = examKey;
-      document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
-      element.classList.add('active');
-      document.getElementById('activeExamIndicator').innerText = examKey;
-      updateInstructionUI();
-      resetOutput();
-    }
-
-    function switchMode(mode) {
-      currentMode = mode;
-      document.getElementById('fileInput').value = '';
-      document.getElementById('inputPreview').style.display = 'none';
-      document.getElementById('uploadPrompt').style.display = 'flex';
-
-      if (mode === 'photo') {
-        document.getElementById('tabPhoto').classList.add('active');
-        document.getElementById('tabSign').classList.remove('active');
-        document.getElementById('modeIcon').innerText = '📷';
-        document.getElementById('uploadMainText').innerText = 'Tap to Select Passport Photo';
-      } else {
-        document.getElementById('tabSign').classList.add('active');
-        document.getElementById('tabPhoto').classList.remove('active');
-        document.getElementById('modeIcon').innerText = '✍️';
-        document.getElementById('uploadMainText').innerText = 'Tap to Select Signature Image';
-      }
-
-      updateInstructionUI();
-      resetOutput();
-    }
-
-    function updateInstructionUI() {
+    function updateUI() {
       const spec = EXAM_PRESETS[currentExam][currentMode];
       const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
+      
+      document.getElementById('activeExamIndicator').innerText = currentExam;
       document.getElementById('specInfo').innerHTML = `⚡ <strong>${currentExam} ${modeLabel}:</strong> ${spec.desc}`;
+      document.getElementById('uploadMainText').innerText = `Tap to Select ${currentExam} ${modeLabel}`;
       document.getElementById('generateBtn').innerText = `⚡ GENERATE ${currentExam} ${modeLabel.toUpperCase()}`;
     }
 
-    function resetOutput() {
+    function resetFile() {
       rawImage = null;
       base64Output = null;
+      document.getElementById('fileInput').value = '';
+      document.getElementById('inputPreview').style.display = 'none';
+      document.getElementById('uploadPrompt').style.display = 'flex';
       document.getElementById('outputCard').style.display = 'none';
     }
 
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
+    // Exam Button Listeners
+    document.querySelectorAll('.exam-btn').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.exam-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        currentExam = this.getAttribute('data-exam');
+        updateUI();
+        resetFile();
+      });
+    });
+
+    // Tab Listeners (Photo / Signature)
+    document.getElementById('tabPhoto').addEventListener('click', function(e) {
+      e.preventDefault();
+      currentMode = 'photo';
+      this.classList.add('active');
+      document.getElementById('tabSign').classList.remove('active');
+      document.getElementById('modeIcon').innerText = '📷';
+      updateUI();
+      resetFile();
+    });
+
+    document.getElementById('tabSign').addEventListener('click', function(e) {
+      e.preventDefault();
+      currentMode = 'sign';
+      this.classList.add('active');
+      document.getElementById('tabPhoto').classList.remove('active');
+      document.getElementById('modeIcon').innerText = '✍️';
+      updateUI();
+      resetFile();
+    });
+
+    // Upload Box Click
+    document.getElementById('uploadBox').addEventListener('click', function() {
+      document.getElementById('fileInput').click();
+    });
+
+    // File Selection
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
       if (!file) return;
 
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (event) => {
         const preview = document.getElementById('inputPreview');
-        preview.src = e.target.result;
+        preview.src = event.target.result;
         preview.style.display = 'block';
         document.getElementById('uploadPrompt').style.display = 'none';
 
         rawImage = new Image();
-        rawImage.src = e.target.result;
+        rawImage.src = event.target.result;
       };
       reader.readAsDataURL(file);
-    }
+    });
 
-    async function processExamImage() {
+    // Generate Button Click
+    document.getElementById('generateBtn').addEventListener('click', function() {
       if (!rawImage) {
         alert(`Please select an image for ${currentExam} ${currentMode} first!`);
         return;
@@ -642,7 +481,6 @@
 
       ctx.drawImage(rawImage, sx, sy, sWidth, sHeight, 0, 0, preset.width, preset.height);
 
-      // Binary search algorithm for exact KB compression
       let minQ = 0.1, maxQ = 0.98, targetQuality = 0.75;
       for (let i = 0; i < 7; i++) {
         let midQ = (minQ + maxQ) / 2;
@@ -661,4 +499,23 @@
 
       document.getElementById('outputImg').src = base64Output;
       document.getElementById('verifiedPill').innerText = `✅ ${currentExam} APPROVED: ${preset.width}x${preset.height} px • ${finalSizeKb} KB`;
-      document.getElementById('outputCard').s
+      document.getElementById('outputCard').style.display = 'flex';
+      document.getElementById('outputCard').scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Download Button Click
+    document.getElementById('downloadBtn').addEventListener('click', function() {
+      if (!base64Output) return;
+      const link = document.createElement('a');
+      link.href = base64Output;
+      link.download = `${currentExam}_${currentMode.toUpperCase()}_${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+
+    // Initialize UI on start
+    updateUI();
+  </script>
+</body>
+</html>
