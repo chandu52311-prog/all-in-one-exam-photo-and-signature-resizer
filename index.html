@@ -149,7 +149,7 @@
       border-radius: 10px;
       padding: 4px;
       gap: 4px;
-      margin-top: 4px;
+      margin-top: 10px;
     }
 
     .tab-btn {
@@ -341,7 +341,7 @@
       color: var(--text-main);
     }
 
-    /* Accordion FAQ */
+    /* FAQ */
     .faq-item {
       border-bottom: 1px solid var(--border-color);
       padding: 10px 0;
@@ -351,7 +351,6 @@
       font-weight: 700;
       font-size: 0.82rem;
       color: var(--text-main);
-      cursor: pointer;
       display: flex;
       justify-content: space-between;
     }
@@ -412,7 +411,7 @@
 
     <!-- Live Rule Guideline -->
     <div class="spec-banner" id="specInfo">
-      ⚡ SSC Photo Requirement: 20 KB to 50 KB (3.5 cm × 4.5 cm)
+      ⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm
     </div>
 
     <!-- Upload Box -->
@@ -428,17 +427,16 @@
 
     <!-- Trigger Button -->
     <button class="btn btn-generate" id="generateBtn" onclick="processExamImage()">
-      ⚡ GENERATE EXACT EXAM SPECIFICATION
+      ⚡ GENERATE SSC PASSPORT PHOTO
     </button>
 
     <!-- Result Box -->
     <div class="output-card" id="outputCard">
       <div class="verified-pill" id="verifiedPill">
-        ✅ SSC APPROVED: 350x450 px • 36.4 KB
+        ✅ APPROVED READY
       </div>
       <img id="outputImg" class="output-preview" alt="Exam Ready File">
       
-      <!-- Signature download triggers ad; Photo download stays free and smooth -->
       <button class="btn btn-download" id="downloadBtn" onclick="triggerDownload()">
         📥 Download Resized File
       </button>
@@ -490,7 +488,7 @@
       </table>
     </div>
 
-    <!-- Quick FAQs for Search Engine Optimization -->
+    <!-- Quick FAQs -->
     <div class="reference-section">
       <h3>Frequently Asked Questions</h3>
       <div class="faq-item">
@@ -515,47 +513,40 @@
     // Examination configuration dictionary
     const EXAM_PRESETS = {
       SSC: {
-        name: "SSC (Staff Selection Commission)",
-        photo: { minKb: 20, maxKb: 50, targetKb: 38, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
-        sign:  { minKb: 10, maxKb: 20, targetKb: 16, width: 400, height: 200, desc: "10 KB to 20 KB | 4.0 cm × 2.0 cm" }
+        photo: { maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
+        sign:  { maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | 4.0 cm × 2.0 cm" }
       },
       UPSC: {
-        name: "UPSC (IAS, IPS, CDS, NDA)",
-        photo: { minKb: 20, maxKb: 300, targetKb: 120, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" },
-        sign:  { minKb: 20, maxKb: 300, targetKb: 90,  width: 550, height: 350, desc: "20 KB to 300 KB | Minimum 350×350 px" }
+        photo: { maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" },
+        sign:  { maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" }
       },
       IBPS: {
-        name: "IBPS / SBI Banking",
-        photo: { minKb: 20, maxKb: 50, targetKb: 35, width: 350, height: 450, desc: "20 KB to 50 KB | 4.5 cm × 3.5 cm" },
-        sign:  { minKb: 10, maxKb: 20, targetKb: 15, width: 400, height: 200, desc: "10 KB to 20 KB | Black Ink on White" }
+        photo: { maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 4.5 cm × 3.5 cm" },
+        sign:  { maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | Black Ink on White" }
       },
       RRB: {
-        name: "Railway RRB (NTPC, ALP, Group D)",
-        photo: { minKb: 30, maxKb: 70, targetKb: 52, width: 350, height: 450, desc: "30 KB to 70 KB | Clear Plain Background" },
-        sign:  { minKb: 15, maxKb: 30, targetKb: 22, width: 400, height: 200, desc: "15 KB to 30 KB | Running Handwriting" }
+        photo: { maxKb: 65, width: 350, height: 450, desc: "30 KB to 70 KB | Clear Plain Background" },
+        sign:  { maxKb: 28, width: 400, height: 200, desc: "15 KB to 30 KB | Running Handwriting" }
       },
       NTA: {
-        name: "NTA (NEET, JEE Main, CUET)",
-        photo: { minKb: 10, maxKb: 200, targetKb: 85, width: 400, height: 500, desc: "10 KB to 200 KB | 80% Face Coverage" },
-        sign:  { minKb: 4,  maxKb: 30,  targetKb: 18, width: 400, height: 180, desc: "4 KB to 30 KB | Clear White Paper" }
+        photo: { maxKb: 180, width: 400, height: 500, desc: "10 KB to 200 KB | 80% Face Coverage" },
+        sign:  { maxKb: 28,  width: 400, height: 180, desc: "4 KB to 30 KB | Clear White Paper" }
       },
       GATE: {
-        name: "GATE / State PSCs",
-        photo: { minKb: 10, maxKb: 200, targetKb: 80, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
-        sign:  { minKb: 5,  maxKb: 100, targetKb: 40, width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
+        photo: { maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
+        sign:  { maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
       }
     };
 
-    // Global application state
     let currentExam = 'SSC';
-    let currentMode = 'photo'; // 'photo' or 'sign'
+    let currentMode = 'photo';
     let rawImage = null;
     let base64Output = null;
 
-    // Adsterra monetization endpoint
+    // Traffic build ayyaka 'ENABLE_ADS = true' chesi link pettandi
+    const ENABLE_ADS = false;
     const ADSTERRA_DIRECT_LINK = "https://www.profitablecpmrate.com/your-direct-link-id";
 
-    // Switch active exam
     function selectExam(examKey, element) {
       currentExam = examKey;
       document.querySelectorAll('.chip-btn').forEach(btn => btn.classList.remove('active'));
@@ -565,7 +556,6 @@
       resetOutput();
     }
 
-    // Switch between Photo and Signature mode
     function switchMode(mode) {
       currentMode = mode;
       document.getElementById('fileInput').value = '';
@@ -588,7 +578,6 @@
       resetOutput();
     }
 
-    // Update banner text
     function updateInstructionUI() {
       const spec = EXAM_PRESETS[currentExam][currentMode];
       const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
@@ -596,14 +585,12 @@
       document.getElementById('generateBtn').innerText = `⚡ GENERATE ${currentExam} ${modeLabel.toUpperCase()}`;
     }
 
-    // Reset result section
     function resetOutput() {
       rawImage = null;
       base64Output = null;
       document.getElementById('outputCard').style.display = 'none';
     }
 
-    // Handle user selected file
     function handleFileSelect(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -621,7 +608,6 @@
       reader.readAsDataURL(file);
     }
 
-    // Process and compress image to match criteria
     async function processExamImage() {
       if (!rawImage) {
         alert(`Please select an image for ${currentExam} ${currentMode} first!`);
@@ -635,11 +621,9 @@
       canvas.width = preset.width;
       canvas.height = preset.height;
 
-      // Clean white background for official exam standard
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, preset.width, preset.height);
 
-      // Maintain aspect ratio with center-crop
       const imgRatio = rawImage.width / rawImage.height;
       const targetRatio = preset.width / preset.height;
       let sWidth, sHeight, sx, sy;
@@ -651,3 +635,30 @@
         sy = 0;
       } else {
         sWidth = rawImage.width;
+        sHeight = rawImage.width / targetRatio;
+        sx = 0;
+        sy = (rawImage.height - sHeight) / 2;
+      }
+
+      ctx.drawImage(rawImage, sx, sy, sWidth, sHeight, 0, 0, preset.width, preset.height);
+
+      // Binary search algorithm for exact KB compression
+      let minQ = 0.1, maxQ = 0.98, targetQuality = 0.75;
+      for (let i = 0; i < 7; i++) {
+        let midQ = (minQ + maxQ) / 2;
+        let testData = canvas.toDataURL('image/jpeg', midQ);
+        let sizeKb = (testData.length * 0.75) / 1024;
+        targetQuality = midQ;
+        if (sizeKb > preset.maxKb) {
+          maxQ = midQ;
+        } else {
+          minQ = midQ;
+        }
+      }
+
+      base64Output = canvas.toDataURL('image/jpeg', targetQuality);
+      const finalSizeKb = ((base64Output.length * 0.75) / 1024).toFixed(1);
+
+      document.getElementById('outputImg').src = base64Output;
+      document.getElementById('verifiedPill').innerText = `✅ ${currentExam} APPROVED: ${preset.width}x${preset.height} px • ${finalSizeKb} KB`;
+      document.getElementById('outputCard').s
