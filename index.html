@@ -74,26 +74,6 @@
       margin-top: 4px;
     }
 
-    /* Sponsored Ad Space */
-    .ad-banner-slot {
-      width: 100%;
-      max-width: 480px;
-      margin: 10px auto 0;
-      padding: 0 14px;
-    }
-    .ad-card {
-      background: #ffffff;
-      border: 1px dashed #cbd5e1;
-      border-radius: 8px;
-      padding: 10px;
-      text-align: center;
-      min-height: 50px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-    }
-
     .container {
       width: 100%;
       max-width: 480px;
@@ -301,7 +281,6 @@
       object-fit: contain;
     }
 
-    /* Reference & Guidelines Matrix */
     .reference-section {
       background: var(--card-white);
       border-radius: 12px;
@@ -380,8 +359,12 @@
     <p>100% Client-Side Guaranteed KB & Dimensions Formatter</p>
   </header>
 
- <script async="async" data-cfasync="false" src="https://bauval.org/21/3d33a75c48e7db4851ec5771a07dc739"></script>
-<div id="container-3d33a75c48e7db4851ec5771a07dc739"></div>
+  <!-- Top Adsterra Native Banner Slot -->
+  <div style="width: 100%; max-width: 480px; margin: 10px auto 0; text-align: center; min-height: 60px;">
+    <script async="async" data-cfasync="false" src="https://bauval.org/21/3d33a75c48e7db4851ec5771a07dc739"></script>
+    <div id="container-3d33a75c48e7db4851ec5771a07dc739"></div>
+  </div>
+
   <div class="container">
     <div class="section-card">
       <div class="section-title">
@@ -429,7 +412,6 @@
       <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
     </div>
 
-    <!-- Official Examination Matrix (SEO) -->
     <div class="reference-section">
       <h3>Official Examination Specifications Matrix</h3>
       <table>
@@ -475,7 +457,6 @@
       </table>
     </div>
 
-    <!-- FAQ Section -->
     <div class="reference-section">
       <h3>Frequently Asked Questions (FAQ)</h3>
       <div class="faq-item">
@@ -501,38 +482,35 @@
     <p>© 2026 Competitive Exam Tools. All rights reserved.</p>
   </footer>
 
-  <!-- ============ REPLACE: Ad Gate Modal (15-second countdown) ============ -->
-  <div id="adModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #ffffff; width: 100%; max-width: 380px; border-radius: 14px; padding: 22px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; position: relative;">
+  <!-- ============ Ad Gate Modal with Adsterra Banner & Auto-Download ============ -->
+  <div id="adModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 14px;">
+    <div style="background: #ffffff; width: 100%; max-width: 400px; border-radius: 14px; padding: 18px 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; position: relative;">
 
-      <span onclick="cancelAdModal()" style="position: absolute; top: 10px; right: 14px; font-size: 1.4rem; font-weight: 800; cursor: pointer; color: #64748b; line-height: 1;">&times;</span>
+      <span onclick="cancelAdModal()" style="position: absolute; top: 8px; right: 12px; font-size: 1.4rem; font-weight: 800; cursor: pointer; color: #64748b; line-height: 1;">&times;</span>
 
-      <div style="font-size: 1.6rem; margin-bottom: 4px;">🎬</div>
-      <h3 style="color: #3d1318; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">Your file is almost ready</h3>
-      <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 14px;">Please wait for the timer to finish. This keeps the tool free for everyone.</p>
+      <h3 style="color: #3d1318; font-size: 1.05rem; font-weight: 800; margin-bottom: 8px;">Preparing Your File</h3>
 
-      <div id="adCountdown" style="width: 84px; height: 84px; margin: 0 auto 14px; border-radius: 50%; border: 5px solid #e06b3a; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: #3d1318;">15</div>
+      <!-- Adsterra Banner Container inside Modal -->
+      <div id="modalBannerHolder" style="min-height: 70px; width: 100%; margin: 6px auto 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+        <!-- Banner dynamically injected on modal trigger -->
+      </div>
 
-      <button type="button" id="skipDownloadBtn" disabled style="width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 0.95rem; background: #cbd5e1; color: #475569; cursor: not-allowed; touch-action: manipulation;">
-        ⏳ Please wait 15s to Skip...
-      </button>
+      <!-- Simple Text Countdown Below Banner -->
+      <div id="countdownStatus" style="font-size: 0.9rem; color: #64748b; margin-bottom: 8px; font-weight: 700;">
+        Download unlocks in: <span id="adCountdown" style="color: #e06b3a; font-size: 1.35rem; font-weight: 900;">15</span>s
+      </div>
+
+      <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">
+        File will automatically download when timer reaches 0s
+      </div>
     </div>
   </div>
   <!-- ============ END Ad Gate Modal ============ -->
 
-  <!-- ============ REPLACE: Main script ============ -->
+  <!-- Adsterra SocialBar Integration (Right above closing body tag) -->
+  <script data-cfasync="false" src="https://bauval.org/14/d50fb6781f9036eeb372783b424a502e"></script>
+
   <script>
-    // =====================================================
-    //  CONFIG: paste your Adsterra details here
-    // =====================================================
-    // Adsterra Smart Link script. It loads only when a user taps "Watch Ad to Download"
-    // (2nd download onwards), never on the 1st free download.
-    const SMART_LINK_SCRIPT = "https://bauval.org/14/d50fb6781f9036eeb372783b424a502e";
-
-    // Optional: if you also have the Smart Link as a plain URL (https://...), paste it here.
-    // It will open in a new tab on every ad download. Leave empty to skip.
-    const SMART_LINK_URL = "";
-
     const AD_WAIT_SECONDS = 15;
 
     const EXAM_PRESETS = {
@@ -576,7 +554,6 @@
 
     const $ = (id) => document.getElementById(id);
 
-    // ---------- Download counter (localStorage, tracked locally) ----------
     function getTodayString() { return new Date().toISOString().split('T')[0]; }
     function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
     function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
@@ -595,17 +572,10 @@
       return c;
     }
 
-    // ---------- Download button state ----------
-    // 1st download of the day: free and instant. From the 2nd onwards: watch ad.
     function updateDownloadBtn() {
       const btn = $('downloadBtn');
-      if (getUserDownloads() === 0) {
-        btn.innerText = '📥 Download Resized File';
-        btn.style.background = '#15803d';
-      } else {
-        btn.innerText = '🎬 Watch 15s Ad to Download';
-        btn.style.background = '#e06b3a';
-      }
+      btn.innerText = '📥 Download Resized File';
+      btn.style.background = '#15803d';
     }
 
     function triggerDownload() {
@@ -617,50 +587,47 @@
       a.click();
       document.body.removeChild(a);
       incrementDownloads();
-      updateDownloadBtn();
     }
 
-    // ---------- Smart Link script (loaded only on ad downloads) ----------
-    function loadSmartLinkScript() {
-      if (!SMART_LINK_SCRIPT) return;
-      const old = document.getElementById('smartLinkScript');
-      if (old) old.remove();
-      const s = document.createElement('script');
-      s.id = 'smartLinkScript';
-      s.async = true;
-      s.setAttribute('data-cfasync', 'false');
-      s.src = SMART_LINK_SCRIPT;
-      document.body.appendChild(s);
+    // Dynamic ad loader inside the 15-second modal
+    function loadModalBanner() {
+      const holder = $('modalBannerHolder');
+      holder.innerHTML = '';
+      const adBox = document.createElement('div');
+      adBox.id = 'modal-ad-' + Date.now();
+      holder.appendChild(adBox);
+
+      const script = document.createElement('script');
+      script.async = true;
+      script.setAttribute('data-cfasync', 'false');
+      script.src = 'https://bauval.org/21/3d33a75c48e7db4851ec5771a07dc739';
+      holder.appendChild(script);
     }
 
-    // ---------- 15-second ad gate modal ----------
     function openAdModal() {
-      const skipBtn = $('skipDownloadBtn');
       const countEl = $('adCountdown');
+      const statusEl = $('countdownStatus');
       let remaining = AD_WAIT_SECONDS;
+
+      loadModalBanner();
 
       clearInterval(adTimer);
       countEl.innerText = remaining;
-      skipBtn.disabled = true;
-      skipBtn.style.background = '#cbd5e1';
-      skipBtn.style.color = '#475569';
-      skipBtn.style.cursor = 'not-allowed';
-      skipBtn.innerText = '⏳ Please wait ' + remaining + 's to Skip...';
+      statusEl.innerHTML = 'Download unlocks in: <span id="adCountdown" style="color: #e06b3a; font-size: 1.35rem; font-weight: 900;">' + remaining + '</span>s';
       $('adModal').style.display = 'flex';
 
       adTimer = setInterval(() => {
         remaining--;
+        const currentCountEl = $('adCountdown');
         if (remaining > 0) {
-          countEl.innerText = remaining;
-          skipBtn.innerText = '⏳ Please wait ' + remaining + 's to Skip...';
+          if (currentCountEl) currentCountEl.innerText = remaining;
         } else {
           clearInterval(adTimer);
-          countEl.innerText = '✓';
-          skipBtn.disabled = false;
-          skipBtn.style.background = '#15803d';
-          skipBtn.style.color = '#ffffff';
-          skipBtn.style.cursor = 'pointer';
-          skipBtn.innerText = '⚡ Skip Ad & Download Now';
+          statusEl.innerHTML = '✅ <span style="color: #15803d; font-size: 1.05rem; font-weight: 900;">Download starting now!</span>';
+          setTimeout(() => {
+            $('adModal').style.display = 'none';
+            triggerDownload();
+          }, 800);
         }
       }, 1000);
     }
@@ -670,28 +637,19 @@
       $('adModal').style.display = 'none';
     }
 
-    $('skipDownloadBtn').addEventListener('click', () => {
-      if ($('skipDownloadBtn').disabled) return;
-      cancelAdModal();
-      triggerDownload();
-    });
-
     $('downloadBtn').addEventListener('click', () => {
       if (!outputBlob || !outputUrl) return;
 
-      // 1st download: instant and free
+      // 1st download is instant
       if (getUserDownloads() === 0) {
         triggerDownload();
         return;
       }
 
-      // 2nd download onwards (any number of downloads): load ad, then show countdown modal
-      loadSmartLinkScript();
-      if (SMART_LINK_URL) window.open(SMART_LINK_URL, '_blank');
+      // 2nd download onwards: show 15s modal with banner and auto-download
       openAdModal();
     });
 
-    // ---------- UI ----------
     function resetOutput() {
       $('outputCard').style.display = 'none';
       if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
@@ -738,7 +696,6 @@
     $('tabPhoto').addEventListener('click', () => setMode('photo'));
     $('tabSign').addEventListener('click', () => setMode('sign'));
 
-    // ---------- File select ----------
     $('uploadBox').addEventListener('click', () => $('fileInput').click());
 
     $('fileInput').addEventListener('change', (e) => {
@@ -762,7 +719,6 @@
       reader.readAsDataURL(file);
     });
 
-    // ---------- Canvas resize + compression (unchanged) ----------
     function drawToCanvas(img, w, h) {
       const canvas = document.createElement('canvas');
       canvas.width = w; canvas.height = h;
@@ -844,6 +800,6 @@
 
     updateUI();
   </script>
-  <!-- ============ END Main script ============ -->
 </body>
 </html>
+
