@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://all-in-one-exam-photo-and-signature.vercel.app/sitemap.xml
