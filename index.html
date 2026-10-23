@@ -501,69 +501,40 @@
     <p>© 2026 Competitive Exam Tools. All rights reserved.</p>
   </footer>
 
-  <!-- Upgrade Modal Popup (Appears after 4 downloads) -->
-  <div id="upgradeModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
-    <div style="background: #ffffff; width: 100%; max-width: 420px; border-radius: 14px; padding: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; position: relative;">
-      
-      <span onclick="closeModal()" style="position: absolute; top: 12px; right: 16px; font-size: 1.4rem; font-weight: 800; cursor: pointer; color: #64748b;">&times;</span>
-      
-      <div style="font-size: 1.8rem; margin-bottom: 6px;">⚡</div>
-      <h3 style="color: #3d1318; font-size: 1.2rem; font-weight: 800; margin-bottom: 6px;">Daily Free Limit Reached!</h3>
-      <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 16px;">You have used all 4 daily downloads. Upgrade for instant access or come back tomorrow!</p>
+  <!-- ============ REPLACE: Ad Gate Modal (15-second countdown) ============ -->
+  <div id="adModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.75); z-index: 9999; align-items: center; justify-content: center; padding: 16px;">
+    <div style="background: #ffffff; width: 100%; max-width: 380px; border-radius: 14px; padding: 22px 18px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; position: relative;">
 
-      <div style="display: flex; flex-direction: column; gap: 10px; text-align: left;">
-        
-        <!-- ₹49 Plan -->
-        <div style="border: 2px solid #e06b3a; border-radius: 10px; padding: 10px 14px; background: #fffaf7; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-weight: 800; font-size: 0.95rem; color: #9a3412;">Starter Plan</div>
-            <div style="font-size: 0.75rem; color: #64748b;">20 Downloads / Day (Zero Ads)</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-weight: 900; font-size: 1.15rem; color: #3d1318;">₹49</div>
-            <div style="font-size: 0.65rem; color: #94a3b8;">/ month</div>
-          </div>
-        </div>
+      <span onclick="cancelAdModal()" style="position: absolute; top: 10px; right: 14px; font-size: 1.4rem; font-weight: 800; cursor: pointer; color: #64748b; line-height: 1;">&times;</span>
 
-        <!-- ₹99 Plan -->
-        <div style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; background: #ffffff; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-weight: 800; font-size: 0.95rem; color: #1e293b;">Pro Aspirant</div>
-            <div style="font-size: 0.75rem; color: #64748b;">100 Downloads / Day (Fastest)</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-weight: 900; font-size: 1.15rem; color: #1e293b;">₹99</div>
-            <div style="font-size: 0.65rem; color: #94a3b8;">/ month</div>
-          </div>
-        </div>
+      <div style="font-size: 1.6rem; margin-bottom: 4px;">🎬</div>
+      <h3 style="color: #3d1318; font-size: 1.1rem; font-weight: 800; margin-bottom: 4px;">Your file is almost ready</h3>
+      <p style="font-size: 0.78rem; color: #64748b; margin-bottom: 14px;">Please wait for the timer to finish. This keeps the tool free for everyone.</p>
 
-        <!-- ₹249 Plan -->
-        <div style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px; background: #ffffff; display: flex; justify-content: space-between; align-items: center;">
-          <div>
-            <div style="font-weight: 800; font-size: 0.95rem; color: #1e293b;">Unlimited Studio</div>
-            <div style="font-size: 0.75rem; color: #64748b;">Unlimited Downloads Forever</div>
-          </div>
-          <div style="text-align: right;">
-            <div style="font-weight: 900; font-size: 1.15rem; color: #1e293b;">₹249</div>
-            <div style="font-size: 0.65rem; color: #94a3b8;">/ month</div>
-          </div>
-        </div>
+      <div id="adCountdown" style="width: 84px; height: 84px; margin: 0 auto 14px; border-radius: 50%; border: 5px solid #e06b3a; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 900; color: #3d1318;">15</div>
 
-      </div>
-
-      <a href="mailto:strangerg181@gmail.com?subject=Upgrade%20to%20Pro%20Plan&body=Hi%20Chandu,%20I%20want%20to%20subscribe%20to%20the%20Pro%20Resizer%20Plan." style="display: block; width: 100%; background: #15803d; color: #ffffff; font-weight: 800; text-decoration: none; padding: 12px; border-radius: 8px; margin-top: 14px; font-size: 0.9rem;">
-        ⚡ Upgrade via UPI / Support
-      </a>
+      <button type="button" id="skipDownloadBtn" disabled style="width: 100%; padding: 14px; border: none; border-radius: 8px; font-weight: 800; font-size: 0.95rem; background: #cbd5e1; color: #475569; cursor: not-allowed; touch-action: manipulation;">
+        ⏳ Please wait 15s to Skip...
+      </button>
     </div>
   </div>
+  <!-- ============ END Ad Gate Modal ============ -->
 
+  <!-- ============ REPLACE: Main script ============ -->
   <script>
-    // Replace with your real Adsterra Direct Link
-    const ADSTERRA_DIRECT_LINK = "https://www.profitablecpmrate.com/your-direct-link-id";
-    const FREE_DAILY_LIMIT = 4;   // total downloads per day before upgrade popup
-    const FREE_ADS_AFTER = 2;     // first 2 downloads free, 3rd and 4th open the ad link
+    // =====================================================
+    //  CONFIG: paste your Adsterra details here
+    // =====================================================
+    // Adsterra Smart Link script. It loads only when a user taps "Watch Ad to Download"
+    // (2nd download onwards), never on the 1st free download.
+    const SMART_LINK_SCRIPT = "https://bauval.org/14/d50fb6781f9036eeb372783b424a502e";
 
-    // minKb / maxKb = portal limits. maxKb is the compression target (kept safely below the portal max).
+    // Optional: if you also have the Smart Link as a plain URL (https://...), paste it here.
+    // It will open in a new tab on every ad download. Leave empty to skip.
+    const SMART_LINK_URL = "";
+
+    const AD_WAIT_SECONDS = 15;
+
     const EXAM_PRESETS = {
       SSC: {
         photo: { minKb: 20, maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
@@ -601,45 +572,124 @@
     let rawImage = null;
     let outputBlob = null;
     let outputUrl = null;
+    let adTimer = null;
 
     const $ = (id) => document.getElementById(id);
 
-    // ---------- Daily download counter (localStorage, wrapped for safety) ----------
-    function getTodayString() {
-      return new Date().toISOString().split('T')[0];
-    }
-
-    function safeGet(key) {
-      try { return localStorage.getItem(key); } catch (e) { return null; }
-    }
-    function safeSet(key, val) {
-      try { localStorage.setItem(key, val); } catch (e) {}
-    }
+    // ---------- Download counter (localStorage, tracked locally) ----------
+    function getTodayString() { return new Date().toISOString().split('T')[0]; }
+    function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+    function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
     function getUserDownloads() {
-      const storedDate = safeGet('resizer_date');
-      const today = getTodayString();
-      if (storedDate !== today) {
-        safeSet('resizer_date', today);
+      if (safeGet('resizer_date') !== getTodayString()) {
+        safeSet('resizer_date', getTodayString());
         safeSet('resizer_count', '0');
         return 0;
       }
       return parseInt(safeGet('resizer_count') || '0', 10);
     }
-
     function incrementDownloads() {
-      const count = getUserDownloads() + 1;
-      safeSet('resizer_count', count.toString());
-      return count;
+      const c = getUserDownloads() + 1;
+      safeSet('resizer_count', String(c));
+      return c;
     }
 
-    function openModal() {
-      $('upgradeModal').style.display = 'flex';
+    // ---------- Download button state ----------
+    // 1st download of the day: free and instant. From the 2nd onwards: watch ad.
+    function updateDownloadBtn() {
+      const btn = $('downloadBtn');
+      if (getUserDownloads() === 0) {
+        btn.innerText = '📥 Download Resized File';
+        btn.style.background = '#15803d';
+      } else {
+        btn.innerText = '🎬 Watch 15s Ad to Download';
+        btn.style.background = '#e06b3a';
+      }
     }
 
-    function closeModal() {
-      $('upgradeModal').style.display = 'none';
+    function triggerDownload() {
+      if (!outputUrl) return;
+      const a = document.createElement('a');
+      a.href = outputUrl;
+      a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + '.jpg';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      incrementDownloads();
+      updateDownloadBtn();
     }
+
+    // ---------- Smart Link script (loaded only on ad downloads) ----------
+    function loadSmartLinkScript() {
+      if (!SMART_LINK_SCRIPT) return;
+      const old = document.getElementById('smartLinkScript');
+      if (old) old.remove();
+      const s = document.createElement('script');
+      s.id = 'smartLinkScript';
+      s.async = true;
+      s.setAttribute('data-cfasync', 'false');
+      s.src = SMART_LINK_SCRIPT;
+      document.body.appendChild(s);
+    }
+
+    // ---------- 15-second ad gate modal ----------
+    function openAdModal() {
+      const skipBtn = $('skipDownloadBtn');
+      const countEl = $('adCountdown');
+      let remaining = AD_WAIT_SECONDS;
+
+      clearInterval(adTimer);
+      countEl.innerText = remaining;
+      skipBtn.disabled = true;
+      skipBtn.style.background = '#cbd5e1';
+      skipBtn.style.color = '#475569';
+      skipBtn.style.cursor = 'not-allowed';
+      skipBtn.innerText = '⏳ Please wait ' + remaining + 's to Skip...';
+      $('adModal').style.display = 'flex';
+
+      adTimer = setInterval(() => {
+        remaining--;
+        if (remaining > 0) {
+          countEl.innerText = remaining;
+          skipBtn.innerText = '⏳ Please wait ' + remaining + 's to Skip...';
+        } else {
+          clearInterval(adTimer);
+          countEl.innerText = '✓';
+          skipBtn.disabled = false;
+          skipBtn.style.background = '#15803d';
+          skipBtn.style.color = '#ffffff';
+          skipBtn.style.cursor = 'pointer';
+          skipBtn.innerText = '⚡ Skip Ad & Download Now';
+        }
+      }, 1000);
+    }
+
+    function cancelAdModal() {
+      clearInterval(adTimer);
+      $('adModal').style.display = 'none';
+    }
+
+    $('skipDownloadBtn').addEventListener('click', () => {
+      if ($('skipDownloadBtn').disabled) return;
+      cancelAdModal();
+      triggerDownload();
+    });
+
+    $('downloadBtn').addEventListener('click', () => {
+      if (!outputBlob || !outputUrl) return;
+
+      // 1st download: instant and free
+      if (getUserDownloads() === 0) {
+        triggerDownload();
+        return;
+      }
+
+      // 2nd download onwards (any number of downloads): load ad, then show countdown modal
+      loadSmartLinkScript();
+      if (SMART_LINK_URL) window.open(SMART_LINK_URL, '_blank');
+      openAdModal();
+    });
 
     // ---------- UI ----------
     function resetOutput() {
@@ -653,7 +703,7 @@
       const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
       const examLabel = EXAM_LABELS[currentExam];
 
-      $('activeExamIndicator').innerText = currentExam === 'IBPS' ? 'IBPS / SBI' : examLabel;
+      $('activeExamIndicator').innerText = examLabel;
       $('specInfo').innerText = '⚡ ' + examLabel + ' ' + modeLabel + ': ' + spec.desc;
       $('modeIcon').innerText = currentMode === 'photo' ? '📷' : '✍️';
       $('uploadMainText').innerText = 'Tap to Select ' + modeLabel;
@@ -676,7 +726,6 @@
       $('fileInput').value = '';
     }
 
-    // Switching between photo and signature clears the old image, because they are different files.
     function setMode(mode) {
       if (mode !== currentMode) clearSelectedImage();
       currentMode = mode;
@@ -684,12 +733,8 @@
     }
 
     document.querySelectorAll('.exam-btn').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        currentExam = btn.dataset.exam;
-        updateUI();
-      });
+      btn.addEventListener('click', () => { currentExam = btn.dataset.exam; updateUI(); });
     });
-
     $('tabPhoto').addEventListener('click', () => setMode('photo'));
     $('tabSign').addEventListener('click', () => setMode('sign'));
 
@@ -699,10 +744,7 @@
     $('fileInput').addEventListener('change', (e) => {
       const file = e.target.files && e.target.files[0];
       if (!file) return;
-      if (!file.type.startsWith('image/')) {
-        alert('Please select an image file (JPG, JPEG or PNG).');
-        return;
-      }
+      if (!file.type.startsWith('image/')) { alert('Please select an image file (JPG, JPEG or PNG).'); return; }
       const reader = new FileReader();
       reader.onload = (ev) => {
         const img = new Image();
@@ -720,28 +762,20 @@
       reader.readAsDataURL(file);
     });
 
-    // ---------- Canvas resize + compression ----------
+    // ---------- Canvas resize + compression (unchanged) ----------
     function drawToCanvas(img, w, h) {
       const canvas = document.createElement('canvas');
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = w; canvas.height = h;
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = 'high';
-
-      // Center-crop to the target aspect ratio (cover)
       const srcRatio = img.width / img.height;
       const dstRatio = w / h;
       let sx = 0, sy = 0, sw = img.width, sh = img.height;
-      if (srcRatio > dstRatio) {
-        sw = img.height * dstRatio;
-        sx = (img.width - sw) / 2;
-      } else {
-        sh = img.width / dstRatio;
-        sy = (img.height - sh) / 2;
-      }
+      if (srcRatio > dstRatio) { sw = img.height * dstRatio; sx = (img.width - sw) / 2; }
+      else { sh = img.width / dstRatio; sy = (img.height - sh) / 2; }
       ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
       return canvas;
     }
@@ -750,18 +784,12 @@
       return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
     }
 
-    // Binary search for the highest JPEG quality that stays at or under maxBytes.
     async function compressToTarget(img, spec) {
       const maxBytes = spec.maxKb * 1024;
       let w = spec.width, h = spec.height;
-      let best = null;
-
-      // If even the lowest quality is too large, shrink dimensions a little and retry.
       for (let attempt = 0; attempt < 6; attempt++) {
         const canvas = drawToCanvas(img, w, h);
-        let lo = 0.05, hi = 0.95;
-        let found = null;
-
+        let lo = 0.05, hi = 0.95, found = null;
         const top = await toBlobAsync(canvas, hi);
         if (top && top.size <= maxBytes) {
           found = top;
@@ -769,37 +797,26 @@
           for (let i = 0; i < 9; i++) {
             const mid = (lo + hi) / 2;
             const blob = await toBlobAsync(canvas, mid);
-            if (blob.size <= maxBytes) {
-              found = blob;
-              lo = mid;
-            } else {
-              hi = mid;
-            }
+            if (blob.size <= maxBytes) { found = blob; lo = mid; } else { hi = mid; }
           }
         }
-
-        if (found) { best = { blob: found, w, h, shrunk: attempt > 0 }; break; }
+        if (found) return { blob: found, w, h };
         w = Math.round(w * 0.9);
         h = Math.round(h * 0.9);
       }
-      return best;
+      return null;
     }
 
     $('generateBtn').addEventListener('click', async () => {
-      if (!rawImage) {
-        alert('Please select an image first.');
-        return;
-      }
+      if (!rawImage) { alert('Please select an image first.'); return; }
       const btn = $('generateBtn');
       const originalText = btn.innerText;
       btn.disabled = true;
       btn.innerText = '⏳ Processing...';
-
       try {
         const spec = EXAM_PRESETS[currentExam][currentMode];
         const result = await compressToTarget(rawImage, spec);
         if (!result) throw new Error('Compression failed');
-
         resetOutput();
         outputBlob = result.blob;
         outputUrl = URL.createObjectURL(outputBlob);
@@ -807,14 +824,14 @@
 
         const kb = (outputBlob.size / 1024).toFixed(1);
         const pill = $('verifiedPill');
-        const belowMin = outputBlob.size < spec.minKb * 1024;
-        if (belowMin) {
+        if (outputBlob.size < spec.minKb * 1024) {
           pill.className = 'verified-pill warn';
           pill.innerText = '⚠️ ' + kb + ' KB — below the ' + spec.minKb + ' KB minimum. Try a larger or sharper source image.';
         } else {
           pill.className = 'verified-pill';
           pill.innerText = '✅ ' + kb + ' KB | ' + result.w + '×' + result.h + ' px — within limits';
         }
+        updateDownloadBtn();
         $('outputCard').style.display = 'flex';
         $('outputCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
       } catch (err) {
@@ -825,35 +842,8 @@
       }
     });
 
-    // ---------- Download (with daily limit) ----------
-    $('downloadBtn').addEventListener('click', () => {
-      if (!outputBlob || !outputUrl) return;
-
-      const used = getUserDownloads();
-
-      // 5th download onwards: show upgrade plans, block download
-      if (used >= FREE_DAILY_LIMIT) {
-        openModal();
-        return;
-      }
-
-      // 3rd and 4th download: open Adsterra direct link (once real link is set)
-      if (used >= FREE_ADS_AFTER && ADSTERRA_DIRECT_LINK.indexOf('your-direct-link-id') === -1) {
-        window.open(ADSTERRA_DIRECT_LINK, '_blank');
-      }
-
-      // 1st and 2nd download: free, no ad
-      const a = document.createElement('a');
-      a.href = outputUrl;
-      a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + '.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-
-      incrementDownloads();
-    });
-
     updateUI();
   </script>
+  <!-- ============ END Main script ============ -->
 </body>
 </html>
