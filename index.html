@@ -102,11 +102,10 @@
       gap: 14px;
     }
 
-    /* Clean Ad Placeholder Style */
     .ad-slot-placeholder {
       width: 100%;
       max-width: 480px;
-      min-height: 60px;
+      min-height: 90px;
       margin: 8px auto 0;
       background: #ffffff;
       border: 1px dashed #cbd5e1;
@@ -369,7 +368,7 @@
       width: 100%;
       text-align: center;
       padding: 24px 14px 40px;
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       color: var(--text-muted);
       border-top: 1px solid var(--border-color);
       margin-top: 20px;
@@ -377,8 +376,8 @@
     .legal-links {
       display: flex;
       justify-content: center;
-      gap: 12px;
-      margin-bottom: 10px;
+      gap: 16px;
+      margin-bottom: 12px;
       flex-wrap: wrap;
     }
     .legal-links a {
@@ -386,6 +385,20 @@
       text-decoration: underline;
       font-weight: 700;
       cursor: pointer;
+      padding: 4px;
+    }
+
+    .legal-info-box {
+      display: none;
+      background: #f8fafc;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px auto;
+      max-width: 480px;
+      text-align: left;
+      font-size: 0.75rem;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -397,7 +410,6 @@
     <p>100% Client-Side Guaranteed KB & Dimensions Formatter</p>
   </header>
 
-  <!-- Top Ad Space (Ready for Google AdSense) -->
   <div class="ad-slot-placeholder">
     <span>Advertisement</span>
   </div>
@@ -428,7 +440,7 @@
       ⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm
     </div>
 
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/jpg" style="display: none;">
     
     <div class="upload-frame" id="uploadBox">
       <div class="upload-content" id="uploadPrompt">
@@ -449,7 +461,6 @@
       <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
     </div>
 
-    <!-- Mid Ad Space (Ready for Google AdSense) -->
     <div class="ad-slot-placeholder">
       <span>Advertisement</span>
     </div>
@@ -514,3 +525,302 @@
 
   <footer class="legal-footer">
     <div class="legal-links">
+      <a id="linkPrivacy">Privacy Policy</a>
+      <span>•</span>
+      <a id="linkTerms">Terms of Service</a>
+      <span>•</span>
+      <a id="linkContact">Contact Us</a>
+    </div>
+
+    <div id="legalInfoBox" class="legal-info-box"></div>
+
+    <p>Client-Side Privacy Shield: 100% Offline Processing Guarantee.</p>
+    <p>© 2026 Competitive Exam Tools. All rights reserved.</p>
+  </footer>
+
+  <script>
+    const EXAM_PRESETS = {
+      SSC: {
+        photo: { minKb: 20, maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
+        sign:  { minKb: 10, maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | 4.0 cm × 2.0 cm" }
+      },
+      UPSC: {
+        photo: { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" },
+        sign:  { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" }
+      },
+      IBPS: {
+        photo: { minKb: 20, maxKb: 45, width: 200, height: 230, desc: "20 KB to 50 KB | 200×230 px" },
+        sign:  { minKb: 10, maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | Black Ink on White" }
+      },
+      RRB: {
+        photo: { minKb: 30, maxKb: 65, width: 350, height: 450, desc: "30 KB to 70 KB | Clear Plain Background" },
+        sign:  { minKb: 15, maxKb: 28, width: 400, height: 200, desc: "15 KB to 30 KB | Running Handwriting" }
+      },
+      NTA: {
+        photo: { minKb: 10, maxKb: 180, width: 400, height: 500, desc: "10 KB to 200 KB | 80% Face Coverage" },
+        sign:  { minKb: 4,  maxKb: 28,  width: 400, height: 180, desc: "4 KB to 30 KB | Clear White Paper" }
+      },
+      GATE: {
+        photo: { minKb: 10, maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
+        sign:  { minKb: 5,  maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
+      }
+    };
+
+    const EXAM_LABELS = {
+      SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
+      RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE / PSC'
+    };
+
+    let currentExam = 'SSC';
+    let currentMode = 'photo';
+    let rawImage = null;
+    let outputBlob = null;
+    let outputUrl = null;
+
+    const $ = (id) => document.getElementById(id);
+
+    function updateDownloadBtn() {
+      const btn = $('downloadBtn');
+      if (btn) {
+        btn.innerText = '📥 Download Resized File';
+        btn.style.background = '#15803d';
+        btn.disabled = false;
+      }
+    }
+
+    function triggerDownload() {
+      if (!outputUrl) return;
+      
+      const a = document.createElement('a');
+      a.href = outputUrl;
+      
+      const ext = outputUrl.includes('image/png') ? '.png' : '.jpg';
+      a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + ext;
+      
+      document.body.appendChild(a);
+      a.click();
+      
+      setTimeout(() => {
+        if (a && a.parentNode) document.body.removeChild(a);
+      }, 500);
+
+      updateDownloadBtn();
+    }
+
+    const downloadBtnEl = $('downloadBtn');
+    if (downloadBtnEl) {
+      downloadBtnEl.addEventListener('click', (e) => {
+        if (e) e.preventDefault();
+        triggerDownload();
+      });
+    }
+
+    function resetOutput() {
+      $('outputCard').style.display = 'none';
+      if (outputUrl) { 
+        URL.revokeObjectURL(outputUrl); 
+        outputUrl = null; 
+      }
+      outputBlob = null;
+    }
+
+    function updateUI() {
+      const spec = EXAM_PRESETS[currentExam][currentMode];
+      const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
+      const examLabel = EXAM_LABELS[currentExam];
+
+      $('activeExamIndicator').innerText = examLabel;
+      $('specInfo').innerText = '⚡ ' + examLabel + ' ' + modeLabel + ': ' + spec.desc;
+      $('modeIcon').innerText = currentMode === 'photo' ? '📷' : '✍️';
+      $('uploadMainText').innerText = 'Tap to Select ' + modeLabel;
+      $('generateBtn').innerText = '⚡ GENERATE ' + examLabel.toUpperCase() + ' ' + modeLabel.toUpperCase();
+
+      document.querySelectorAll('.exam-btn').forEach((b) => {
+        b.classList.toggle('active', b.getAttribute('data-exam') === currentExam);
+      });
+      $('tabPhoto').classList.toggle('active', currentMode === 'photo');
+      $('tabSign').classList.toggle('active', currentMode === 'sign');
+
+      resetOutput();
+    }
+
+    function clearSelectedImage() {
+      rawImage = null;
+      $('inputPreview').style.display = 'none';
+      $('inputPreview').removeAttribute('src');
+      $('uploadPrompt').style.display = 'flex';
+      $('fileInput').value = '';
+    }
+
+    function setMode(mode) {
+      if (mode !== currentMode) clearSelectedImage();
+      currentMode = mode;
+      updateUI();
+    }
+
+    document.querySelectorAll('.exam-btn').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget || e.target.closest('.exam-btn');
+        if (target && target.dataset.exam) {
+          currentExam = target.dataset.exam;
+          updateUI();
+        }
+      });
+    });
+
+    $('tabPhoto').addEventListener('click', () => setMode('photo'));
+    $('tabSign').addEventListener('click', () => setMode('sign'));
+
+    $('uploadBox').addEventListener('click', () => $('fileInput').click());
+
+    $('fileInput').addEventListener('change', (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { 
+        alert('Please select an image file (JPG, JPEG or PNG).'); 
+        return; 
+      }
+      const reader = new FileReader();
+      reader.onload = (ev) => {
+        const img = new Image();
+        img.onload = () => {
+          rawImage = img;
+          const prev = $('inputPreview');
+          prev.src = ev.target.result;
+          prev.style.display = 'block';
+          $('uploadPrompt').style.display = 'none';
+          resetOutput();
+        };
+        img.onerror = () => alert('Could not read this image. Please try another file.');
+        img.src = ev.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+
+    function drawToCanvas(img, w, h) {
+      const canvas = document.createElement('canvas');
+      canvas.width = w; 
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, w, h);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'high';
+      
+      const srcRatio = img.width / img.height;
+      const dstRatio = w / h;
+      let sx = 0, sy = 0, sw = img.width, sh = img.height;
+      
+      if (srcRatio > dstRatio) { 
+        sw = img.height * dstRatio; 
+        sx = (img.width - sw) / 2; 
+      } else { 
+        sh = img.width / dstRatio; 
+        sy = (img.height - sh) / 2; 
+      }
+      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
+      return canvas;
+    }
+
+    function toBlobAsync(canvas, quality) {
+      return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    // Adaptive Safe Compression Engine
+    async function compressToTarget(img, spec) {
+      const maxBytes = spec.maxKb * 1024;
+      const minBytes = spec.minKb * 1024;
+      let w = spec.width, h = spec.height;
+
+      for (let attempt = 0; attempt < 5; attempt++) {
+        const canvas = drawToCanvas(img, w, h);
+        
+        // High quality check
+        const highBlob = await toBlobAsync(canvas, 0.95);
+        if (highBlob && highBlob.size <= maxBytes) {
+          return { blob: highBlob, w, h };
+        }
+
+        // Binary search for exact limit matching
+        let lo = 0.1, hi = 0.95, bestBlob = null;
+        for (let i = 0; i < 8; i++) {
+          const mid = (lo + hi) / 2;
+          const blob = await toBlobAsync(canvas, mid);
+          if (blob.size <= maxBytes) {
+            bestBlob = blob;
+            lo = mid;
+          } else {
+            hi = mid;
+          }
+        }
+
+        if (bestBlob) return { blob: bestBlob, w, h };
+        w = Math.round(w * 0.92);
+        h = Math.round(h * 0.92);
+      }
+      
+      // Fallback safe render
+      const fallbackCanvas = drawToCanvas(img, spec.width, spec.height);
+      const fallbackBlob = await toBlobAsync(fallbackCanvas, 0.7);
+      return { blob: fallbackBlob, w: spec.width, h: spec.height };
+    }
+
+    $('generateBtn').addEventListener('click', async () => {
+      if (!rawImage) { alert('Please select an image first.'); return; }
+      const btn = $('generateBtn');
+      const originalText = btn.innerText;
+      btn.disabled = true;
+      btn.innerText = '⏳ Processing...';
+      try {
+        const spec = EXAM_PRESETS[currentExam][currentMode];
+        const result = await compressToTarget(rawImage, spec);
+        if (!result || !result.blob) throw new Error('Compression failed');
+        
+        resetOutput();
+        outputBlob = result.blob;
+        outputUrl = URL.createObjectURL(outputBlob);
+        $('outputImg').src = outputUrl;
+
+        const kb = (outputBlob.size / 1024).toFixed(1);
+        const pill = $('verifiedPill');
+        if (outputBlob.size < spec.minKb * 1024) {
+          pill.className = 'verified-pill warn';
+          pill.innerText = '⚠️ ' + kb + ' KB — below the ' + spec.minKb + ' KB minimum. Try a sharper source photo.';
+        } else {
+          pill.className = 'verified-pill';
+          pill.innerText = '✅ ' + kb + ' KB | ' + result.w + '×' + result.h + ' px — within limits';
+        }
+        updateDownloadBtn();
+        $('outputCard').style.display = 'flex';
+        $('outputCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } catch (err) {
+        alert('Something went wrong while resizing. Please try a different image.');
+      } finally {
+        btn.disabled = false;
+        btn.innerText = originalText;
+      }
+    });
+
+    const legalBox = $('legalInfoBox');
+    function showLegal(title, text) {
+      legalBox.innerHTML = '<strong>' + title + '</strong><br>' + text;
+      legalBox.style.display = 'block';
+      legalBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    $('linkPrivacy').addEventListener('click', () => {
+      showLegal('Privacy Policy', 'We respect user privacy. All photo and signature resizing processes happen 100% locally on your browser using HTML5 Canvas. No personal images, signatures, or files are ever uploaded, collected, or stored on any server.');
+    });
+
+    $('linkTerms').addEventListener('click', () => {
+      showLegal('Terms of Service', 'This is a free educational utility tool developed to assist aspirants with government competitive exams specifications. All examination names and acronyms belong to their respective authorities.');
+    });
+
+    $('linkContact').addEventListener('click', () => {
+      showLegal('Contact Us', 'For questions, support, or bug reports regarding this tool, please write to: strangerg181@gmail.com');
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
