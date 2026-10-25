@@ -597,16 +597,26 @@
       btn.style.background = '#15803d';
     }
 
-    function triggerDownload() {
-      if (!outputUrl) return;
-      const a = document.createElement('a');
-      a.href = outputUrl;
-      a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + '.jpg';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      incrementDownloads();
-    }
+   function triggerDownload() {
+    if (!outputUrl) return;
+    
+    const a = document.createElement('a');
+    a.href = outputUrl;
+    
+    // File name format
+    const ext = outputUrl.includes('image/png') ? '.png' : '.jpg';
+    a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + ext;
+    
+    document.body.appendChild(a);
+    a.click();
+    
+    // Mobile Chrome kosam chinna delay tharvatha remove cheyali
+    setTimeout(() => {
+        document.body.removeChild(a);
+    }, 500);
+
+    incrementDownloads();
+}
 
     // Dynamic ad loader inside the 15-second modal
     function loadModalBanner() {
