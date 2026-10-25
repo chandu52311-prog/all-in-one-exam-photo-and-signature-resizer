@@ -739,38 +739,59 @@
     }
 
     // Binary Search Compression Engine
+   // Smart Min & Max Range Matching Engine
     async function compressToTarget(img, spec) {
       const maxBytes = spec.maxKb * 1024;
+      const minBytes = spec.minKb * 1024;
       let w = spec.width, h = spec.height;
 
-      for (let attempt = 0; attempt < 5; attempt++) {
-        const canvas = drawToCanvas(img, w, h);
-        
-        const highBlob = await toBlobAsync(canvas, 0.95);
-        if (highBlob && highBlob.size <= maxBytes) {
-          return { blob: highBlob, w, h };
-        }
+      // 1. First attempt: High Quality tho draw cheyadam
+      let canvas = drawToCanvas(img, w, h);
+      let blob = await toBlobAsync(canvas, 0.98);
 
-        let lo = 0.1, hi = 0.95, bestBlob = null;
-        for (let i = 0; i < 8; i++) {
-          const mid = (lo + hi) / 2;
-          const blob = await toBlobAsync(canvas, mid);
-          if (blob.size <= maxBytes) {
-            bestBlob = blob;
-            lo = mid;
-          } else {
-            hi = mid;
+      // 2. Size MINIMUM limit kanna thakkuva vasthe scale penchi target range loki thevali
+      if (blob && blob.size < minBytes) {
+        for (let scale = 1.1; scale <= 2.2; scale += 0.15) {
+          let scaledW = Math.round(spec.width * scale);
+          let scaledH = Math.round(spec.height * scale);
+          let scCanvas = drawToCanvas(img, scaledW, scaledH);
+          let scBlob = await toBlobAsync(scCanvas, 0.95);
+
+          if (scBlob.size >= minBytes && scBlob.size <= maxBytes) {
+            return { blob: scBlob, w: scaledW, h: scaledH };
           }
+          if (scBlob.size > maxBytes) break;
+          blob = scBlob;
+          w = scaledW;
+          h = scaledH;
         }
-
-        if (bestBlob) return { blob: bestBlob, w, h };
-        w = Math.round(w * 0.92);
-        h = Math.round(h * 0.92);
+        return { blob: blob, w: w, h: h };
       }
-      
-      const fallbackCanvas = drawToCanvas(img, spec.width, spec.height);
-      const fallbackBlob = await toBlobAsync(fallbackCanvas, 0.75);
-      return { blob: fallbackBlob, w: spec.width, h: spec.height };
+
+      // 3. Size MAXIMUM limit kanna ekkuva vasthe binary compression tho tagginchali
+      if (blob && blob.size > maxBytes) {
+        for (let attempt = 0; attempt < 5; attempt++) {
+          let lo = 0.1, hi = 0.95, bestBlob = null;
+          for (let i = 0; i < 8; i++) {
+            let mid = (lo + hi) / 2;
+            let b = await toBlobAsync(canvas, mid);
+            if (b.size <= maxBytes) {
+              bestBlob = b;
+              lo = mid;
+            } else {
+              hi = mid;
+            }
+          }
+          if (bestBlob && bestBlob.size >= minBytes) {
+            return { blob: bestBlob, w: w, h: h };
+          }
+          w = Math.round(w * 0.92);
+          h = Math.round(h * 0.92);
+          canvas = drawToCanvas(img, w, h);
+        }
+      }
+
+      return { blob: blob, w: w, h: h };
     }
 
     $('generateBtn').addEventListener('click', async () => {
