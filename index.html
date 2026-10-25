@@ -102,6 +102,25 @@
       gap: 14px;
     }
 
+    /* Clean Ad Placeholder Style */
+    .ad-slot-placeholder {
+      width: 100%;
+      max-width: 480px;
+      min-height: 60px;
+      margin: 8px auto 0;
+      background: #ffffff;
+      border: 1px dashed #cbd5e1;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #94a3b8;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
     .section-card {
       background: var(--card-white);
       border-radius: 12px;
@@ -378,10 +397,9 @@
     <p>100% Client-Side Guaranteed KB & Dimensions Formatter</p>
   </header>
 
-  <!-- Top Adsterra Native Banner Slot -->
-  <div style="width: 100%; max-width: 480px; margin: 10px auto 0; text-align: center; min-height: 60px;">
-    <script async="async" data-cfasync="false" src="https://bauval.org/21/3d33a75c48e7db4851ec5771a07dc739"></script>
-    <div id="container-3d33a75c48e7db4851ec5771a07dc739"></div>
+  <!-- Top Ad Space (Ready for Google AdSense) -->
+  <div class="ad-slot-placeholder">
+    <span>Advertisement</span>
   </div>
 
   <div class="container">
@@ -429,6 +447,11 @@
       <div class="verified-pill" id="verifiedPill">✅ APPROVED READY</div>
       <img id="outputImg" class="output-preview" alt="Exam Ready File">
       <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
+    </div>
+
+    <!-- Mid Ad Space (Ready for Google AdSense) -->
+    <div class="ad-slot-placeholder">
+      <span>Advertisement</span>
     </div>
 
     <div class="reference-section">
@@ -491,344 +514,3 @@
 
   <footer class="legal-footer">
     <div class="legal-links">
-      <a onclick="alert('Privacy Policy: All processing is client-side. No user images or records are collected or stored on any server.')">Privacy Policy</a>
-      <span>•</span>
-      <a onclick="alert('Terms: Unofficial utility tool built for student exam preparation assistance.')">Terms of Service</a>
-      <span>•</span>
-      <a onclick="alert('Contact Support: strangerg181@gmail.com')">Contact Us</a>
-    </div>
-    <p>Client-Side Privacy Shield: 100% Offline Processing Guarantee.</p>
-    <p>© 2026 Competitive Exam Tools. All rights reserved.</p>
-  </footer>
-
-  <!-- ============ Ad Gate Modal with Adsterra Banner & Auto-Download ============ -->
-  <div id="adModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 9999; align-items: center; justify-content: center; padding: 14px;">
-    <div style="background: #ffffff; width: 100%; max-width: 400px; border-radius: 14px; padding: 18px 14px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); text-align: center; position: relative;">
-
-      <span onclick="cancelAdModal()" style="position: absolute; top: 8px; right: 12px; font-size: 1.4rem; font-weight: 800; cursor: pointer; color: #64748b; line-height: 1;">&times;</span>
-
-      <h3 style="color: #3d1318; font-size: 1.05rem; font-weight: 800; margin-bottom: 8px;">Preparing Your File</h3>
-
-      <!-- Adsterra Banner Container inside Modal -->
-      <div id="modalBannerHolder" style="min-height: 70px; width: 100%; margin: 6px auto 14px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
-        <!-- Banner dynamically injected on modal trigger -->
-      </div>
-
-      <!-- Simple Text Countdown Below Banner -->
-      <div id="countdownStatus" style="font-size: 0.9rem; color: #64748b; margin-bottom: 8px; font-weight: 700;">
-        Download unlocks in: <span id="adCountdown" style="color: #e06b3a; font-size: 1.35rem; font-weight: 900;">15</span>s
-      </div>
-
-      <div style="font-size: 0.75rem; color: #94a3b8; font-weight: 600;">
-        File will automatically download when timer reaches 0s
-      </div>
-    </div>
-  </div>
-  <!-- ============ END Ad Gate Modal ============ -->
-
-  <!-- Adsterra SocialBar Integration (Right above closing body tag) -->
-  <script data-cfasync="false" src="https://bauval.org/14/d50fb6781f9036eeb372783b424a502e"></script>
-
-  <script>
-    const AD_WAIT_SECONDS = 15;
-
-    const EXAM_PRESETS = {
-      SSC: {
-        photo: { minKb: 20, maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
-        sign:  { minKb: 10, maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | 4.0 cm × 2.0 cm" }
-      },
-      UPSC: {
-        photo: { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" },
-        sign:  { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" }
-      },
-      IBPS: {
-        photo: { minKb: 20, maxKb: 45, width: 200, height: 230, desc: "20 KB to 50 KB | 200×230 px" },
-        sign:  { minKb: 10, maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | Black Ink on White" }
-      },
-      RRB: {
-        photo: { minKb: 30, maxKb: 65, width: 350, height: 450, desc: "30 KB to 70 KB | Clear Plain Background" },
-        sign:  { minKb: 15, maxKb: 28, width: 400, height: 200, desc: "15 KB to 30 KB | Running Handwriting" }
-      },
-      NTA: {
-        photo: { minKb: 10, maxKb: 180, width: 400, height: 500, desc: "10 KB to 200 KB | 80% Face Coverage" },
-        sign:  { minKb: 4,  maxKb: 28,  width: 400, height: 180, desc: "4 KB to 30 KB | Clear White Paper" }
-      },
-      GATE: {
-        photo: { minKb: 10, maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
-        sign:  { minKb: 5,  maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
-      }
-    };
-
-    const EXAM_LABELS = {
-      SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
-      RRB: 'Railway RRB', NTA: 'NTA', GATE: 'GATE / PSC'
-    };
-
-    let currentExam = 'SSC';
-    let currentMode = 'photo';
-    let rawImage = null;
-    let outputBlob = null;
-    let outputUrl = null;
-    let adTimer = null;
-
-    const $ = (id) => document.getElementById(id);
-
-    function getTodayString() { return new Date().toISOString().split('T')[0]; }
-    function safeGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
-    function safeSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
-
-    function getUserDownloads() {
-      if (safeGet('resizer_date') !== getTodayString()) {
-        safeSet('resizer_date', getTodayString());
-        safeSet('resizer_count', '0');
-        return 0;
-      }
-      return parseInt(safeGet('resizer_count') || '0', 10);
-    }
-    function incrementDownloads() {
-      const c = getUserDownloads() + 1;
-      safeSet('resizer_count', String(c));
-      return c;
-    }
-
-    function updateDownloadBtn() {
-      const btn = $('downloadBtn');
-      btn.innerText = '📥 Download Resized File';
-      btn.style.background = '#15803d';
-    }
-
-   function triggerDownload() {
-    if (!outputUrl) return;
-    
-    const a = document.createElement('a');
-    a.href = outputUrl;
-    
-    // File name format
-    const ext = outputUrl.includes('image/png') ? '.png' : '.jpg';
-    a.download = currentExam + '_' + currentMode.toUpperCase() + '_' + Date.now() + ext;
-    
-    document.body.appendChild(a);
-    a.click();
-    
-    // Mobile Chrome kosam chinna delay tharvatha remove cheyali
-    setTimeout(() => {
-        document.body.removeChild(a);
-    }, 500);
-
-    incrementDownloads();
-}
-
-    // Dynamic ad loader inside the 15-second modal
-    function loadModalBanner() {
-      const holder = $('modalBannerHolder');
-      holder.innerHTML = '';
-      const adBox = document.createElement('div');
-      adBox.id = 'modal-ad-' + Date.now();
-      holder.appendChild(adBox);
-
-      const script = document.createElement('script');
-      script.async = true;
-      script.setAttribute('data-cfasync', 'false');
-      script.src = 'https://bauval.org/21/3d33a75c48e7db4851ec5771a07dc739';
-      holder.appendChild(script);
-    }
-
-    function openAdModal() {
-      const countEl = $('adCountdown');
-      const statusEl = $('countdownStatus');
-      let remaining = AD_WAIT_SECONDS;
-
-      loadModalBanner();
-
-      clearInterval(adTimer);
-      countEl.innerText = remaining;
-      statusEl.innerHTML = 'Download unlocks in: <span id="adCountdown" style="color: #e06b3a; font-size: 1.35rem; font-weight: 900;">' + remaining + '</span>s';
-      $('adModal').style.display = 'flex';
-
-      adTimer = setInterval(() => {
-        remaining--;
-        const currentCountEl = $('adCountdown');
-        if (remaining > 0) {
-          if (currentCountEl) currentCountEl.innerText = remaining;
-        } else {
-          clearInterval(adTimer);
-          statusEl.innerHTML = '✅ <span style="color: #15803d; font-size: 1.05rem; font-weight: 900;">Download starting now!</span>';
-          setTimeout(() => {
-            $('adModal').style.display = 'none';
-            triggerDownload();
-          }, 800);
-        }
-      }, 1000);
-    }
-
-    function cancelAdModal() {
-      clearInterval(adTimer);
-      $('adModal').style.display = 'none';
-    }
-
-    $('downloadBtn').addEventListener('click', () => {
-      if (!outputBlob || !outputUrl) return;
-
-      // 1st download is instant
-      if (getUserDownloads() === 0) {
-        triggerDownload();
-        return;
-      }
-
-      // 2nd download onwards: show 15s modal with banner and auto-download
-      openAdModal();
-    });
-
-    function resetOutput() {
-      $('outputCard').style.display = 'none';
-      if (outputUrl) { URL.revokeObjectURL(outputUrl); outputUrl = null; }
-      outputBlob = null;
-    }
-
-    function updateUI() {
-      const spec = EXAM_PRESETS[currentExam][currentMode];
-      const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
-      const examLabel = EXAM_LABELS[currentExam];
-
-      $('activeExamIndicator').innerText = examLabel;
-      $('specInfo').innerText = '⚡ ' + examLabel + ' ' + modeLabel + ': ' + spec.desc;
-      $('modeIcon').innerText = currentMode === 'photo' ? '📷' : '✍️';
-      $('uploadMainText').innerText = 'Tap to Select ' + modeLabel;
-      $('generateBtn').innerText = '⚡ GENERATE ' + examLabel.toUpperCase() + ' ' + modeLabel.toUpperCase();
-
-      document.querySelectorAll('.exam-btn').forEach((b) => {
-        b.classList.toggle('active', b.dataset.exam === currentExam);
-      });
-      $('tabPhoto').classList.toggle('active', currentMode === 'photo');
-      $('tabSign').classList.toggle('active', currentMode === 'sign');
-
-      resetOutput();
-    }
-
-    function clearSelectedImage() {
-      rawImage = null;
-      $('inputPreview').style.display = 'none';
-      $('inputPreview').removeAttribute('src');
-      $('uploadPrompt').style.display = 'flex';
-      $('fileInput').value = '';
-    }
-
-    function setMode(mode) {
-      if (mode !== currentMode) clearSelectedImage();
-      currentMode = mode;
-      updateUI();
-    }
-
-    document.querySelectorAll('.exam-btn').forEach((btn) => {
-      btn.addEventListener('click', () => { currentExam = btn.dataset.exam; updateUI(); });
-    });
-    $('tabPhoto').addEventListener('click', () => setMode('photo'));
-    $('tabSign').addEventListener('click', () => setMode('sign'));
-
-    $('uploadBox').addEventListener('click', () => $('fileInput').click());
-
-    $('fileInput').addEventListener('change', (e) => {
-      const file = e.target.files && e.target.files[0];
-      if (!file) return;
-      if (!file.type.startsWith('image/')) { alert('Please select an image file (JPG, JPEG or PNG).'); return; }
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const img = new Image();
-        img.onload = () => {
-          rawImage = img;
-          const prev = $('inputPreview');
-          prev.src = ev.target.result;
-          prev.style.display = 'block';
-          $('uploadPrompt').style.display = 'none';
-          resetOutput();
-        };
-        img.onerror = () => alert('Could not read this image. Please try another file.');
-        img.src = ev.target.result;
-      };
-      reader.readAsDataURL(file);
-    });
-
-    function drawToCanvas(img, w, h) {
-      const canvas = document.createElement('canvas');
-      canvas.width = w; canvas.height = h;
-      const ctx = canvas.getContext('2d');
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, w, h);
-      ctx.imageSmoothingEnabled = true;
-      ctx.imageSmoothingQuality = 'high';
-      const srcRatio = img.width / img.height;
-      const dstRatio = w / h;
-      let sx = 0, sy = 0, sw = img.width, sh = img.height;
-      if (srcRatio > dstRatio) { sw = img.height * dstRatio; sx = (img.width - sw) / 2; }
-      else { sh = img.width / dstRatio; sy = (img.height - sh) / 2; }
-      ctx.drawImage(img, sx, sy, sw, sh, 0, 0, w, h);
-      return canvas;
-    }
-
-    function toBlobAsync(canvas, quality) {
-      return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
-    }
-
-    async function compressToTarget(img, spec) {
-      const maxBytes = spec.maxKb * 1024;
-      let w = spec.width, h = spec.height;
-      for (let attempt = 0; attempt < 6; attempt++) {
-        const canvas = drawToCanvas(img, w, h);
-        let lo = 0.05, hi = 0.95, found = null;
-        const top = await toBlobAsync(canvas, hi);
-        if (top && top.size <= maxBytes) {
-          found = top;
-        } else {
-          for (let i = 0; i < 9; i++) {
-            const mid = (lo + hi) / 2;
-            const blob = await toBlobAsync(canvas, mid);
-            if (blob.size <= maxBytes) { found = blob; lo = mid; } else { hi = mid; }
-          }
-        }
-        if (found) return { blob: found, w, h };
-        w = Math.round(w * 0.9);
-        h = Math.round(h * 0.9);
-      }
-      return null;
-    }
-
-    $('generateBtn').addEventListener('click', async () => {
-      if (!rawImage) { alert('Please select an image first.'); return; }
-      const btn = $('generateBtn');
-      const originalText = btn.innerText;
-      btn.disabled = true;
-      btn.innerText = '⏳ Processing...';
-      try {
-        const spec = EXAM_PRESETS[currentExam][currentMode];
-        const result = await compressToTarget(rawImage, spec);
-        if (!result) throw new Error('Compression failed');
-        resetOutput();
-        outputBlob = result.blob;
-        outputUrl = URL.createObjectURL(outputBlob);
-        $('outputImg').src = outputUrl;
-
-        const kb = (outputBlob.size / 1024).toFixed(1);
-        const pill = $('verifiedPill');
-        if (outputBlob.size < spec.minKb * 1024) {
-          pill.className = 'verified-pill warn';
-          pill.innerText = '⚠️ ' + kb + ' KB — below the ' + spec.minKb + ' KB minimum. Try a larger or sharper source image.';
-        } else {
-          pill.className = 'verified-pill';
-          pill.innerText = '✅ ' + kb + ' KB | ' + result.w + '×' + result.h + ' px — within limits';
-        }
-        updateDownloadBtn();
-        $('outputCard').style.display = 'flex';
-        $('outputCard').scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } catch (err) {
-        alert('Something went wrong while resizing. Please try a different image.');
-      } finally {
-        btn.disabled = false;
-        btn.innerText = originalText;
-      }
-    });
-
-    updateUI();
-  </script>
-</body>
-</html>
-
