@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, GATE, State PSCs</title>
-  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, Railway RRB, GATE, APPSC, and TGPSC state groups according to official guidelines.">
+  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, and all Indian State PSC exams (APPSC, TGPSC, MPSC, UPPSC, BPSC, etc.) according to official guidelines.">
   
   <!-- Google Search Console Verification Tag -->
   <meta name="google-site-verification" content="MQcIRBlN5w5Kw_eQVfuRdzrCPzlyLH0VcSJIRsaIKfw" />
@@ -13,8 +13,8 @@
   <!-- Canonical Tag for SEO -->
   <link rel="canonical" href="https://www.examresizer.me/" />
   <!-- Social Media & WhatsApp Preview Tags -->
-  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE & State Groups (2026)">
-  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC & State PSC exams.">
+  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE & All State PSCs (2026)">
+  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC, MPSC, UPPSC & All State PSC exams.">
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <!-- Website Favicon Logo -->
@@ -179,6 +179,7 @@
       font-weight: 800;
     }
 
+    /* Sub-dropdown box for State Groups */
     .state-selector-box {
       display: none;
       margin-top: 10px;
@@ -202,7 +203,7 @@
       padding: 10px;
       border-radius: 6px;
       border: 1px solid #cbd5e1;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: var(--text-main);
       background: #ffffff;
@@ -478,17 +479,31 @@
         <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
         <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
         <button type="button" class="exam-btn" data-exam="GATE">GATE / PSU</button>
-        <button type="button" class="exam-btn exam-btn-state" data-exam="STATE_PSC">🏛️ State PSC / Groups (APPSC, TGPSC...)</button>
+        <button type="button" class="exam-btn exam-btn-state" data-exam="STATE_PSC">🏛️ State PSC / Groups (All States)</button>
       </div>
 
-      <!-- State Dropdown: Only opens when clicking State PSC / Groups -->
+      <!-- State Dropdown: All Major Indian States -->
       <div class="state-selector-box" id="stateSelectorBox">
         <label for="stateDropdown">Select State Examination Board</label>
         <select class="state-dropdown" id="stateDropdown">
-          <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
-          <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
-          <option value="TNPSC">Tamil Nadu - TNPSC</option>
-          <option value="KPSC">Karnataka - KPSC</option>
+          <optgroup label="South States">
+            <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
+            <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
+            <option value="TNPSC">Tamil Nadu - TNPSC</option>
+            <option value="KPSC">Karnataka - KPSC</option>
+            <option value="KERALAPSC">Kerala - KPSC</option>
+          </optgroup>
+          <optgroup label="Central & North States">
+            <option value="MPSC">Maharashtra - MPSC</option>
+            <option value="UPPSC">Uttar Pradesh - UPPSC</option>
+            <option value="BPSC">Bihar - BPSC</option>
+            <option value="RPSC">Rajasthan - RPSC</option>
+            <option value="WBPSC">West Bengal - WBPSC</option>
+            <option value="OPSC">Odisha - OPSC</option>
+          </optgroup>
+          <optgroup label="Other States">
+            <option value="GENERIC_PSC">Other State PSCs (10-100 KB Standard)</option>
+          </optgroup>
         </select>
       </div>
 
@@ -539,7 +554,7 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>APPSC</strong> (AP Group 1, 2, 4)</td>
+            <td><strong>APPSC</strong> (AP Groups)</td>
             <td>20 KB – 50 KB</td>
             <td>10 KB – 30 KB</td>
           </tr>
@@ -547,6 +562,11 @@
             <td><strong>TGPSC / TSPSC</strong> (Telangana Groups)</td>
             <td>20 KB – 50 KB</td>
             <td>10 KB – 30 KB</td>
+          </tr>
+          <tr>
+            <td><strong>MPSC / UPPSC / BPSC</strong></td>
+            <td>20 KB – 50 KB</td>
+            <td>10 KB – 20 KB</td>
           </tr>
           <tr>
             <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
@@ -651,6 +671,38 @@
       KPSC: {
         photo: { minKb: 20, maxKb: 50, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 40, width: 400, height: 150, desc: "10 KB to 40 KB | 3.5 cm × 1.5 cm" }
+      },
+      KERALAPSC: {
+        photo: { minKb: 15, maxKb: 30, width: 150, height: 200, desc: "Up to 30 KB | 150×200 px | Name & Date at Bottom" },
+        sign:  { minKb: 10, maxKb: 30, width: 150, height: 100, desc: "Up to 30 KB | 150×100 px | Black Ink" }
+      },
+      MPSC: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
+        sign:  { minKb: 10, maxKb: 20, width: 400, height: 150, desc: "10 KB to 20 KB | 3.5 cm × 1.5 cm" }
+      },
+      UPPSC: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | Plain Background" },
+        sign:  { minKb: 10, maxKb: 20, width: 350, height: 150, desc: "10 KB to 20 KB | Clear Black Ink" }
+      },
+      BPSC: {
+        photo: { minKb: 15, maxKb: 25, width: 350, height: 450, desc: "Up to 25 KB | Formal Passport Photo" },
+        sign:  { minKb: 8,  maxKb: 15, width: 400, height: 150, desc: "Up to 15 KB | English & Hindi Formats" }
+      },
+      RPSC: {
+        photo: { minKb: 50, maxKb: 95, width: 350, height: 450, desc: "50 KB to 100 KB | Clear Color Photo" },
+        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Plain White Sheet" }
+      },
+      WBPSC: {
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Clear Passport Photo" },
+        sign:  { minKb: 10, maxKb: 20, width: 400, height: 150, desc: "10 KB to 20 KB | Running Handwriting" }
+      },
+      OPSC: {
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Formal Attire" },
+        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Dark Blue/Black Ink" }
+      },
+      GENERIC_PSC: {
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | 3.5 cm × 4.5 cm" },
+        sign:  { minKb: 10, maxKb: 48, width: 400, height: 150, desc: "10 KB to 50 KB | 3.5 cm × 1.5 cm" }
       }
     };
 
@@ -658,7 +710,10 @@
       SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
       RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE / PSU',
       STATE_PSC: 'State PSC', APPSC: 'APPSC', TGPSC: 'TGPSC / TSPSC',
-      TNPSC: 'TNPSC', KPSC: 'KPSC'
+      TNPSC: 'TNPSC', KPSC: 'KPSC', KERALAPSC: 'Kerala PSC',
+      MPSC: 'Maharashtra MPSC', UPPSC: 'UPPSC', BPSC: 'Bihar BPSC',
+      RPSC: 'Rajasthan RPSC', WBPSC: 'West Bengal PSC', OPSC: 'Odisha OPSC',
+      GENERIC_PSC: 'State PSC'
     };
 
     let currentExam = 'SSC';
