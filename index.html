@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, State PSCs</title>
-  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, APPSC, and TGPSC state groups according to official guidelines.">
+  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, GATE, State PSCs</title>
+  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, Railway RRB, GATE, APPSC, and TGPSC state groups according to official guidelines.">
   
   <!-- Google Search Console Verification Tag -->
   <meta name="google-site-verification" content="MQcIRBlN5w5Kw_eQVfuRdzrCPzlyLH0VcSJIRsaIKfw" />
@@ -13,8 +13,8 @@
   <!-- Canonical Tag for SEO -->
   <link rel="canonical" href="https://www.examresizer.me/" />
   <!-- Social Media & WhatsApp Preview Tags -->
-  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central & State Groups (2026)">
-  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, APPSC, TGPSC & State PSC exams.">
+  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE & State Groups (2026)">
+  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC & State PSC exams.">
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <!-- Website Favicon Logo -->
@@ -170,7 +170,15 @@
       box-shadow: 0 2px 6px rgba(61, 19, 24, 0.3);
     }
 
-    /* Sub-dropdown box for State Groups */
+    .exam-btn-state {
+      grid-column: span 3;
+      margin-top: 2px;
+      border: 1px solid var(--accent-saffron);
+      background: #fff8f5;
+      color: #9a3412;
+      font-weight: 800;
+    }
+
     .state-selector-box {
       display: none;
       margin-top: 10px;
@@ -469,18 +477,18 @@
         <button type="button" class="exam-btn" data-exam="IBPS">IBPS / SBI</button>
         <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
         <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
-        <button type="button" class="exam-btn" data-exam="STATE_PSC">State PSC / Groups</button>
+        <button type="button" class="exam-btn" data-exam="GATE">GATE / PSU</button>
+        <button type="button" class="exam-btn exam-btn-state" data-exam="STATE_PSC">🏛️ State PSC / Groups (APPSC, TGPSC...)</button>
       </div>
 
-      <!-- Dynamic State Selector (State PSC / Groups choose chesinappudu open avthundi) -->
+      <!-- State Dropdown: Only opens when clicking State PSC / Groups -->
       <div class="state-selector-box" id="stateSelectorBox">
-        <label for="stateDropdown">Select State Public Service Commission</label>
+        <label for="stateDropdown">Select State Examination Board</label>
         <select class="state-dropdown" id="stateDropdown">
           <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
           <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
           <option value="TNPSC">Tamil Nadu - TNPSC</option>
           <option value="KPSC">Karnataka - KPSC</option>
-          <option value="GATE">All Other State PSCs / GATE</option>
         </select>
       </div>
 
@@ -544,6 +552,11 @@
             <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
             <td>20 KB – 50 KB</td>
             <td>10 KB – 20 KB</td>
+          </tr>
+          <tr>
+            <td><strong>GATE / PSU</strong></td>
+            <td>10 KB – 200 KB</td>
+            <td>5 KB – 100 KB</td>
           </tr>
           <tr>
             <td><strong>UPSC</strong> (Civil Services, NDA, CDS)</td>
@@ -619,6 +632,10 @@
         photo: { minKb: 10, maxKb: 180, width: 400, height: 500, desc: "10 KB to 200 KB | 80% Face Coverage" },
         sign:  { minKb: 4,  maxKb: 28,  width: 400, height: 180, desc: "4 KB to 30 KB | Clear White Paper" }
       },
+      GATE: {
+        photo: { minKb: 10, maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
+        sign:  { minKb: 5,  maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
+      },
       APPSC: {
         photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | 3.5 cm × 1.5 cm" }
@@ -634,17 +651,14 @@
       KPSC: {
         photo: { minKb: 20, maxKb: 50, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 40, width: 400, height: 150, desc: "10 KB to 40 KB | 3.5 cm × 1.5 cm" }
-      },
-      GATE: {
-        photo: { minKb: 10, maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
-        sign:  { minKb: 5,  maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
       }
     };
 
     const EXAM_LABELS = {
       SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
-      RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', STATE_PSC: 'State PSC',
-      APPSC: 'APPSC', TGPSC: 'TGPSC / TSPSC', TNPSC: 'TNPSC', KPSC: 'KPSC', GATE: 'State PSC'
+      RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE / PSU',
+      STATE_PSC: 'State PSC', APPSC: 'APPSC', TGPSC: 'TGPSC / TSPSC',
+      TNPSC: 'TNPSC', KPSC: 'KPSC'
     };
 
     let currentExam = 'SSC';
@@ -708,7 +722,7 @@
 
     function updateUI() {
       const activeKey = getActivePresetKey();
-      const spec = EXAM_PRESETS[activeKey];
+      const spec = EXAM_PRESETS[activeKey][currentMode];
       const modeLabel = currentMode === 'photo' ? 'Passport Photo' : 'Signature';
       const examLabel = EXAM_LABELS[activeKey] || activeKey;
 
@@ -724,7 +738,6 @@
       $('tabPhoto').classList.toggle('active', currentMode === 'photo');
       $('tabSign').classList.toggle('active', currentMode === 'sign');
 
-      // State PSC select chesthe dropdown chupisthundi
       $('stateSelectorBox').style.display = (currentExam === 'STATE_PSC') ? 'block' : 'none';
 
       resetOutput();
