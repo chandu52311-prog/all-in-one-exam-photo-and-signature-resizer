@@ -407,6 +407,12 @@
       color: var(--text-main);
     }
 
+    table a {
+      color: var(--btn-maroon);
+      font-weight: 700;
+      text-decoration: underline;
+    }
+
     .faq-item {
       border-bottom: 1px solid var(--border-color);
       padding: 12px 0;
@@ -457,7 +463,7 @@
   <header>
     <div class="header-badge">Government Recruitment Portal Guidelines</div>
     <h1>ALL EXAMS PHOTO & SIGNATURE RESIZER</h1>
-    <p>100% Client-Side In-Browser Formatter According to Official Notification Criteria</p>
+    <p>In-Browser Client-Side Processing Utility</p>
   </header>
 
   <div class="container">
@@ -550,171 +556,153 @@
     </button>
 
     <div class="output-card" id="outputCard">
-      <div class="verified-pill" id="verifiedPill">✅ APPROVED READY</div>
+      <div class="verified-pill" id="verifiedPill">✅ Image Ready to Download</div>
       <img id="outputImg" class="output-preview" alt="Exam Ready File">
       <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
     </div>
 
-    <!-- Official Specification Matrix -->
+    <!-- Official Verified Specification Matrix Table -->
     <div class="reference-section">
-      <h2>Official Examination Specifications Matrix (2026 Guidelines)</h2>
-      <p>Every government recruiting agency and public sector enterprise enforces strict parameter boundaries on candidate upload files. Failing to comply with exact byte ranges or dimension constraints leads to automated portal rejections.</p>
+      <h2>Official Examination Specifications & Verification Sources</h2>
+      <p>Please note: Candidates must verify specific requirements on the official portals before final submission.</p>
       <table>
         <thead>
           <tr>
-            <th>Category / Exam Name</th>
-            <th>Photo Size (KB)</th>
-            <th>Signature Size (KB)</th>
+            <th>Exam Authority</th>
+            <th>Photo (KB & Specs)</th>
+            <th>Signature (KB & Specs)</th>
+            <th>Official Source</th>
           </tr>
         </thead>
         <tbody>
-          <!-- 1. Central Government & National Exams -->
-          <tr style="background:#f1f5f9; font-weight:800; color:var(--primary-maroon);">
-            <td colspan="3">🏛️ National Level Competitive Exams</td>
-          </tr>
           <tr>
-            <td><strong>SSC</strong> (CGL, CHSL, MTS, GD, CPO)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
+            <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
+            <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
+            <td>10 KB – 20 KB | 4.0 cm × 2.0 cm</td>
+            <td><a href="https://ssc.gov.in" target="_blank" rel="noopener">ssc.gov.in</a></td>
           </tr>
           <tr>
             <td><strong>UPSC</strong> (Civil Services, NDA, CDS)</td>
-            <td>20 KB – 300 KB</td>
-            <td>20 KB – 300 KB</td>
+            <td>20 KB – 300 KB | Min 350×350 px</td>
+            <td>20 KB – 300 KB | Min 350×350 px</td>
+            <td><a href="https://upsconline.nic.in" target="_blank" rel="noopener">upsconline.nic.in</a></td>
           </tr>
           <tr>
             <td><strong>IBPS / SBI</strong> (PO, Clerk, SO)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
+            <td>20 KB – 50 KB | 200 × 230 px</td>
+            <td>10 KB – 20 KB | 140 × 60 px</td>
+            <td><a href="https://ibps.in" target="_blank" rel="noopener">ibps.in</a></td>
           </tr>
           <tr>
-            <td><strong>Railway RRB</strong> (ALP, NTPC, Group D, JE)</td>
-            <td>30 KB – 70 KB</td>
-            <td>15 KB – 30 KB</td>
+            <td><strong>Railway RRB</strong> (ALP, NTPC, JE)</td>
+            <td>30 KB – 70 KB | 35 mm × 45 mm</td>
+            <td>15 KB – 30 KB | 50 mm × 20 mm</td>
+            <td><a href="https://rrbapply.gov.in" target="_blank" rel="noopener">rrbapply.gov.in</a></td>
           </tr>
           <tr>
-            <td><strong>NTA</strong> (NEET, JEE Main, CUET)</td>
-            <td>10 KB – 200 KB</td>
-            <td>4 KB – 30 KB</td>
+            <td><strong>NTA (NEET / JEE Main)</strong></td>
+            <td>10 KB – 200 KB | 80% Face Coverage</td>
+            <td>4 KB – 30 KB | Clear Background</td>
+            <td><a href="https://nta.ac.in" target="_blank" rel="noopener">nta.ac.in</a></td>
           </tr>
           <tr>
-            <td><strong>GATE</strong> (IITs / PSU Selection)</td>
-            <td>10 KB – 200 KB</td>
-            <td>5 KB – 100 KB</td>
-          </tr>
-
-          <!-- 2. State Public Service Commissions -->
-          <tr style="background:#f1f5f9; font-weight:800; color:var(--primary-maroon);">
-            <td colspan="3">🏛️ State PSC & Group Exams</td>
+            <td><strong>GATE (IITs)</strong></td>
+            <td>5 KB – 200 KB | Aspect Ratio 0.66–0.86</td>
+            <td>5 KB – 200 KB | Aspect Ratio 2.75–3.75</td>
+            <td><a href="https://gate.iitg.ac.in" target="_blank" rel="noopener">gate.iitg.ac.in</a></td>
           </tr>
           <tr>
-            <td><strong>APPSC</strong> (Andhra Pradesh Groups 1, 2, 4)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
+            <td><strong>APPSC & TGPSC</strong> (State Groups)</td>
+            <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
+            <td>10 KB – 30 KB | 3.5 cm × 1.5 cm</td>
+            <td><a href="https://psc.ap.gov.in" target="_blank" rel="noopener">psc.ap.gov.in</a></td>
           </tr>
           <tr>
-            <td><strong>TGPSC / TSPSC</strong> (Telangana Groups 1, 2, 3)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>TNPSC & KPSC</strong> (Tamil Nadu & Karnataka)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
-          </tr>
-          <tr>
-            <td><strong>Kerala PSC</strong></td>
-            <td>Up to 30 KB</td>
-            <td>Up to 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>MPSC, UPPSC, BPSC</strong></td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
-          </tr>
-          <tr>
-            <td><strong>RPSC, WBPSC, OPSC</strong></td>
-            <td>50 KB – 100 KB</td>
-            <td>20 KB – 50 KB</td>
-          </tr>
-
-          <!-- 3. Power Utilities & PSUs -->
-          <tr style="background:#f1f5f9; font-weight:800; color:var(--primary-maroon);">
-            <td colspan="3">⚡ Power Utilities & PSUs (AE / SE / MT)</td>
-          </tr>
-          <tr>
-            <td><strong>APTRANSCO / APGENCO / Discoms</strong> (AP)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>TSTRANSCO / TSGENCO / Discoms</strong> (TS)</td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>PowerGrid (PGCIL) / NTPC / NHPC</strong></td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
-          </tr>
-          <tr>
-            <td><strong>BHEL / ONGC / IOCL / GAIL / SAIL</strong></td>
-            <td>20 KB – 50 KB</td>
-            <td>10 KB – 30 KB</td>
+            <td><strong>APTRANSCO / TSGENCO</strong> (Power PSUs)</td>
+            <td>20 KB – 50 KB | White Background</td>
+            <td>10 KB – 30 KB | Dark Black Ink</td>
+            <td><a href="https://aptransco.co.in" target="_blank" rel="noopener">aptransco.co.in</a></td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <!-- High-Value Educational Publisher Guide -->
+    <!-- Step-by-Step Usage & Troubleshooting Guide -->
+    <div class="reference-section">
+      <h2>Step-by-Step Usage & Troubleshooting Guide</h2>
+      <h4>How to Resize Your Documents Correctly:</h4>
+      <ol>
+        <li>Select your target recruitment commission or public sector examination from the top buttons.</li>
+        <li>Choose whether you want to format a <strong>Passport Photo</strong> or a <strong>Signature</strong>.</li>
+        <li>Click on the dotted upload container to pick your source image file from your device.</li>
+        <li>Tap the maroon <strong>GENERATE</strong> button. The browser engine processes the exact pixel and byte dimensions.</li>
+        <li>Click <strong>Download Resized File</strong> to save the final image to your local device storage.</li>
+      </ol>
+
+      <h4>Troubleshooting Compression Bounds:</h4>
+      <ul>
+        <li><strong>Output Below Permissible Minimum KB:</strong> Very low-resolution or heavily pre-compressed images can end up under-size. Always capture your photograph in sharp focus with high resolution.</li>
+        <li><strong>Output Exceeding Maximum Limit:</strong> Avoid cluttered backgrounds. Plain white or light grey backgrounds compress cleanly without exceeding portal thresholds.</li>
+        <li><strong>Signature Clarity Disqualification:</strong> Always sign using a dark black or deep blue ballpoint pen on plain white unruled paper without wrinkles or shadows.</li>
+      </ul>
+    </div>
+
+    <!-- Comprehensive Image Formatting Rules Guide -->
     <div class="reference-section">
       <h2>Comprehensive Guide: Image Formatting & Portal Compliance</h2>
-      <p>Online application portals for central commissions (like SSC, UPSC, and IBPS), state public service commissions (like APPSC, TGPSC), and power corporations (like APTRANSCO, TSGENCO) employ automated server-side verification scripts. When an applicant uploads a photograph or signature, the server reads the file header to examine binary size, pixel width, pixel height, and aspect ratio.</p>
+      <p>Automated verification gateways at central commissions and state power utilities reject application submissions that fail exact byte boundaries or dimension aspect ratios.</p>
 
       <h4>1. The 80% Facial Coverage Rule</h4>
-      <p>Most premier testing agencies—especially NTA, UPSC, and SSC—mandate that the candidate's face must occupy at least 70% to 80% of the entire frame. The camera angle must be straight-on with both ears clearly visible. Tilting the head, wearing dark tinted sunglasses, or covering the forehead with caps or scarfs leads to immediate rejection during initial document scrutiny.</p>
+      <p>Prominent recruitment bodies mandate that the applicant's face must encompass 70% to 80% of the photograph. Ensure straight eye contact with both ears clearly visible. Head coverings, tinted lenses, or dark spectacles are strictly restricted unless for religious attire.</p>
 
-      <h4>2. Background Tone and Lighting Setup</h4>
-      <p>Unless explicitly instructed otherwise by a specific regional notification, competitive exam portals require a clean, neutral, white or very light grey background. Avoid colorful wallpapers, outdoor scenery, or dimly lit room backgrounds. Ensure uniform flash or ambient illumination across the face to eliminate sharp shadows beneath the chin and behind the head.</p>
+      <h4>2. Background Tone and Illumination</h4>
+      <p>Always maintain a clean, uniform, white or light grey backdrop. Avoid flash reflections, dark cast shadows, or casual background locations to prevent automated document scrutiny failures.</p>
 
-      <h4>3. Signature Clarity & Ink Standards</h4>
-      <p>Signatures must be executed on an unruled, bright white sheet of paper using a dark blue or crisp black ballpoint pen. Gel pens that bleed or feather into the paper fibers create blurry artifacts when compressed into 10 KB to 20 KB files. Signatures written in capital/block letters are strictly prohibited by SSC and IBPS and are disqualified as non-standard handwriting.</p>
+      <h4>3. Client-Side Browser Security Architecture</h4>
+      <p>Our resizer operates purely client-side through the HTML5 Canvas API. All compression and scaling procedures execute in your local device memory without uploading images to any remote server.</p>
+    </div>
 
-      <h4>4. Client-Side Processing Architecture & Data Privacy</h4>
-      <p>Unlike conventional online conversion portals that transfer your personal identification photographs to remote servers, this tool executes 100% locally on your computer or smartphone browser via the HTML5 Canvas API. The image binary is processed in device memory and saved directly to your local file system, ensuring total confidentiality and preventing unauthorized storage or data leaks.</p>
+    <!-- Dedicated In-Page Privacy Policy & Google Ads Disclosures -->
+    <div class="reference-section" id="privacySection">
+      <h2>Privacy Policy & Advertising Disclosures</h2>
+      <p>Exam Resizer Pro (www.examresizer.me) is dedicated to safeguarding user document confidentiality.</p>
+      
+      <h4>1. 100% In-Browser Execution</h4>
+      <p>All photo and signature resizing processes happen directly in your browser. We do not store, view, collect, or transmit your uploaded biometric files or photos across any network.</p>
+
+      <h4>2. Google AdSense & Third-Party Cookies</h4>
+      <p>We use third-party advertising companies, including Google AdSense, to serve advertisements when you visit our website.</p>
+      <ul>
+        <li>Google, as a third-party vendor, uses cookies to serve ads on this website based on user visits to this and other websites.</li>
+        <li>Users may opt out of personalized advertising by visiting the <a href="https://adssettings.google.com" target="_blank" rel="noopener">Google Ads Settings</a> page.</li>
+        <li>You may also opt out of third-party vendor cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener">www.aboutads.info</a>.</li>
+      </ul>
+
+      <h4>3. Contact & Support</h4>
+      <p>For questions or suggestions regarding tool specifications, please contact: <strong>chandu52311@gmail.com</strong>.</p>
     </div>
 
     <!-- FAQ Section -->
     <div class="reference-section">
       <h2>Frequently Asked Questions (FAQ)</h2>
       <div class="faq-item">
-        <div class="faq-q">Why does an application portal display the error "File size out of range"?</div>
-        <div class="faq-a">Government server gateways enforce strict byte limits. If a notification specifies 20 KB to 50 KB, uploading an image of 19.9 KB or 50.1 KB triggers an automated upload block. Our tool utilizes multi-step binary search compression to ensure your final image falls comfortably within the permissible window.</div>
+        <div class="faq-q">Why do exam portals show "File size out of range"?</div>
+        <div class="faq-a">Server gateways check file headers strictly. If a portal requires 20 KB to 50 KB, uploading 19.9 KB or 50.1 KB will trigger an automated upload block. Our engine uses binary search compression to fit files safely within the bounds.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Are State PSC exams and Power Utility (PSU) exams formatted differently?</div>
-        <div class="faq-a">Yes. State PSCs (such as APPSC and TGPSC) administer civil and administrative recruitment across state departments, whereas Power PSUs (such as APTRANSCO, APGENCO, and DISCOMs) are state-owned industrial corporations that release independent technical notifications. While their physical dimensions are frequently 3.5 cm × 4.5 cm, their KB thresholds and signature height ratios differ.</div>
-      </div>
-      <div class="faq-item">
-        <div class="faq-q">Will reducing KB reduce the visual print quality on my Admit Card?</div>
-        <div class="faq-a">No. Our engine maintains standard aspect ratios and uses high-quality bicubic interpolation during canvas rendering, ensuring the final download looks crisp and legible on your printed hall ticket.</div>
+        <div class="faq-q">Will reducing KB reduce print quality on my Admit Card?</div>
+        <div class="faq-a">No. Our engine maintains standard proportional aspect ratios using high-quality bicubic canvas interpolation so that your hall ticket photo remains crisp and clear.</div>
       </div>
     </div>
   </div>
 
   <footer class="legal-footer">
     <div class="legal-links">
-      <a href="/privacy-policy.html">Privacy Policy</a>
+      <a href="#privacySection">Privacy Policy & Ad Disclosures</a>
       <span>•</span>
-      <a href="/terms.html">Terms of Service</a>
-      <span>•</span>
-      <a href="/about.html">About Us</a>
-      <span>•</span>
-      <a href="/contact.html">Contact Us</a>
+      <a href="mailto:chandu52311@gmail.com">Contact Developer</a>
     </div>
-
-    <p>Client-Side Privacy Shield: 100% Offline Processing Guarantee.</p>
-    <p>© 2026 Exam Resizer Pro. All rights reserved.</p>
+    <p>© 2026 Exam Resizer Pro. Images are processed directly within your browser session using standard web APIs.</p>
   </footer>
 
   <script>
@@ -1081,7 +1069,7 @@
           pill.innerText = '⚠️ ' + kb + ' KB — below the ' + spec.minKb + ' KB minimum. Try a sharper source photo.';
         } else {
           pill.className = 'verified-pill';
-          pill.innerText = '✅ ' + kb + ' KB | ' + result.w + '×' + result.h + ' px — within limits';
+          pill.innerText = '✅ ' + kb + ' KB | ' + result.w + '×' + result.h + ' px — Image Ready to Download';
         }
         updateDownloadBtn();
         $('outputCard').style.display = 'flex';
