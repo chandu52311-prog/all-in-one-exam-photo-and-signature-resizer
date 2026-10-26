@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, NTA</title>
-  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, Railway RRB, and NTA exams according to official guidelines.">
+  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, NTA, APPSC</title>
+  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, Railway RRB, NTA, and APPSC exams according to official guidelines.">
   
   <!-- Google Search Console Verification Tag -->
   <meta name="google-site-verification" content="MQcIRBlN5w5Kw_eQVfuRdzrCPzlyLH0VcSJIRsaIKfw" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3484474717073496"
      crossorigin="anonymous"></script>
   <!-- Canonical Tag for SEO -->
-<link rel="canonical" href="https://www.examresizer.me/" />
+  <link rel="canonical" href="https://www.examresizer.me/" />
   <!-- Social Media & WhatsApp Preview Tags -->
-  <meta property="og:title" content="All Government Exams Photo & Signature Resizer (2026)">
-  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, IBPS, RRB & NTA exams.">
+  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - SSC, APPSC, UPSC (2026)">
+  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, APPSC, UPSC, IBPS, RRB & NTA exams.">
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <!-- Website Favicon Logo -->
@@ -168,6 +168,14 @@
       color: #ffffff !important;
       border-color: var(--primary-maroon) !important;
       box-shadow: 0 2px 6px rgba(61, 19, 24, 0.3);
+    }
+
+    /* Keeps 7th item balanced on 3-column grid */
+    .exam-btn-highlight {
+      grid-column: span 3;
+      border: 1px solid var(--accent-saffron);
+      background: #fff8f5;
+      color: #9a3412;
     }
 
     .tab-pills {
@@ -439,6 +447,7 @@
         <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
         <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
         <button type="button" class="exam-btn" data-exam="GATE">GATE / PSC</button>
+        <button type="button" class="exam-btn exam-btn-highlight" data-exam="APPSC">🔥 APPSC (Group 1, 2, 4)</button>
       </div>
 
       <div class="tab-pills">
@@ -487,6 +496,11 @@
           </tr>
         </thead>
         <tbody>
+          <tr>
+            <td><strong>APPSC</strong> (Group 1, 2, 4, AEE)</td>
+            <td>20 KB – 50 KB</td>
+            <td>10 KB – 30 KB</td>
+          </tr>
           <tr>
             <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
             <td>20 KB – 50 KB</td>
@@ -555,6 +569,10 @@
         photo: { minKb: 20, maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 18, width: 400, height: 200, desc: "10 KB to 20 KB | 4.0 cm × 2.0 cm" }
       },
+      APPSC: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
+        sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | 3.5 cm × 1.5 cm" }
+      },
       UPSC: {
         photo: { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" },
         sign:  { minKb: 20, maxKb: 250, width: 550, height: 550, desc: "20 KB to 300 KB | Minimum 350×350 px" }
@@ -578,7 +596,7 @@
     };
 
     const EXAM_LABELS = {
-      SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
+      SSC: 'SSC', APPSC: 'APPSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
       RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE / PSC'
     };
 
@@ -599,7 +617,6 @@
       }
     }
 
-    // Direct Instant Download Execution
     function triggerDownload() {
       if (!outputUrl) return;
       
@@ -670,7 +687,6 @@
       updateUI();
     }
 
-    // Touch & Click Proof Exam Selection
     document.querySelectorAll('.exam-btn').forEach((btn) => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget || e.target.closest('.exam-btn');
@@ -710,14 +726,12 @@
       reader.readAsDataURL(file);
     });
 
-    // High Quality Aspect Ratio Preserving Canvas Engine
     function drawToCanvas(img, w, h) {
       const canvas = document.createElement('canvas');
       canvas.width = w; 
       canvas.height = h;
       const ctx = canvas.getContext('2d');
       
-      // Clean white background for official exam format
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
       ctx.imageSmoothingEnabled = true;
@@ -742,18 +756,14 @@
       return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
     }
 
-    // Binary Search Compression Engine
-   // Smart Min & Max Range Matching Engine
     async function compressToTarget(img, spec) {
       const maxBytes = spec.maxKb * 1024;
       const minBytes = spec.minKb * 1024;
       let w = spec.width, h = spec.height;
 
-      // 1. First attempt: High Quality tho draw cheyadam
       let canvas = drawToCanvas(img, w, h);
       let blob = await toBlobAsync(canvas, 0.98);
 
-      // 2. Size MINIMUM limit kanna thakkuva vasthe scale penchi target range loki thevali
       if (blob && blob.size < minBytes) {
         for (let scale = 1.1; scale <= 2.2; scale += 0.15) {
           let scaledW = Math.round(spec.width * scale);
@@ -772,7 +782,6 @@
         return { blob: blob, w: w, h: h };
       }
 
-      // 3. Size MAXIMUM limit kanna ekkuva vasthe binary compression tho tagginchali
       if (blob && blob.size > maxBytes) {
         for (let attempt = 0; attempt < 5; attempt++) {
           let lo = 0.1, hi = 0.95, bestBlob = null;
@@ -834,7 +843,6 @@
       }
     });
 
-    // AdSense Friendly Legal Content Toggle
     const legalBox = $('legalInfoBox');
     function showLegal(title, text) {
       if (legalBox.style.display === 'block' && legalBox.dataset.currentTitle === title) {
