@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, GATE, State PSCs</title>
-  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, and all Indian State PSC exams (APPSC, TGPSC, MPSC, UPPSC, BPSC, etc.) according to official guidelines.">
+  <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, GATE, State PSCs & PSUs</title>
+  <meta name="description" content="Free tool to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, APPSC, TGPSC, APTRANSCO, TSGENCO, PGCIL, NTPC according to official guidelines.">
   
   <!-- Google Search Console Verification Tag -->
   <meta name="google-site-verification" content="MQcIRBlN5w5Kw_eQVfuRdzrCPzlyLH0VcSJIRsaIKfw" />
@@ -13,8 +13,8 @@
   <!-- Canonical Tag for SEO -->
   <link rel="canonical" href="https://www.examresizer.me/" />
   <!-- Social Media & WhatsApp Preview Tags -->
-  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE & All State PSCs (2026)">
-  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC, MPSC, UPPSC & All State PSC exams.">
+  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE, State PSCs & PSUs (2026)">
+  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC, TRANSCO, GENCO, PGCIL & State exams.">
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <!-- Website Favicon Logo -->
@@ -150,6 +150,13 @@
       gap: 8px;
     }
 
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
     .exam-btn {
       padding: 12px 6px;
       border: 1px solid var(--border-color);
@@ -170,17 +177,16 @@
       box-shadow: 0 2px 6px rgba(61, 19, 24, 0.3);
     }
 
-    .exam-btn-state {
-      grid-column: span 3;
-      margin-top: 2px;
+    .exam-btn-highlight {
       border: 1px solid var(--accent-saffron);
       background: #fff8f5;
       color: #9a3412;
       font-weight: 800;
+      padding: 12px 8px;
     }
 
-    /* Sub-dropdown box for State Groups */
-    .state-selector-box {
+    /* Sub-dropdown boxes */
+    .selector-box {
       display: none;
       margin-top: 10px;
       padding: 10px;
@@ -189,7 +195,7 @@
       border-radius: 8px;
     }
 
-    .state-selector-box label {
+    .selector-box label {
       display: block;
       font-size: 0.74rem;
       font-weight: 800;
@@ -198,7 +204,7 @@
       margin-bottom: 6px;
     }
 
-    .state-dropdown {
+    .dropdown-select {
       width: 100%;
       padding: 10px;
       border-radius: 6px;
@@ -472,20 +478,26 @@
         <span id="activeExamIndicator" style="color: var(--accent-saffron); font-weight: 800;">SSC</span>
       </div>
       
+      <!-- Top 6 Standard National Exams -->
       <div class="exam-grid">
         <button type="button" class="exam-btn active" data-exam="SSC">SSC</button>
         <button type="button" class="exam-btn" data-exam="UPSC">UPSC</button>
         <button type="button" class="exam-btn" data-exam="IBPS">IBPS / SBI</button>
         <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
         <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
-        <button type="button" class="exam-btn" data-exam="GATE">GATE / PSU</button>
-        <button type="button" class="exam-btn exam-btn-state" data-exam="STATE_PSC">🏛️ State PSC / Groups (All States)</button>
+        <button type="button" class="exam-btn" data-exam="GATE">GATE</button>
       </div>
 
-      <!-- State Dropdown: All Major Indian States -->
-      <div class="state-selector-box" id="stateSelectorBox">
-        <label for="stateDropdown">Select State Examination Board</label>
-        <select class="state-dropdown" id="stateDropdown">
+      <!-- Split Hub: Dedicated State PSC and Dedicated PSUs -->
+      <div class="split-grid">
+        <button type="button" class="exam-btn exam-btn-highlight" data-exam="STATE_PSC">🏛️ State PSC (Groups)</button>
+        <button type="button" class="exam-btn exam-btn-highlight" data-exam="PSU_HUB">⚡ PSUs (TRANSCO/GENCO)</button>
+      </div>
+
+      <!-- 1. State PSC Selector Box -->
+      <div class="selector-box" id="stateSelectorBox">
+        <label for="stateDropdown">Select State Public Service Commission</label>
+        <select class="dropdown-select" id="stateDropdown">
           <optgroup label="South States">
             <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
             <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
@@ -493,7 +505,7 @@
             <option value="KPSC">Karnataka - KPSC</option>
             <option value="KERALAPSC">Kerala - KPSC</option>
           </optgroup>
-          <optgroup label="Central & North States">
+          <optgroup label="North & Central States">
             <option value="MPSC">Maharashtra - MPSC</option>
             <option value="UPPSC">Uttar Pradesh - UPPSC</option>
             <option value="BPSC">Bihar - BPSC</option>
@@ -502,7 +514,23 @@
             <option value="OPSC">Odisha - OPSC</option>
           </optgroup>
           <optgroup label="Other States">
-            <option value="GENERIC_PSC">Other State PSCs (10-100 KB Standard)</option>
+            <option value="GENERIC_PSC">Other State PSC Exams (10-100 KB)</option>
+          </optgroup>
+        </select>
+      </div>
+
+      <!-- 2. Dedicated PSU Selector Box -->
+      <div class="selector-box" id="psuSelectorBox">
+        <label for="psuDropdown">Select Power Utility / Public Sector Enterprise</label>
+        <select class="dropdown-select" id="psuDropdown">
+          <optgroup label="State Power Utilities (AE / Sub-Engineer)">
+            <option value="AP_PSU">APTRANSCO / APGENCO / AP Discoms</option>
+            <option value="TG_PSU">TSTRANSCO / TSGENCO / TS Discoms</option>
+          </optgroup>
+          <optgroup label="Central Maharatna & Navratna PSUs">
+            <option value="PGCIL_NTPC">PowerGrid (PGCIL) / NTPC / NHPC</option>
+            <option value="BHEL_ONGC">BHEL / ONGC / IOCL / GAIL / SAIL</option>
+            <option value="GENERIC_PSU">All Other Central/State PSUs</option>
           </optgroup>
         </select>
       </div>
@@ -547,26 +575,26 @@
       <table>
         <thead>
           <tr>
-            <th>Exam Body</th>
+            <th>Exam Body / Utility</th>
             <th>Photo Size (KB)</th>
             <th>Signature Size (KB)</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>APPSC</strong> (AP Groups)</td>
+            <td><strong>APPSC / TGPSC</strong> (State Groups)</td>
             <td>20 KB – 50 KB</td>
             <td>10 KB – 30 KB</td>
           </tr>
           <tr>
-            <td><strong>TGPSC / TSPSC</strong> (Telangana Groups)</td>
+            <td><strong>TRANSCO & GENCO</strong> (AP & Telangana)</td>
             <td>20 KB – 50 KB</td>
             <td>10 KB – 30 KB</td>
           </tr>
           <tr>
-            <td><strong>MPSC / UPPSC / BPSC</strong></td>
+            <td><strong>Central PSUs</strong> (PGCIL, NTPC, BHEL)</td>
             <td>20 KB – 50 KB</td>
-            <td>10 KB – 20 KB</td>
+            <td>10 KB – 30 KB</td>
           </tr>
           <tr>
             <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
@@ -574,7 +602,7 @@
             <td>10 KB – 20 KB</td>
           </tr>
           <tr>
-            <td><strong>GATE / PSU</strong></td>
+            <td><strong>GATE (IITs)</strong></td>
             <td>10 KB – 200 KB</td>
             <td>5 KB – 100 KB</td>
           </tr>
@@ -593,11 +621,6 @@
             <td>30 KB – 70 KB</td>
             <td>15 KB – 30 KB</td>
           </tr>
-          <tr>
-            <td><strong>NTA</strong> (NEET, JEE Main, CUET)</td>
-            <td>10 KB – 200 KB</td>
-            <td>4 KB – 30 KB</td>
-          </tr>
         </tbody>
       </table>
     </div>
@@ -609,8 +632,8 @@
         <div class="faq-a">No. All resizing and compression happens 100% locally on your browser using HTML5 Canvas. Your sensitive documents never leave your phone or computer.</div>
       </div>
       <div class="faq-item">
-        <div class="faq-q">Why does the portal reject resized files?</div>
-        <div class="faq-a">Government portals strictly validate both aspect ratios and exact file weights. A photo that is 50.1 KB will trigger instant rejection. Our smart binary compression ensures it stays strictly within bounds.</div>
+        <div class="faq-q">What is the difference between State PSC and PSUs?</div>
+        <div class="faq-a">State PSCs (like APPSC and TGPSC) conduct administrative Group 1, 2, and 4 services. PSUs (like APTRANSCO, TSGENCO, and PGCIL) are government-owned power and industrial corporations with specific technical recruitment requirements.</div>
       </div>
     </div>
   </div>
@@ -656,6 +679,7 @@
         photo: { minKb: 10, maxKb: 180, width: 350, height: 450, desc: "10 KB to 200 KB | Formal Attire" },
         sign:  { minKb: 5,  maxKb: 85,  width: 400, height: 200, desc: "5 KB to 100 KB | Crisp Dark Ink" }
       },
+      // State PSC Group Presets
       APPSC: {
         photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | 3.5 cm × 1.5 cm" }
@@ -673,51 +697,75 @@
         sign:  { minKb: 10, maxKb: 40, width: 400, height: 150, desc: "10 KB to 40 KB | 3.5 cm × 1.5 cm" }
       },
       KERALAPSC: {
-        photo: { minKb: 15, maxKb: 30, width: 150, height: 200, desc: "Up to 30 KB | 150×200 px | Name & Date at Bottom" },
-        sign:  { minKb: 10, maxKb: 30, width: 150, height: 100, desc: "Up to 30 KB | 150×100 px | Black Ink" }
+        photo: { minKb: 15, maxKb: 30, width: 150, height: 200, desc: "Up to 30 KB | 150×200 px" },
+        sign:  { minKb: 10, maxKb: 30, width: 150, height: 100, desc: "Up to 30 KB | 150×100 px" }
       },
       MPSC: {
         photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 20, width: 400, height: 150, desc: "10 KB to 20 KB | 3.5 cm × 1.5 cm" }
       },
       UPPSC: {
-        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | Plain Background" },
-        sign:  { minKb: 10, maxKb: 20, width: 350, height: 150, desc: "10 KB to 20 KB | Clear Black Ink" }
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | White Background" },
+        sign:  { minKb: 10, maxKb: 20, width: 350, height: 150, desc: "10 KB to 20 KB | Dark Ink" }
       },
       BPSC: {
-        photo: { minKb: 15, maxKb: 25, width: 350, height: 450, desc: "Up to 25 KB | Formal Passport Photo" },
-        sign:  { minKb: 8,  maxKb: 15, width: 400, height: 150, desc: "Up to 15 KB | English & Hindi Formats" }
+        photo: { minKb: 15, maxKb: 25, width: 350, height: 450, desc: "Up to 25 KB | Official Format" },
+        sign:  { minKb: 8,  maxKb: 15, width: 400, height: 150, desc: "Up to 15 KB | Running Handwriting" }
       },
       RPSC: {
-        photo: { minKb: 50, maxKb: 95, width: 350, height: 450, desc: "50 KB to 100 KB | Clear Color Photo" },
-        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Plain White Sheet" }
+        photo: { minKb: 50, maxKb: 95, width: 350, height: 450, desc: "50 KB to 100 KB | Color Photo" },
+        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Crisp Signature" }
       },
       WBPSC: {
-        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Clear Passport Photo" },
-        sign:  { minKb: 10, maxKb: 20, width: 400, height: 150, desc: "10 KB to 20 KB | Running Handwriting" }
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Standard Size" },
+        sign:  { minKb: 10, maxKb: 20, width: 400, height: 150, desc: "10 KB to 20 KB | Clear Background" }
       },
       OPSC: {
-        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Formal Attire" },
-        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Dark Blue/Black Ink" }
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Clear Passport Photo" },
+        sign:  { minKb: 20, maxKb: 48, width: 400, height: 150, desc: "20 KB to 50 KB | Blue/Black Ink" }
       },
       GENERIC_PSC: {
         photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | 3.5 cm × 4.5 cm" },
         sign:  { minKb: 10, maxKb: 48, width: 400, height: 150, desc: "10 KB to 50 KB | 3.5 cm × 1.5 cm" }
+      },
+      // Dedicated PSU Presets
+      AP_PSU: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | AP Power Utility Standard" },
+        sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | 3.5 cm × 1.5 cm" }
+      },
+      TG_PSU: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | TS Power Utility Standard" },
+        sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | 3.5 cm × 1.5 cm" }
+      },
+      PGCIL_NTPC: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | Formal White Background" },
+        sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | Black Ink" }
+      },
+      BHEL_ONGC: {
+        photo: { minKb: 20, maxKb: 48, width: 350, height: 450, desc: "20 KB to 50 KB | Central PSU Standard" },
+        sign:  { minKb: 10, maxKb: 28, width: 350, height: 150, desc: "10 KB to 30 KB | Crisp Signature" }
+      },
+      GENERIC_PSU: {
+        photo: { minKb: 20, maxKb: 95, width: 350, height: 450, desc: "20 KB to 100 KB | Standard PSU Format" },
+        sign:  { minKb: 10, maxKb: 48, width: 400, height: 150, desc: "10 KB to 50 KB | Plain White Sheet" }
       }
     };
 
     const EXAM_LABELS = {
       SSC: 'SSC', UPSC: 'UPSC', IBPS: 'IBPS / SBI',
-      RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE / PSU',
-      STATE_PSC: 'State PSC', APPSC: 'APPSC', TGPSC: 'TGPSC / TSPSC',
-      TNPSC: 'TNPSC', KPSC: 'KPSC', KERALAPSC: 'Kerala PSC',
-      MPSC: 'Maharashtra MPSC', UPPSC: 'UPPSC', BPSC: 'Bihar BPSC',
-      RPSC: 'Rajasthan RPSC', WBPSC: 'West Bengal PSC', OPSC: 'Odisha OPSC',
-      GENERIC_PSC: 'State PSC'
+      RRB: 'Railway RRB', NTA: 'NTA NEET/JEE', GATE: 'GATE',
+      STATE_PSC: 'State PSC', PSU_HUB: 'Power PSUs',
+      APPSC: 'APPSC', TGPSC: 'TGPSC / TSPSC', TNPSC: 'TNPSC', KPSC: 'KPSC', KERALAPSC: 'Kerala PSC',
+      MPSC: 'Maharashtra MPSC', UPPSC: 'UPPSC', BPSC: 'Bihar BPSC', RPSC: 'Rajasthan RPSC',
+      WBPSC: 'West Bengal PSC', OPSC: 'Odisha OPSC', GENERIC_PSC: 'State PSC Exam',
+      AP_PSU: 'APTRANSCO / APGENCO', TG_PSU: 'TSTRANSCO / TSGENCO',
+      PGCIL_NTPC: 'PowerGrid / NTPC', BHEL_ONGC: 'BHEL / ONGC / Maharatna',
+      GENERIC_PSU: 'Public Sector Enterprise'
     };
 
     let currentExam = 'SSC';
     let currentState = 'APPSC';
+    let currentPsu = 'AP_PSU';
     let currentMode = 'photo';
     let rawImage = null;
     let outputBlob = null;
@@ -726,7 +774,9 @@
     const $ = (id) => document.getElementById(id);
 
     function getActivePresetKey() {
-      return currentExam === 'STATE_PSC' ? currentState : currentExam;
+      if (currentExam === 'STATE_PSC') return currentState;
+      if (currentExam === 'PSU_HUB') return currentPsu;
+      return currentExam;
     }
 
     function updateDownloadBtn() {
@@ -793,7 +843,9 @@
       $('tabPhoto').classList.toggle('active', currentMode === 'photo');
       $('tabSign').classList.toggle('active', currentMode === 'sign');
 
+      // State PSC & PSU Dropdown toggle logic
       $('stateSelectorBox').style.display = (currentExam === 'STATE_PSC') ? 'block' : 'none';
+      $('psuSelectorBox').style.display = (currentExam === 'PSU_HUB') ? 'block' : 'none';
 
       resetOutput();
     }
@@ -824,6 +876,11 @@
 
     $('stateDropdown').addEventListener('change', (e) => {
       currentState = e.target.value;
+      updateUI();
+    });
+
+    $('psuDropdown').addEventListener('change', (e) => {
+      currentPsu = e.target.value;
       updateUI();
     });
 
