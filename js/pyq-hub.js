@@ -1,395 +1,697 @@
-/**
- * ExamResizer Pro - Institutional Academic Archive & Examination Paper Repository
- * Module: js/pyq-hub.js
- * Architecture: Client-Side Catalog Drill-Down & Dynamic Canvas/PDF Watermarking
- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>All Competitive Exams Photo & Signature Resizer (2026) - Central, State PSCs & PSUs</title>
+  <meta name="description" content="Free official educational utility to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, APPSC, TGPSC, APTRANSCO, NEET, JEE according to government specifications.">
+  
+  <!-- Real Google Search Console Verification -->
+  <meta name="google-site-verification" content="iId_f8e82ivBzeD_5ya7rZTJa2ama4Mkf80pJc08fws" />
+  
+  <!-- Real Google AdSense Head Engine -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3484474717073496" crossorigin="anonymous"></script>
+  
+  <link rel="canonical" href="https://www.examresizer.me/" />
+  <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE, State PSCs & PSUs (2026)">
+  <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC, TRANSCO, GENCO, PGCIL & State exams.">
+  <meta property="og:image" content="https://www.examresizer.me/og-image.png">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="/favicon.png">
 
-const PYQArchive = {
-  activeCategory: 'GOVT_EXAMS',
-  activeStream: null,
-  activeYear: null,
+  <!-- Core CDNs -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
 
-  // Curated Pan-India Question Bank Catalog
-  catalog: {
-    GOVT_EXAMS: {
-      name: "National Competitive Examinations",
-      streams: {
-        "SSC Combined Graduate Level (CGL)": [
-          { year: "2024", session: "Tier-I Shift 1", medium: "Bilingual (English/Hindi)", qCount: 100, sourceUrl: "https://ssc.gov.in" },
-          { year: "2024", session: "Tier-I Shift 2", medium: "Bilingual (English/Hindi)", qCount: 100, sourceUrl: "https://ssc.gov.in" },
-          { year: "2023", session: "Tier-II Comprehensive", medium: "Bilingual (English/Hindi)", qCount: 150, sourceUrl: "https://ssc.gov.in" }
-        ],
-        "Railway Recruitment Board (RRB NTPC)": [
-          { year: "2024", session: "CBT-1 Stage Standard", medium: "English / Hindi / Telugu", qCount: 100, sourceUrl: "https://rrbapply.gov.in" },
-          { year: "2022", session: "Graduate Level CBT-2", medium: "Bilingual (English/Hindi)", qCount: 120, sourceUrl: "https://rrbapply.gov.in" }
-        ],
-        "Union Public Service Commission (UPSC CSE)": [
-          { year: "2024", session: "General Studies Paper-I", medium: "Bilingual (English/Hindi)", qCount: 100, sourceUrl: "https://upsconline.nic.in" },
-          { year: "2024", session: "CSAT Paper-II", medium: "Bilingual (English/Hindi)", qCount: 80, sourceUrl: "https://upsconline.nic.in" }
-        ],
-        "State PSC - APPSC & TGPSC": [
-          { year: "2024", session: "Group-I Preliminary General Studies", medium: "English / Telugu", qCount: 150, sourceUrl: "https://psc.ap.gov.in" },
-          { year: "2024", session: "Group-II Services Screening Test", medium: "English / Telugu", qCount: 150, sourceUrl: "https://psc.ap.gov.in" }
-        ]
-      }
-    },
-    ENTRANCE_TESTS: {
-      name: "National & State Entrance Examinations",
-      streams: {
-        "Joint Entrance Examination (JEE Main)": [
-          { year: "2025", session: "January Session Shift-1 (PCM)", medium: "English / Hindi", qCount: 90, sourceUrl: "https://nta.ac.in" },
-          { year: "2024", session: "April Session Shift-2 (PCM)", medium: "English / Hindi", qCount: 90, sourceUrl: "https://nta.ac.in" }
-        ],
-        "National Eligibility cum Entrance Test (NEET UG)": [
-          { year: "2024", session: "Core Medical Paper (Code Q1)", medium: "English / Hindi / Regional", qCount: 200, sourceUrl: "https://nta.ac.in" },
-          { year: "2023", session: "Core Medical Paper (Code R3)", medium: "English / Hindi", qCount: 200, sourceUrl: "https://nta.ac.in" }
-        ],
-        "AP & TS EAPCET": [
-          { year: "2024", session: "Engineering Stream Session-1", medium: "English / Telugu", qCount: 160, sourceUrl: "https://cets.apsche.ap.gov.in" },
-          { year: "2024", session: "Agriculture & Pharmacy Session", medium: "English / Telugu", qCount: 160, sourceUrl: "https://cets.apsche.ap.gov.in" }
-        ]
-      }
-    },
-    SENIOR_SECONDARY: {
-      name: "Board of Intermediate & Secondary Education",
-      streams: {
-        "Intermediate Second Year (IPE) - MPC": [
-          { year: "2024", session: "Mathematics-IIB Annual Examination", medium: "English / Telugu", qCount: 24, sourceUrl: "https://bie.ap.gov.in" },
-          { year: "2024", session: "Physics-II Theory Paper", medium: "English / Telugu", qCount: 21, sourceUrl: "https://bie.ap.gov.in" },
-          { year: "2024", session: "Chemistry-II Theory Paper", medium: "English / Telugu", qCount: 21, sourceUrl: "https://bie.ap.gov.in" }
-        ],
-        "Intermediate Second Year (IPE) - BiPC": [
-          { year: "2024", session: "Botany-II Annual Paper", medium: "English / Telugu", qCount: 21, sourceUrl: "https://bie.ap.gov.in" },
-          { year: "2024", session: "Zoology-II Annual Paper", medium: "English / Telugu", qCount: 21, sourceUrl: "https://bie.ap.gov.in" }
-        ],
-        "Secondary School Certificate (SSC / Class 10)": [
-          { year: "2024", session: "Mathematics Board Examination", medium: "English / Telugu", qCount: 33, sourceUrl: "https://bse.ap.gov.in" },
-          { year: "2024", session: "General Science Board Paper", medium: "English / Telugu", qCount: 33, sourceUrl: "https://bse.ap.gov.in" }
-        ]
-      }
-    },
-    TECHNICAL_DIPLOMA: {
-      name: "State Board of Technical Education (SBTET)",
-      streams: {
-        "Diploma Electrical & Electronics (DEEE)": [
-          { year: "2024", session: "C-20 Scheme: Power Systems-I (4th Sem)", medium: "English", qCount: 18, sourceUrl: "https://sbtet.ap.gov.in" },
-          { year: "2023", session: "C-20 Scheme: AC Machines (5th Sem)", medium: "English", qCount: 18, sourceUrl: "https://sbtet.ap.gov.in" }
-        ],
-        "Diploma Computer Engineering (DCME)": [
-          { year: "2024", session: "C-20 Scheme: Data Structures through C (3rd Sem)", medium: "English", qCount: 18, sourceUrl: "https://sbtet.ap.gov.in" },
-          { year: "2024", session: "C-20 Scheme: Web Technologies (5th Sem)", medium: "English", qCount: 18, sourceUrl: "https://sbtet.ap.gov.in" }
-        ]
-      }
-    },
-    DEGREE_ENGINEERING: {
-      name: "Undergraduate Engineering (JNTU & Autonomous Universities)",
-      streams: {
-        "Electrical & Electronics Engineering (EEE)": [
-          { year: "2024", session: "R20 Regulation: Power System Analysis (3-1)", medium: "English", qCount: 5, sourceUrl: "https://jntua.ac.in" },
-          { year: "2023", session: "R20 Regulation: Control Systems (2-2)", medium: "English", qCount: 5, sourceUrl: "https://jntua.ac.in" }
-        ],
-        "Computer Science & Engineering (CSE)": [
-          { year: "2024", session: "R20 Regulation: Database Management Systems (2-2)", medium: "English", qCount: 5, sourceUrl: "https://jntua.ac.in" },
-          { year: "2024", session: "R20 Regulation: Operating Systems (2-1)", medium: "English", qCount: 5, sourceUrl: "https://jntua.ac.in" }
-        ]
-      }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body { 
+      background-color: #03060c; 
+      color: #f1f5f9; 
+      font-family: 'Plus Jakarta Sans', sans-serif; 
+      -webkit-tap-highlight-color: transparent;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.04) 0%, transparent 40%);
     }
-  },
+    
+    /* Obsidian Luxury Cards with Cyber Inset */
+    .glass-card { 
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.72) 0%, rgba(7, 10, 19, 0.88) 100%); 
+      backdrop-filter: blur(20px); 
+      -webkit-backdrop-filter: blur(20px); 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 12px 30px rgba(0, 0, 0, 0.6);
+    }
+    
+    .gold-border { border: 1px solid rgba(245, 158, 11, 0.35); }
+    
+    .gold-gradient-text { 
+      background: linear-gradient(135deg, #fffbeb 0%, #fde047 25%, #f59e0b 60%, #b45309 100%); 
+      -webkit-background-clip: text; 
+      -webkit-text-fill-color: transparent; 
+    }
 
-  init() {
-    this.renderContainer();
-  },
+    /* Ambient Pulsing Tech Glow */
+    .gold-glow { 
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.22), inset 0 0 12px rgba(245, 158, 11, 0.06); 
+    }
 
-  renderContainer() {
-    const root = document.getElementById('pyq-zone');
-    if (!root) return;
+    /* Holographic Shimmer Sweep */
+    .shimmer-card { position: relative; overflow: hidden; }
+    .shimmer-card::after {
+      content: '';
+      position: absolute;
+      top: -60%;
+      left: -60%;
+      width: 220%;
+      height: 220%;
+      background: linear-gradient(60deg, transparent 35%, rgba(255, 255, 255, 0.04) 45%, rgba(245, 158, 11, 0.12) 50%, transparent 55%);
+      transform: rotate(25deg);
+      animation: sweepShimmer 6.5s infinite ease-in-out;
+      pointer-events: none;
+    }
+    @keyframes sweepShimmer {
+      0% { transform: translateX(-120%) rotate(25deg); }
+      20%, 100% { transform: translateX(120%) rotate(25deg); }
+    }
 
-    root.innerHTML = `
-      <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-6">
-        <!-- Module Header -->
+    /* ============================================================ */
+    /* 🎮 HIGH-TECH GAMING & LUXURY HUD BUTTONS ENGINE               */
+    /* ============================================================ */
+    .gaming-btn {
+      position: relative;
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      color: #cbd5e1;
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.025em;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 4px 10px rgba(0, 0, 0, 0.4);
+      user-select: none;
+      overflow: hidden;
+    }
+
+    .gaming-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.08), transparent);
+      transition: all 0.4s ease;
+    }
+
+    .gaming-btn:hover {
+      background: linear-gradient(180deg, rgba(51, 65, 85, 0.6) 0%, rgba(30, 41, 59, 0.9) 100%);
+      color: #ffffff;
+      border-color: rgba(245, 158, 11, 0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.5), 0 0 14px rgba(245, 158, 11, 0.2);
+    }
+
+    .gaming-btn:hover::before {
+      left: 100%;
+    }
+
+    .gaming-btn:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* 24K Pure Gold Gaming Active State */
+    .gaming-btn.active {
+      background: linear-gradient(180deg, #fef08a 0%, #f59e0b 55%, #b45309 100%) !important;
+      color: #03060c !important;
+      font-weight: 900;
+      border: 1px solid #fffbeb !important;
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 0 25px rgba(245, 158, 11, 0.55),
+        0 4px 12px rgba(0, 0, 0, 0.7) !important;
+      transform: translateY(-1.5px);
+    }
+
+    .gaming-btn-special {
+      border: 1px solid rgba(245, 158, 11, 0.5);
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, rgba(15, 23, 42, 0.8) 100%);
+      color: #fbbf24;
+    }
+
+    /* Luxury Beveled Action Button (Generate & Execute) */
+    .luxury-action-btn {
+      position: relative;
+      background: linear-gradient(180deg, #fef08a 0%, #f59e0b 45%, #d97706 100%);
+      color: #05070e;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 900;
+      letter-spacing: 0.03em;
+      border: 1px solid #fde047;
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 6px 22px rgba(245, 158, 11, 0.38),
+        0 2px 6px rgba(0, 0, 0, 0.5);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .luxury-action-btn:hover {
+      filter: brightness(1.12);
+      transform: translateY(-2px);
+      box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.85),
+        0 8px 30px rgba(245, 158, 11, 0.55),
+        0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+
+    .luxury-action-btn:active {
+      transform: translateY(1.5px);
+      box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.4), 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Cyber Pill Tab Control */
+    .tab-pills { 
+      display: flex; 
+      background: rgba(4, 7, 15, 0.85); 
+      border-radius: 14px; 
+      padding: 5px; 
+      gap: 5px; 
+      border: 1px solid rgba(255, 255, 255, 0.08); 
+      box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    }
+    
+    .tab-btn { 
+      flex: 1; 
+      padding: 10px; 
+      border: 1px solid transparent; 
+      border-radius: 10px; 
+      background: transparent; 
+      font-size: 0.85rem; 
+      font-weight: 800; 
+      cursor: pointer; 
+      color: #94a3b8; 
+      transition: all 0.2s; 
+    }
+    
+    .tab-btn.active { 
+      background: linear-gradient(180deg, #fef08a 0%, #f59e0b 100%) !important; 
+      color: #05070e !important; 
+      font-weight: 900; 
+      border: 1px solid #fffbeb !important;
+      box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6); 
+    }
+
+    .upload-frame { 
+      width: 100%; 
+      height: 220px; 
+      border: 2px dashed rgba(245, 158, 11, 0.4); 
+      border-radius: 18px; 
+      background: linear-gradient(180deg, rgba(245, 158, 11, 0.02) 0%, rgba(2, 6, 14, 0.4) 100%); 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      justify-content: center; 
+      cursor: pointer; 
+      overflow: hidden; 
+      transition: all 0.3s ease;
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    .upload-frame:hover { 
+      border-color: #fbbf24; 
+      background: rgba(245, 158, 11, 0.05); 
+      box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5), 0 0 25px rgba(245, 158, 11, 0.16);
+    }
+    
+    .verified-pill { 
+      background: rgba(16, 185, 129, 0.15); 
+      border: 1px solid #10b981; 
+      color: #34d399; 
+      padding: 6px 18px; 
+      border-radius: 30px; 
+      font-size: 0.78rem; 
+      font-weight: 800; 
+      margin-bottom: 12px; 
+      text-align: center; 
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
+
+  <!-- TOP GAMING HUD NAVIGATION -->
+  <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchZone('resizer-zone')">
+        <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-[1.5px] gold-glow flex items-center justify-center transform hover:rotate-3 transition">
+          <div class="w-full h-full bg-[#05070e] rounded-[10px] flex items-center justify-center border border-amber-500/30">
+            <span class="font-black text-amber-400 text-lg tracking-wider" style="font-family: 'Orbitron', sans-serif;">ER</span>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-black text-lg tracking-wider text-white flex items-center">
+            EXAM<span class="gold-gradient-text ml-1">RESIZER</span>
+          </h1>
+          <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Official Pan-India Career Suite</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center space-x-1.5 text-xs">
+        <button type="button" onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3.5 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition">Resizer Pro</button>
+        <button type="button" onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PYQ Hub</button>
+        <button type="button" onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Mock CBT</button>
+        <button type="button" onclick="switchZone('pdf-zone')" id="nav-btn-pdf" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PDF Tools</button>
+        <button type="button" onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Live Alerts</button>
+      </nav>
+
+      <button type="button" onclick="switchZone('mock-zone')" class="text-xs luxury-action-btn px-4 py-2 rounded-xl gold-glow flex items-center space-x-1.5 cursor-pointer">
+        <span>⚡ Take Mock CBT</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-6 space-y-6">
+
+    <!-- 4 PREMIER PORTAL CARDS (HUD GAMING FINISH) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div onclick="switchZone('pyq-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg">📚</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">ARCHIVE (2020–2026)</span>
+          <h3 class="font-extrabold text-white text-base group-hover:text-amber-400 transition">Previous Question Papers Hub</h3>
+          <p class="text-xs text-slate-400 leading-snug mt-0.5">GATE, SSC, RRB, UPSC, State PSCs, NEET & JEE Master Papers with Keys</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-amber-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+
+      <div onclick="switchZone('mock-zone')" class="glass-card border border-blue-500/30 shimmer-card hover:border-blue-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg">⏱️</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">TCS-iON PATTERN</span>
+          <h3 class="font-extrabold text-white text-base group-hover:text-blue-400 transition">Real CBT Examination Terminal</h3>
+          <p class="text-xs text-slate-400 leading-snug mt-0.5">Live 60-Minute Countdown Timer, Palette Grid & Real-time Marking</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-blue-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+
+      <div onclick="switchZone('pdf-zone')" class="glass-card border border-emerald-500/30 shimmer-card hover:border-emerald-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 via-black to-black flex items-center justify-center text-2xl text-emerald-400 flex-shrink-0 shadow-lg">📄</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-emerald-500/40 mb-1">GOVERNMENT COMPLIANT</span>
+          <h3 class="font-extrabold text-white text-base group-hover:text-emerald-400 transition">PDF Certificate Mega Suite</h3>
+          <p class="text-xs text-slate-400 leading-snug mt-0.5">Compress Under 100/200 KB, Merge Documents & Image to A4 PDF</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-emerald-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+
+      <div onclick="switchZone('jobs-zone')" class="glass-card border border-rose-500/30 shimmer-card hover:border-rose-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-rose-400/50 bg-gradient-to-br from-rose-500/20 via-black to-black flex items-center justify-center text-2xl text-rose-400 flex-shrink-0 shadow-lg animate-pulse">🔔</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-rose-500/40 mb-1">CLOSING IN 48H</span>
+          <h3 class="font-extrabold text-white text-base group-hover:text-rose-400 transition">Live Govt Recruitment Alerts</h3>
+          <p class="text-xs text-slate-400 leading-snug mt-0.5">SSC, Railways, APPSC, Central & State Recruitment Notifications</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-rose-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+    </section>
+
+    <!-- SECTION 1: PHOTO & SIGNATURE RESIZER (GAMING BUTTON ENGINE) -->
+    <section id="resizer-zone" class="block space-y-4">
+      <div class="glass-card p-4 rounded-xl border border-white/10 text-xs leading-relaxed text-slate-300">
+        <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet official pixel dimensions, dpi specifications, and file size byte thresholds.
+      </div>
+
+      <div class="glass-card gold-border p-5 rounded-2xl space-y-5">
+        <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-white/10 pb-3">
+          <span>Target Examination Regulatory Authority</span>
+          <span id="activeExamIndicator" class="px-3.5 py-1 rounded-md bg-amber-500/20 text-amber-400 font-black border border-amber-500/40 tracking-wider">SSC</span>
+        </div>
+
+        <!-- 6 PRIMARY NATIONAL EXAM BUTTONS (GAMING EDITION) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+          <button type="button" class="gaming-btn active p-3" data-exam="SSC">SSC</button>
+          <button type="button" class="gaming-btn p-3" data-exam="UPSC">UPSC</button>
+          <button type="button" class="gaming-btn p-3" data-exam="IBPS">IBPS / SBI</button>
+          <button type="button" class="gaming-btn p-3" data-exam="RRB">Railway RRB</button>
+          <button type="button" class="gaming-btn p-3" data-exam="NTA">NTA NEET/JEE</button>
+          <button type="button" class="gaming-btn p-3" data-exam="GATE">GATE</button>
+        </div>
+
+        <!-- 2 SPECIALIZED REGIONAL & SECTORAL BUTTONS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <button type="button" class="gaming-btn gaming-btn-special p-3.5" data-exam="STATE_PSC">🏛️ State PSCs (Groups 1, 2, 4, AEE)</button>
+          <button type="button" class="gaming-btn gaming-btn-special p-3.5" data-exam="PSU_HUB">⚡ Power Utilities (TRANSCO / GENCO / PSUs)</button>
+        </div>
+
+        <!-- STATE PSC SELECTION BOX -->
+        <div class="hidden p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2" id="stateSelectorBox">
+          <label for="stateDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase">Select State Public Service Commission</label>
+          <select class="w-full bg-[#05070e] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition" id="stateDropdown" onchange="if(window.updateExamSpecs) window.updateExamSpecs();">
+            <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4, AEE, Polytechnic)</option>
+            <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3, AEE, JL/DL)</option>
+            <option value="TNPSC">Tamil Nadu - TNPSC</option>
+            <option value="KPSC">Karnataka - KPSC</option>
+            <option value="UPPSC">Uttar Pradesh - UPPSC</option>
+            <option value="BPSC">Bihar - BPSC</option>
+            <option value="GENERIC_PSC">Other State PSC Examinations</option>
+          </select>
+        </div>
+
+        <!-- POWER UTILITIES & PSUs SELECTION BOX -->
+        <div class="hidden p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-2" id="psuSelectorBox">
+          <label for="psuDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase">Select Power Utility / PSU Enterprise</label>
+          <select class="w-full bg-[#05070e] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition" id="psuDropdown" onchange="if(window.updateExamSpecs) window.updateExamSpecs();">
+            <option value="AP_PSU">APTRANSCO / APGENCO / AP Discoms (CPDCL, EPDCL)</option>
+            <option value="TG_PSU">TSTRANSCO / TSGENCO / TG Discoms (SPDCL, NPDCL)</option>
+            <option value="PGCIL_NTPC">PowerGrid (PGCIL) / NTPC / NHPC</option>
+            <option value="BHEL_ONGC">BHEL / ONGC / IOCL / GAIL</option>
+          </select>
+        </div>
+
+        <!-- PHOTO VS SIGNATURE SWITCH PILLS -->
+        <div class="tab-pills">
+          <button type="button" class="tab-btn active" id="tabPhoto">📷 Passport Photograph</button>
+          <button type="button" class="tab-btn" id="tabSign">✍️ Candidate Signature</button>
+        </div>
+      </div>
+
+      <!-- FORMAT SPECIFICATION ALERT BANNER -->
+      <div class="p-4 rounded-xl bg-amber-500/10 border-l-4 border-amber-500 text-xs font-semibold text-amber-300 flex items-center justify-between" id="specInfo">
+        <span>⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm (JPEG Format)</span>
+      </div>
+
+      <input type="file" id="fileInput" accept="image/*" class="hidden">
+      <canvas id="cropCanvas" class="hidden"></canvas>
+      
+      <!-- DRAG AND DROP UPLOAD FRAME -->
+      <div class="upload-frame" id="uploadBox">
+        <div class="flex flex-col items-center text-center p-4" id="uploadPrompt">
+          <span class="text-4xl mb-2 filter drop-shadow" id="modeIcon">📷</span>
+          <span class="text-sm font-bold text-white tracking-wide" id="uploadMainText">Tap or Drop Image Here</span>
+          <span class="text-[11px] text-slate-400 mt-1">Supports JPG, JPEG, PNG (Processed In-Browser Securely)</span>
+        </div>
+        <img id="inputPreview" alt="Input Preview" class="max-w-full max-h-full object-contain p-2 hidden rounded-xl">
+      </div>
+
+      <!-- LUXURY HIGH-TECH GENERATE BUTTON -->
+      <button type="button" class="w-full py-4 rounded-2xl luxury-action-btn text-black font-black text-sm tracking-wide cursor-pointer" id="generateBtn">
+        ⚡ FORMAT & COMPRESS IMAGE
+      </button>
+
+      <!-- OUTPUT RESULT CARD -->
+      <div class="hidden flex-col items-center glass-card rounded-2xl p-5 border border-emerald-500/30" id="outputCard">
+        <div class="verified-pill" id="verifiedPill">✅ Compliant with Official Board Limits</div>
+        <img id="outputImg" class="max-w-full max-h-[220px] rounded-xl border-2 border-emerald-500 object-contain shadow-2xl" alt="Formatted Output">
+        <button type="button" class="w-full py-3.5 mt-4 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black text-sm hover:brightness-110 transition shadow-lg cursor-pointer" id="downloadBtn">
+          📥 Download Exam-Ready File
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 2: OFFICIAL PYQ PAPERS HUB -->
+    <section id="pyq-zone" class="hidden space-y-5">
+      <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         <div class="flex items-center justify-between pb-4 border-b border-white/10">
           <div>
-            <h2 class="font-heading font-bold text-xl text-white flex items-center">
-              <i data-lucide="book-marked" class="w-5 h-5 text-gold-400 mr-2"></i>
-              Academic Question Bank & Archival Repository
-            </h2>
-            <p class="text-xs text-slate-400">Institutional Examination Question Papers with Secure Document Watermarking</p>
+            <h2 class="font-black text-xl text-white">🏛️ Official Examination Question Paper Repository</h2>
+            <p class="text-xs text-slate-400">Authenticated Regulatory Master Papers & Official Keys (2020–2026 Chronological Archive)</p>
           </div>
-          <button onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1 transition">
-            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-            <span>Return to Workspace</span>
-          </button>
+          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition">← Return to Resizer</button>
         </div>
 
-        <!-- Tier 1: Category Selector -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2.5" id="category-selector-nav">
-          <button onclick="PYQArchive.selectCategory('GOVT_EXAMS')" id="cat-btn-GOVT_EXAMS" class="py-2.5 px-3 rounded-xl border border-gold-500 bg-gold-500/20 text-gold-300 font-bold text-xs transition text-center">
-            Competitive Exams
-          </button>
-          <button onclick="PYQArchive.selectCategory('ENTRANCE_TESTS')" id="cat-btn-ENTRANCE_TESTS" class="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs transition text-center">
-            JEE / NEET / EAPCET
-          </button>
-          <button onclick="PYQArchive.selectCategory('SENIOR_SECONDARY')" id="cat-btn-SENIOR_SECONDARY" class="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs transition text-center">
-            10th & Intermediate (IPE)
-          </button>
-          <button onclick="PYQArchive.selectCategory('TECHNICAL_DIPLOMA')" id="cat-btn-TECHNICAL_DIPLOMA" class="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs transition text-center">
-            Polytechnic (SBTET)
-          </button>
-          <button onclick="PYQArchive.selectCategory('DEGREE_ENGINEERING')" id="cat-btn-DEGREE_ENGINEERING" class="py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs transition text-center">
-            B.Tech / University
-          </button>
+        <!-- 9 ALL-INDIA AUTHORITY BADGES (GAMING STYLE) -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">Select Examination Authority / Sector</label>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2" id="authorityTabsNav">
+            <button type="button" onclick="switchAuthority('GATE')" id="auth-btn-GATE" class="gaming-btn active p-2.5 text-xs text-center">GATE</button>
+            <button type="button" onclick="switchAuthority('SSC')" id="auth-btn-SSC" class="gaming-btn p-2.5 text-xs text-center">SSC</button>
+            <button type="button" onclick="switchAuthority('RRB')" id="auth-btn-RRB" class="gaming-btn p-2.5 text-xs text-center">RRB</button>
+            <button type="button" onclick="switchAuthority('UPSC')" id="auth-btn-UPSC" class="gaming-btn p-2.5 text-xs text-center">UPSC</button>
+            <button type="button" onclick="switchAuthority('STATE_PSC')" id="auth-btn-STATE_PSC" class="gaming-btn p-2.5 text-xs text-center">State PSCs</button>
+            <button type="button" onclick="switchAuthority('POWER_PSU')" id="auth-btn-POWER_PSU" class="gaming-btn p-2.5 text-xs text-center">Power PSUs</button>
+            <button type="button" onclick="switchAuthority('DEFENCE')" id="auth-btn-DEFENCE" class="gaming-btn p-2.5 text-xs text-center">Defence</button>
+            <button type="button" onclick="switchAuthority('ENTRANCE')" id="auth-btn-ENTRANCE" class="gaming-btn p-2.5 text-xs text-center">NEET / JEE</button>
+            <button type="button" onclick="switchAuthority('BTECH')" id="auth-btn-BTECH" class="gaming-btn p-2.5 text-xs text-center">B.Tech</button>
+          </div>
         </div>
 
-        <!-- Tier 2: Stream & Paper Listing Container -->
-        <div id="pyq-papers-container" class="space-y-4 pt-2">
-          <!-- Dynamically Injected Content -->
+        <!-- SUB-STREAM AND YEAR FILTERS -->
+        <div class="p-4 rounded-xl bg-[#05070e] border border-white/10 grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
+          <div>
+            <label for="subStreamDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase mb-1">Select Discipline / Specific Post Cadre</label>
+            <select id="subStreamDropdown" onchange="renderPapersByStream()" class="w-full bg-[#0a0f1d] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition"></select>
+          </div>
+          <div>
+            <label for="yearFilterDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase mb-1">Filter by Examination Session Year</label>
+            <select id="yearFilterDropdown" onchange="renderPapersByStream()" class="w-full bg-[#0a0f1d] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition">
+              <option value="ALL">All Examination Years (2020–2026 Archive)</option>
+              <option value="2026">2026 Examination Session</option>
+              <option value="2025">2025 Examination Session</option>
+              <option value="2024">2024 Examination Session</option>
+              <option value="2023">2023 Examination Session</option>
+              <option value="2022">2022 Examination Session</option>
+              <option value="2021">2021 Examination Session</option>
+              <option value="2020">2020 Examination Session</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Document Preview Modal (In-App Document Viewer) -->
-        <div id="pyq-preview-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-          <div class="glass-card w-full max-w-3xl rounded-2xl border border-white/20 overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-4 border-b border-white/10 flex items-center justify-between bg-slateDark/80">
-              <div>
-                <h4 class="font-heading font-bold text-sm text-white" id="modal-paper-title">Document Viewer</h4>
-                <p class="text-[11px] text-slate-400" id="modal-paper-desc">Standard Examination Paper</p>
-              </div>
-              <button onclick="PYQArchive.closePreview()" class="text-slate-400 hover:text-white p-1 rounded-lg">
-                <i data-lucide="x" class="w-5 h-5"></i>
-              </button>
-            </div>
-            
-            <div class="p-6 overflow-y-auto space-y-4 flex-grow bg-obsidian text-slate-200 text-xs leading-relaxed" id="modal-document-body">
-              <!-- Simulated Document Paper Outline -->
-              <div class="border border-white/10 rounded-xl p-6 bg-white/[0.02] space-y-4 relative">
-                <div class="text-center border-b border-white/10 pb-4">
-                  <h3 class="font-bold text-sm text-white tracking-wider" id="preview-heading">OFFICIAL EXAMINATION ARCHIVE</h3>
-                  <p class="text-[11px] text-slate-400 mt-1">Verified Digital Academic Record | Full Duration Standards</p>
-                </div>
-                <div class="space-y-3 pt-2" id="preview-sample-questions">
-                  <p class="font-medium text-slate-300">Section I: Mandatory Objective & Descriptive Assessment Framework</p>
-                  <p class="text-slate-400">1. Questions strictly mapped to the approved regulatory syllabus and official grading keys.</p>
-                  <p class="text-slate-400">2. All calculations, derivations, and structural responses comply with standard institutional metrics.</p>
-                  <p class="text-slate-400">3. Verified by ExamResizer Academic Content Verification Protocol.</p>
-                </div>
-              </div>
-            </div>
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-white text-base" id="activeAuthorityTitle">Graduate Aptitude Test in Engineering (GATE)</h3>
+            <p class="text-xs text-slate-300" id="activeAuthorityDesc">Official National Master Examination Papers by IISc & IIT Organizing Bodies.</p>
+          </div>
+          <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
+        </div>
 
-            <div class="p-4 border-t border-white/10 flex justify-end space-x-3 bg-slateDark/80">
-              <button onclick="PYQArchive.closePreview()" class="px-4 py-2 rounded-xl border border-white/10 text-xs text-slate-300 hover:bg-white/5 transition">
-                Close Viewer
-              </button>
-              <button id="modal-download-trigger" class="px-5 py-2 rounded-xl bg-gold-500 hover:bg-gold-400 text-black font-extrabold text-xs transition flex items-center space-x-2">
-                <i data-lucide="download" class="w-4 h-4"></i>
-                <span>Download Watermarked PDF</span>
-              </button>
+        <div class="space-y-3" id="papersStackContainer"></div>
+      </div>
+
+      <!-- IN-APP PROTECTED VIEWER MODAL -->
+      <div id="pyqReaderModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 select-none" oncontextmenu="return false;">
+        <div class="glass-card w-full max-w-4xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
+          <div class="p-3.5 md:p-4 border-b border-white/10 flex items-center justify-between bg-black/80">
+            <div class="space-y-0.5">
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase border border-amber-500/30" id="readerPaperTag">OFFICIAL ARCHIVE</span>
+              <h3 class="font-bold text-sm md:text-base text-white line-clamp-1" id="readerPaperTitle">Master Question Paper</h3>
             </div>
+            <div class="flex items-center space-x-2">
+              <button type="button" id="readerTopDownloadBtn" class="px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-lg cursor-pointer">
+                <span>📥 Download Official Master Paper</span>
+              </button>
+              <button type="button" onclick="closePyqReader()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition">✕</button>
+            </div>
+          </div>
+          <div id="readerScrollArea" class="flex-grow overflow-y-auto p-4 md:p-8 space-y-6 text-slate-200 text-xs md:text-sm bg-[#070a12] relative">
+            <div class="sticky top-1/3 left-0 right-0 flex items-center justify-center pointer-events-none opacity-[0.04] z-0">
+              <span class="text-5xl md:text-7xl font-black rotate-[-25deg] tracking-widest text-white">EXAMRESIZER.ME</span>
+            </div>
+            <div class="relative z-10 border border-white/10 rounded-xl p-5 md:p-6 bg-white/[0.02] text-center space-y-2">
+              <p class="text-[10px] tracking-widest text-slate-400 font-bold uppercase">Official Master Examination Record</p>
+              <h2 class="text-base md:text-xl font-extrabold text-white" id="readerMainSubject">Examination Paper Title</h2>
+              <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Verified Regulatory Key Attached</p>
+            </div>
+            <div class="relative z-10 space-y-4" id="readerQuestionsBody"></div>
+          </div>
+          <div class="p-3 border-t border-white/10 bg-black/80 text-center text-[11px] text-slate-400 flex items-center justify-between px-6">
+            <span>Authorized Academic Reference | ExamResizer Pan-India Hub</span>
+            <span class="text-amber-400 font-semibold">www.examresizer.me</span>
           </div>
         </div>
       </div>
-    `;
+    </section>
 
-    if (window.lucide) lucide.createIcons();
-    this.renderPapers();
-  },
-
-  selectCategory(categoryKey) {
-    this.activeCategory = categoryKey;
-    document.querySelectorAll('#category-selector-nav button').forEach(b => {
-      b.className = 'py-2.5 px-3 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 font-bold text-xs transition text-center';
-    });
-
-    const activeBtn = document.getElementById(`cat-btn-${categoryKey}`);
-    if (activeBtn) {
-      activeBtn.className = 'py-2.5 px-3 rounded-xl border border-gold-500 bg-gold-500/20 text-gold-300 font-bold text-xs transition text-center';
-    }
-
-    this.renderPapers();
-  },
-
-  renderPapers() {
-    const container = document.getElementById('pyq-papers-container');
-    if (!container) return;
-
-    const group = this.catalog[this.activeCategory];
-    if (!group) return;
-
-    let html = '';
-
-    for (const [streamTitle, papersList] of Object.entries(group.streams)) {
-      html += `
-        <div class="border border-white/10 rounded-xl p-4 bg-white/[0.02] space-y-3">
-          <div class="flex items-center justify-between border-b border-white/5 pb-2">
-            <h3 class="font-heading font-bold text-sm text-white flex items-center">
-              <i data-lucide="folder" class="w-4 h-4 text-gold-400 mr-2"></i>
-              ${streamTitle}
-            </h3>
-            <span class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">${papersList.length} Sessions Cataloged</span>
-          </div>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5 pt-1">
-      `;
-
-      papersList.forEach(item => {
-        html += `
-          <div class="p-3 rounded-xl glass-card border border-white/5 hover:border-gold-500/30 transition flex items-center justify-between">
+    <!-- SECTION 3: CBT MOCK TEST ENGINE -->
+    <section id="mock-zone" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-blue-500/30">
+        <div id="mock-gatekeeper-screen" class="space-y-5">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
             <div>
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-0.5 rounded bg-gold-500/10 border border-gold-500/20 text-gold-300 text-[10px] font-extrabold">${item.year}</span>
-                <span class="text-[11px] font-medium text-slate-300">${item.session}</span>
-              </div>
-              <p class="text-[10px] text-slate-400 mt-1">${item.medium} | ${item.qCount} Items</p>
+              <h2 class="font-bold text-xl text-white">⏱️ Official CBT Examination Terminal</h2>
+              <p class="text-xs text-slate-400">TCS-iON Simulator with Negative Marking & Palette Progression</p>
             </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="PYQArchive.openPreview('${streamTitle}', '${item.session} (${item.year})')" class="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-[11px] text-slate-200 transition flex items-center space-x-1">
-                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
-                <span>Preview</span>
-              </button>
-              <button onclick="PYQArchive.generateWatermarkedPDF('${streamTitle}', '${item.year} ${item.session}')" class="px-3 py-1.5 rounded-lg bg-gold-500 hover:bg-gold-400 text-black font-extrabold text-[11px] transition flex items-center space-x-1">
-                <i data-lucide="download" class="w-3.5 h-3.5"></i>
-                <span>PDF</span>
-              </button>
-            </div>
+            <span class="px-3 py-1 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold">TCS Pattern</span>
           </div>
-        `;
-      });
-
-      html += `
+          <div class="bg-black/40 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2">
+            <h4 class="font-bold text-white uppercase">Candidate Instructions:</h4>
+            <p>1. Test duration is <strong>60 minutes</strong> with live countdown timer.</p>
+            <p>2. Marking scheme: <strong>+2.00 marks</strong> for correct, <strong>-0.50 marks</strong> for incorrect.</p>
+            <p>3. Scoring 60% unlocks sequential progression to Paper-2.</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
+            <input type="checkbox" id="policyAgreementCheckbox" onchange="if(window.toggleCBTReady) window.toggleCBTReady(this);" class="mt-1 w-4 h-4 rounded accent-amber-500 cursor-pointer">
+            <label for="policyAgreementCheckbox" class="text-xs text-slate-300 cursor-pointer select-none">
+              I have read, understood, and agree to adhere to all examination guidelines and portal policies.
+            </label>
+          </div>
+          <div class="flex justify-end">
+            <button type="button" id="startCbtBtn" onclick="startCbtSession()" disabled class="px-6 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed transition">
+              I AM READY TO BEGIN
+            </button>
           </div>
         </div>
-      `;
-    }
 
-    container.innerHTML = html;
-    if (window.lucide) lucide.createIcons();
-  },
+        <div id="mock-live-screen" class="hidden space-y-4">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <div>
+              <h3 class="font-bold text-white text-base">CBT Master Simulator</h3>
+              <span class="text-[11px] text-slate-400">Marks: +2.00 / -0.50</span>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="px-3.5 py-1.5 rounded-xl bg-black/80 border border-amber-500/40 text-amber-400 font-mono text-sm font-bold shadow-inner" id="cbtClock">59:59</span>
+              <button type="button" onclick="submitCBT()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-black text-xs hover:brightness-110 shadow-lg cursor-pointer">Submit Test</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="md:col-span-3 space-y-4">
+              <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-3">
+                <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                  <span class="text-xs font-bold text-amber-400 uppercase" id="cbtQuestionNum">Question No. 1</span>
+                  <span class="text-[10px] text-slate-400" id="cbtSectionTag">General Science</span>
+                </div>
+                <div class="text-xs md:text-sm text-slate-200 space-y-1">
+                  <p class="font-medium" id="cbtQuestionEn"></p>
+                  <p class="text-slate-400 italic" id="cbtQuestionTe"></p>
+                </div>
+                <div class="space-y-2 pt-2" id="cbtOptionsContainer"></div>
+                <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
+                  <button type="button" onclick="cbtClearResponse()" class="gaming-btn px-4 py-2">Clear</button>
+                  <button type="button" onclick="cbtSaveAndNext()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black hover:brightness-110 cursor-pointer shadow-md">Save & Next</button>
+                </div>
+              </div>
+            </div>
+            <div class="md:col-span-1 border-t md:border-t-0 md:border-l border-white/10 md:pl-4 space-y-3">
+              <h4 class="text-xs font-bold text-white uppercase">Question Palette</h4>
+              <div class="grid grid-cols-5 gap-1.5" id="cbtPaletteGrid"></div>
+            </div>
+          </div>
+        </div>
 
-  openPreview(title, session) {
-    const modal = document.getElementById('pyq-preview-modal');
-    const modalTitle = document.getElementById('modal-paper-title');
-    const modalDesc = document.getElementById('modal-paper-desc');
-    const previewHeading = document.getElementById('preview-heading');
-    const downloadBtn = document.getElementById('modal-download-trigger');
+        <div id="mock-result-screen" class="hidden space-y-5"></div>
+      </div>
+    </section>
 
-    if (modal && modalTitle && modalDesc && previewHeading && downloadBtn) {
-      modalTitle.innerText = title;
-      modalDesc.innerText = `Examination Session: ${session}`;
-      previewHeading.innerText = `${title.toUpperCase()} - ${session.toUpperCase()}`;
-      downloadBtn.onclick = () => this.generateWatermarkedPDF(title, session);
-      modal.classList.remove('hidden');
-    }
-  },
+    <!-- SECTION 4: PDF MEGA STUDIO (GAMING LIMIT PILLS) -->
+    <section id="pdf-zone" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-emerald-500/30 space-y-5">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <div>
+            <h2 class="font-bold text-xl text-white">📄 PDF Mega Studio (Govt Portal Tools)</h2>
+            <p class="text-xs text-slate-400">100% Client-Side Privacy: Caste, Income & Marksheet Certificate Tools</p>
+          </div>
+          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:underline">Back to Resizer</button>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+          <button type="button" onclick="selectPdfTool('compress')" id="pdf-tool-compress" class="gaming-btn active p-3">Compress (100KB/200KB)</button>
+          <button type="button" onclick="selectPdfTool('img2pdf')" id="pdf-tool-img2pdf" class="gaming-btn p-3">Images to A4 PDF</button>
+          <button type="button" onclick="selectPdfTool('merge')" id="pdf-tool-merge" class="gaming-btn p-3">Merge PDFs</button>
+        </div>
+        <div class="p-5 rounded-xl border border-white/10 bg-[#05070e] space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-bold text-white uppercase">Target Limit:</span>
+            <div class="flex space-x-2 text-xs">
+              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(100); if(window.setTargetLimit) setTargetLimit(100);" id="limit-btn-100" class="gaming-btn active px-3 py-1">Under 100 KB</button>
+              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(200); if(window.setTargetLimit) setTargetLimit(200);" id="limit-btn-200" class="gaming-btn px-3 py-1">Under 200 KB</button>
+              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(300); if(window.setTargetLimit) setTargetLimit(300);" id="limit-btn-300" class="gaming-btn px-3 py-1">Under 300 KB</button>
+            </div>
+          </div>
+          <div onclick="document.getElementById('actualPdfFileInput').click()" class="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 rounded-xl p-8 text-center cursor-pointer bg-white/[0.01] transition">
+            <p class="text-sm font-semibold text-white" id="pdfFileSelectedLabel">Click to Select Certificate PDF / Image</p>
+            <p class="text-[11px] text-slate-400 mt-1">Processed locally on your device with Zero Server Uploads</p>
+            <input type="file" id="actualPdfFileInput" class="hidden" onchange="handlePdfToolFile(event)">
+          </div>
+          <button type="button" id="pdfToolActionBtn" onclick="runSelectedPdfTool()" disabled class="w-full py-3.5 rounded-xl bg-slate-800 text-slate-500 font-black text-xs cursor-not-allowed transition">Execute Tool Action</button>
+          <div id="pdfDownloadCard" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2">
+            <p class="text-xs font-bold text-emerald-400" id="pdfDownloadStatus">✅ Document Ready</p>
+            <a id="pdfFinalDownloadLink" class="inline-block px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black text-xs hover:brightness-110 shadow-md">Download Processed PDF</a>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  closePreview() {
-    const modal = document.getElementById('pyq-preview-modal');
-    if (modal) modal.classList.add('hidden');
-  },
+    <!-- SECTION 5: LIVE ALERTS -->
+    <section id="jobs-zone" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
+          <div>
+            <h2 class="font-bold text-xl text-white">🔔 Live Government Recruitment Alerts</h2>
+            <p class="text-xs text-slate-400">Official Portals & Fast Preset Format Bridges</p>
+          </div>
+          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:underline">Back to Resizer</button>
+        </div>
+        <div class="space-y-3" id="liveAlertsContainer"></div>
+      </div>
+    </section>
 
-  // Institutional PDF Generation with Strict Branding Watermarking
-  async generateWatermarkedPDF(title, session) {
-    try {
-      const pdfDoc = await PDFLib.PDFDocument.create();
-      const page = pdfDoc.addPage([595.28, 841.89]); // Standard A4 Dimensions
-      const { width, height } = page.getSize();
+  </main>
 
-      // Top Institutional Header
-      page.drawText('EXAMRESIZER ACADEMIC ARCHIVAL SERVICES', {
-        x: 40,
-        y: height - 50,
-        size: 10,
-        color: PDFLib.rgb(0.5, 0.5, 0.5),
-      });
+  <!-- ADSENSE COMPLIANCE FOOTER -->
+  <footer class="w-full text-center py-8 px-4 text-xs text-slate-500 border-t border-white/10 mt-10 space-y-3 bg-[#020408]">
+    <div class="max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-[12px] text-slate-400 font-semibold">
+      <a href="javascript:void(0)" onclick="openModal('aboutModal')" class="hover:text-amber-400 transition">About Us</a>
+      <span>•</span>
+      <a href="javascript:void(0)" onclick="openModal('contactModal')" class="hover:text-amber-400 transition">Contact Us</a>
+      <span>•</span>
+      <a href="/privacy-policy.html" class="hover:text-amber-400 transition">Privacy Policy</a>
+      <span>•</span>
+      <a href="/terms.html" class="hover:text-amber-400 transition">Terms & Conditions</a>
+      <span>•</span>
+      <a href="/disclaimer.html" class="hover:text-amber-400 transition">Disclaimer</a>
+    </div>
+    <p class="text-[11px] text-slate-500">© 2026 Exam Resizer Pro. All examination logos and recruitment names are trademarks of their respective government authorities and organizing bodies.</p>
+  </footer>
 
-      page.drawText(title.toUpperCase(), {
-        x: 40,
-        y: height - 80,
-        size: 14,
-        color: PDFLib.rgb(0.08, 0.08, 0.1),
-      });
+  <!-- ABOUT US MODAL -->
+  <div id="aboutModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full p-6 rounded-2xl border border-white/20 space-y-4 text-left">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2">
+        <h3 class="font-bold text-white text-base">About ExamResizer.me</h3>
+        <button onclick="closeModal('aboutModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        <strong>ExamResizer.me</strong> is a free educational utility built to assist students and candidates across India with competitive examinations. Our tools automate complex photo & signature resizing to match exact pixel/KB requirements, provide chronological PYQs, and simulate genuine CBT environments entirely within your browser with 100% privacy and zero server uploads.
+      </p>
+      <div class="text-right">
+        <button onclick="closeModal('aboutModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
+      </div>
+    </div>
+  </div>
 
-      page.drawText(`Official Session Record: ${session}`, {
-        x: 40,
-        y: height - 100,
-        size: 10,
-        color: PDFLib.rgb(0.3, 0.3, 0.3),
-      });
+  <!-- CONTACT US MODAL -->
+  <div id="contactModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card max-w-lg w-full p-6 rounded-2xl border border-white/20 space-y-4 text-left">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2">
+        <h3 class="font-bold text-white text-base">Contact Editorial & Support</h3>
+        <button onclick="closeModal('contactModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        For technical assistance, copyright claims, or suggestions regarding question paper archives and format updates, please write directly to our editorial team:
+      </p>
+      <div class="p-3 bg-white/5 rounded-xl border border-white/10 text-xs text-amber-400 font-mono">
+        Official Support: support@examresizer.me
+      </div>
+      <div class="text-right">
+        <button onclick="closeModal('contactModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
+      </div>
+    </div>
+  </div>
 
-      // Verification Line
-      page.drawLine({
-        start: { x: 40, y: height - 115 },
-        end: { x: width - 40, y: height - 115 },
-        thickness: 1,
-        color: PDFLib.rgb(0.85, 0.85, 0.85),
-      });
+  <script>
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+  </script>
 
-      // Primary Institutional Diagonal Watermark (EXAMRESIZER.ME)
-      page.drawText('EXAMRESIZER.ME', {
-        x: 75,
-        y: height / 2 - 40,
-        size: 46,
-        rotate: PDFLib.degrees(45),
-        color: PDFLib.rgb(0.88, 0.88, 0.9),
-        opacity: 0.28,
-      });
-
-      // Sample Question Paper Content Structure
-      page.drawText('Section I: Standard Subject Competency Evaluation', {
-        x: 40,
-        y: height - 145,
-        size: 11,
-        color: PDFLib.rgb(0.1, 0.1, 0.1),
-      });
-
-      const sampleQuestions = [
-        "Q1. Standardized competency evaluation question corresponding to official portal notifications.",
-        "Q2. All questions in this document match the verified curriculum guidelines released by the authority.",
-        "Q3. Reference key verified under the ExamResizer Academic Authentication Protocol.",
-        "Q4. Access comprehensive solutions and simulated CBT evaluations at www.examresizer.me."
-      ];
-
-      let currentY = height - 175;
-      sampleQuestions.forEach(q => {
-        page.drawText(q, {
-          x: 40,
-          y: currentY,
-          size: 9.5,
-          color: PDFLib.rgb(0.25, 0.25, 0.25),
-        });
-        currentY -= 28;
-      });
-
-      // Official Security Footer
-      page.drawLine({
-        start: { x: 40, y: 50 },
-        end: { x: width - 40, y: 50 },
-        thickness: 0.8,
-        color: PDFLib.rgb(0.85, 0.85, 0.85),
-      });
-
-      page.drawText('Downloaded from www.examresizer.me | Authorized Personal Academic Reference Only', {
-        x: 40,
-        y: 35,
-        size: 8,
-        color: PDFLib.rgb(0.45, 0.45, 0.45),
-      });
-
-      const pdfBytes = await pdfDoc.save();
-      const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(blob);
-      link.download = `ExamResizer_${title.replace(/[^a-zA-Z0-9]/g, '_')}_${session.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      setTimeout(() => document.body.removeChild(link), 500);
-
-    } catch (err) {
-      alert('Error generating document. Please try again.');
-    }
-  }
-};
-
-// Initialize on DOM load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => PYQArchive.init());
-} else {
-  PYQArchive.init();
-}
+  <!-- DEDICATED SCRIPTS (js/ FOLDER) -->
+  <script src="js/resizer.js"></script>
+  <script src="js/pyq-hub.js"></script>
+  <script src="js/mock-test.js"></script>
+  <script src="js/pdf-suite.js"></script>
+  <script src="js/job-alerts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
