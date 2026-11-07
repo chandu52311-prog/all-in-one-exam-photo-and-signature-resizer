@@ -367,109 +367,135 @@
       </div>
     </section>
 
+   <!-- ======================================================== -->
+    <!-- ZONE 2: ALL-INDIA TESTBOOK-STYLE PYQ ARCHIVE & PROTECTED READER -->
     <!-- ======================================================== -->
-    <!-- ZONE 2: PYQ PAPERS HUB (COMPLETE EMBEDDED STREAM LIST)  -->
-    <!-- ======================================================== -->
-    <section id="pyq-zone" class="hidden space-y-4">
-      <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-5">
+    <section id="pyq-zone" class="hidden space-y-5">
+      <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-6">
+        
+        <!-- Module Header -->
         <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
             <h2 class="font-bold text-xl text-white flex items-center">
-              📚 Previous Years Question Papers Hub
+              📚 Official Previous Year Question Papers (PYQ Hub)
             </h2>
-            <p class="text-xs text-slate-400">Download Official Papers with Institutional Watermark</p>
+            <p class="text-xs text-slate-400">Exam-Specific Chronological Master Archive (2020–2026) with Verified Answer Keys</p>
           </div>
           <button onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:underline">
             Back to Resizer
           </button>
         </div>
 
-        <!-- 5 Direct Category Tabs -->
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-2" id="pyq-cat-nav">
-          <button onclick="filterPYQ('ALL')" id="pyq-btn-ALL" class="py-2 px-3 rounded-lg bg-amber-500 text-black font-extrabold text-xs">All Papers</button>
-          <button onclick="filterPYQ('BTECH')" id="pyq-btn-BTECH" class="py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-bold text-xs hover:bg-white/10">B.Tech / Degree</button>
-          <button onclick="filterPYQ('SSC_GOVT')" id="pyq-btn-SSC_GOVT" class="py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-bold text-xs hover:bg-white/10">SSC & Govt</button>
-          <button onclick="filterPYQ('INTER')" id="pyq-btn-INTER" class="py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-bold text-xs hover:bg-white/10">10th & Inter</button>
-          <button onclick="filterPYQ('NEET_JEE')" id="pyq-btn-NEET_JEE" class="py-2 px-3 rounded-lg bg-white/5 border border-white/10 text-slate-300 font-bold text-xs hover:bg-white/10">JEE & NEET</button>
+        <!-- Dedicated Exam Selection Badges (Clear-Cut Tabs) -->
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+            Select Target Examination
+          </label>
+          <div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2" id="examBadgeNav">
+            <button onclick="selectTargetExam('GATE')" id="exam-badge-GATE" class="p-2.5 rounded-xl bg-amber-500 text-black font-extrabold text-xs text-center transition">
+              GATE
+            </button>
+            <button onclick="selectTargetExam('APTRANSCO')" id="exam-badge-APTRANSCO" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              AP Power (AE)
+            </button>
+            <button onclick="selectTargetExam('SSC_CGL')" id="exam-badge-SSC_CGL" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              SSC CGL
+            </button>
+            <button onclick="selectTargetExam('RRB_NTPC')" id="exam-badge-RRB_NTPC" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              Railway RRB
+            </button>
+            <button onclick="selectTargetExam('APPSC')" id="exam-badge-APPSC" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              APPSC
+            </button>
+            <button onclick="selectTargetExam('UPSC')" id="exam-badge-UPSC" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              UPSC Prelims
+            </button>
+            <button onclick="selectTargetExam('NEET_JEE')" id="exam-badge-NEET_JEE" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              NEET / JEE
+            </button>
+            <button onclick="selectTargetExam('BTECH')" id="exam-badge-BTECH" class="p-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 font-bold text-xs text-center hover:bg-white/10 transition">
+              B.Tech Core
+            </button>
+          </div>
         </div>
 
-        <!-- Populated Papers Cards Stack -->
-        <div class="space-y-3" id="pyq-cards-list">
-          <!-- B.Tech EEE -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="BTECH">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">B.TECH (EEE / POWER SYSTEMS)</span>
-              <h4 class="font-bold text-white text-sm mt-1">Power System Analysis & Renewable Integration</h4>
-              <p class="text-xs text-slate-400">JNTU & Autonomous Universities (2024 Regular Paper)</p>
+        <!-- Active Exam Information Card -->
+        <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div>
+            <h3 class="font-bold text-white text-base" id="activeExamTitle">GATE (Graduate Aptitude Test in Engineering)</h3>
+            <p class="text-xs text-slate-300" id="activeExamDesc">Official Master Papers by IITs & IISc Bangalore with verified final answer keys.</p>
+          </div>
+          <div class="flex items-center space-x-2 text-xs">
+            <span class="px-2.5 py-1 rounded-md bg-black/40 border border-white/10 text-slate-300 font-semibold" id="activeExamTotalCount">
+              Verified Papers: 7 Sessions
+            </span>
+          </div>
+        </div>
+
+        <!-- Chronological Papers Stream (2020–2026 Stack) -->
+        <div class="space-y-3" id="activeExamPapersList">
+          <!-- Dynamically populated by JavaScript -->
+        </div>
+
+      </div>
+
+      <!-- IN-APP PROTECTED LIVE DOCUMENT READER (ANTI-COPY & SCREEN-PROTECT GUARD) -->
+      <div id="pyqReaderModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 select-none" oncontextmenu="return false;">
+        <div class="glass-card w-full max-w-4xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
+          
+          <!-- Top Control Header Bar -->
+          <div class="p-3.5 md:p-4 border-b border-white/10 flex items-center justify-between bg-black/80">
+            <div class="space-y-0.5">
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase border border-amber-500/30" id="readerPaperTag">OFFICIAL ARCHIVE</span>
+              <h3 class="font-bold text-sm md:text-base text-white line-clamp-1" id="readerPaperTitle">Master Question Paper</h3>
             </div>
-            <button onclick="downloadWatermarkedPDF('B.Tech Power System Analysis', 'JNTU 2024 Exam')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
+            
+            <div class="flex items-center space-x-2">
+              <button id="readerTopDownloadBtn" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:brightness-110 text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-lg">
+                <span>📥 Download Watermarked PDF</span>
+              </button>
+              <button onclick="closePyqReader()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition">
+                ✕
+              </button>
+            </div>
           </div>
 
-          <!-- B.Tech CSE -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="BTECH">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 text-[10px] font-bold">B.TECH (CSE / IT)</span>
-              <h4 class="font-bold text-white text-sm mt-1">Database Management Systems & Operating Systems</h4>
-              <p class="text-xs text-slate-400">Regulation R20 & R23 Core Exam Paper</p>
+          <!-- Document Viewing Scroll Area with Watermark Shield -->
+          <div id="readerScrollArea" class="flex-grow overflow-y-auto p-4 md:p-8 space-y-6 text-slate-200 text-xs md:text-sm bg-[#070a12] relative">
+            
+            <!-- Diagonal Shield Watermark on Display -->
+            <div class="sticky top-1/3 left-0 right-0 flex items-center justify-center pointer-events-none opacity-[0.05] z-0">
+              <span class="text-5xl md:text-7xl font-black rotate-[-25deg] tracking-widest text-white">EXAMRESIZER.ME</span>
             </div>
-            <button onclick="downloadWatermarkedPDF('B.Tech DBMS & OS Core Paper', 'Regulation 2024')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
+
+            <!-- Paper Metadata Header Box -->
+            <div class="relative z-10 border border-white/10 rounded-xl p-5 md:p-6 bg-white/[0.02] text-center space-y-2">
+              <p class="text-[10px] tracking-widest text-slate-400 font-bold uppercase">Official Master Examination Record</p>
+              <h2 class="text-base md:text-xl font-extrabold text-white" id="readerMainSubject">Examination Paper Title</h2>
+              <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Verified Regulatory Key Attached</p>
+              <div class="flex justify-center gap-4 md:gap-8 text-[11px] text-slate-400 pt-2 border-t border-white/10">
+                <span>Total Time: 180 Minutes</span>
+                <span>Max Marks: Standard</span>
+                <span>Marking: Institutional Key Verified</span>
+              </div>
+            </div>
+
+            <!-- Scrollable Questions Content -->
+            <div class="relative z-10 space-y-4" id="readerQuestionsBody">
+              <!-- Dynamically populated question paper layout -->
+            </div>
+
           </div>
 
-          <!-- SSC CGL -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="SSC_GOVT">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">SSC CGL TIER-1</span>
-              <h4 class="font-bold text-white text-sm mt-1">Combined Graduate Level (Shift-1 Official Paper)</h4>
-              <p class="text-xs text-slate-400">100 Bilingual Questions with Verified Keys (2024)</p>
-            </div>
-            <button onclick="downloadWatermarkedPDF('SSC CGL Tier-1 Shift-1', '2024 Official Paper')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
+          <!-- Reader Footer Info -->
+          <div class="p-3 border-t border-white/10 bg-black/80 text-center text-[11px] text-slate-400 flex items-center justify-between px-6">
+            <span>Official Protected Viewer | ExamResizer Academic Hub</span>
+            <span class="text-amber-400 font-semibold">www.examresizer.me</span>
           </div>
 
-          <!-- Railway RRB -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="SSC_GOVT">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-bold">RAILWAY RRB NTPC</span>
-              <h4 class="font-bold text-white text-sm mt-1">Graduate Level Stage-1 CBT Original Question Paper</h4>
-              <p class="text-xs text-slate-400">General Awareness, Math & Reasoning (English/Telugu)</p>
-            </div>
-            <button onclick="downloadWatermarkedPDF('RRB NTPC Stage-1 CBT', 'Railway Board 2024')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
-          </div>
-
-          <!-- Intermediate MPC -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="INTER">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 text-[10px] font-bold">INTERMEDIATE (IPE)</span>
-              <h4 class="font-bold text-white text-sm mt-1">Maths-IIB & Physics-II Board Annual Question Papers</h4>
-              <p class="text-xs text-slate-400">BIEAP & TSBIE 2024 Official Exam Papers</p>
-            </div>
-            <button onclick="downloadWatermarkedPDF('Intermediate 2nd Year Maths & Physics', 'Board Annual 2024')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
-          </div>
-
-          <!-- NEET UG -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3" data-cat="NEET_JEE">
-            <div>
-              <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 text-[10px] font-bold">NEET UG MEDICAL</span>
-              <h4 class="font-bold text-white text-sm mt-1">National Eligibility Entrance Test (Complete 200 Qs)</h4>
-              <p class="text-xs text-slate-400">Physics, Chemistry, Botany & Zoology (NTA Standard)</p>
-            </div>
-            <button onclick="downloadWatermarkedPDF('NEET UG Official Medical Paper', 'NTA 2024 Series')" class="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition">
-              Download Watermarked PDF
-            </button>
-          </div>
         </div>
       </div>
     </section>
-
     <!-- ======================================================== -->
     <!-- ZONE 3: CBT MOCK TEST ENGINE (REAL TCS TIMER & PROGRESSION) -->
     <!-- ======================================================== -->
