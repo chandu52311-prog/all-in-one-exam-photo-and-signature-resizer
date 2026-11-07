@@ -321,8 +321,15 @@ function switchAuthority(authKey) {
     if (btn) {
       if (k === authKey) {
         btn.classList.add('active');
+        // Mobile & Desktop glow highlight
+        btn.style.background = 'linear-gradient(180deg, #fef08a 0%, #f59e0b 55%, #b45309 100%)';
+        btn.style.color = '#03060c';
+        btn.style.borderColor = '#fffbeb';
       } else {
         btn.classList.remove('active');
+        btn.style.background = 'linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%)';
+        btn.style.color = '#cbd5e1';
+        btn.style.borderColor = 'rgba(255, 255, 255, 0.12)';
       }
     }
   });
