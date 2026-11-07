@@ -6,22 +6,25 @@
   <title>All Competitive Exams Photo & Signature Resizer (2026) - SSC, UPSC, IBPS, RRB, GATE, State PSCs & PSUs</title>
   <meta name="description" content="Free educational utility to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, APPSC, TGPSC, APTRANSCO, TSGENCO, PGCIL, NTPC according to official guidelines.">
   
-  <!-- Google Search Console Verification Tag -->
+  <!-- PWA & Meta Support -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#090d16">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+  <!-- Google Search Console & AdSense -->
   <meta name="google-site-verification" content="MQcIRBlN5w5Kw_eQVfuRdzrCPzlyLH0VcSJIRsaIKfw" />
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3484474717073496" crossorigin="anonymous"></script>
   
-  <!-- Canonical Tag for SEO -->
+  <!-- Canonical & SEO -->
   <link rel="canonical" href="https://www.examresizer.me/" />
-  
-  <!-- Social Media Preview Tags -->
   <meta property="og:title" content="All Government Exams Photo & Signature Resizer - Central, GATE, State PSCs & PSUs (2026)">
   <meta property="og:description" content="1-Click automatic KB and dimensions formatter for SSC, UPSC, GATE, APPSC, TGPSC, TRANSCO, GENCO, PGCIL & State exams.">
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="/favicon.png">
-
-  <!-- Google Site Name Definition -->
   <meta property="og:site_name" content="Exam Resizer Pro">
+
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
@@ -32,311 +35,136 @@
   }
   </script>
 
-  <style>
-    :root {
-      --primary-maroon: #3d1318;
-      --accent-saffron: #e06b3a;
-      --btn-maroon: #7b242b;
-      --success-green: #15803d;
-      --bg-slate: #f8fafc;
-      --card-white: #ffffff;
-      --text-main: #1e293b;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-    }
+  <!-- Tailwind CSS & Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  <!-- Google Fonts: Outfit & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#090d16',
+            slateDark: '#0f172a',
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            }
+          },
+          fontFamily: {
+            heading: ['Outfit', 'sans-serif'],
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #070a12;
+      color: #f1f5f9;
+      font-family: 'Plus Jakarta Sans', sans-serif;
       -webkit-tap-highlight-color: transparent;
     }
-
-    body {
-      background-color: var(--bg-slate);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
     }
-
-    header {
-      width: 100%;
-      background-color: var(--primary-maroon);
-      color: #ffffff;
-      padding: 22px 16px;
-      text-align: center;
-      border-bottom: 4px solid var(--accent-saffron);
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-
-    .header-badge {
-      display: inline-block;
-      background: rgba(224, 107, 58, 0.25);
-      color: #fce8e9;
-      font-size: 0.72rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      padding: 4px 12px;
-      border-radius: 9999px;
-      border: 1px solid rgba(224, 107, 58, 0.6);
-      margin-bottom: 8px;
+    .gold-glow {
+      box-shadow: 0 0 25px rgba(245, 158, 11, 0.12);
     }
-
-    header h1 {
-      font-size: 1.35rem;
-      font-weight: 800;
-      letter-spacing: 0.3px;
-    }
-
-    header p {
-      font-size: 0.85rem;
-      color: #f1d3d6;
-      margin-top: 5px;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 680px;
-      padding: 16px 14px 40px;
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-
-    .intro-banner {
-      background: #ffffff;
-      border-radius: 10px;
-      border: 1px solid var(--border-color);
-      padding: 14px 16px;
-      font-size: 0.84rem;
-      line-height: 1.5;
-      color: #334155;
-    }
-
-    .section-card {
-      background: var(--card-white);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-      padding: 16px;
-    }
-
-    .section-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .exam-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-    }
-
-    .split-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
     .exam-btn {
-      padding: 12px 6px;
-      border: 1px solid var(--border-color);
+      padding: 11px 6px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
       border-radius: 8px;
-      background: #f1f5f9;
-      color: var(--text-main);
+      background: rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
       font-size: 0.82rem;
       font-weight: 700;
       cursor: pointer;
       text-align: center;
-      touch-action: manipulation;
+      transition: all 0.2s ease;
     }
-
+    .exam-btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+    }
     .exam-btn.active {
-      background: var(--primary-maroon) !important;
-      color: #ffffff !important;
-      border-color: var(--primary-maroon) !important;
-      box-shadow: 0 2px 6px rgba(61, 19, 24, 0.3);
+      background: linear-gradient(135deg, #f59e0b, #d97706) !important;
+      color: #000000 !important;
+      font-weight: 800;
+      border-color: #fbbf24 !important;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
     }
-
     .exam-btn-highlight {
-      border: 1px solid var(--accent-saffron);
-      background: #fff8f5;
-      color: #9a3412;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      background: rgba(245, 158, 11, 0.06);
+      color: #fbbf24;
       font-weight: 800;
-      padding: 12px 8px;
     }
-
-    .selector-box {
-      display: none;
-      margin-top: 10px;
-      padding: 12px;
-      background: #fff8f5;
-      border: 1px solid var(--accent-saffron);
-      border-radius: 8px;
-    }
-
-    .selector-box label {
-      display: block;
-      font-size: 0.74rem;
-      font-weight: 800;
-      color: #9a3412;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-
-    .dropdown-select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #cbd5e1;
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: var(--text-main);
-      background: #ffffff;
-      outline: none;
-    }
-
     .tab-pills {
       display: flex;
-      background: #f1f5f9;
-      border-radius: 8px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 10px;
       padding: 4px;
       gap: 4px;
-      margin-top: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
-
     .tab-btn {
       flex: 1;
-      padding: 12px;
+      padding: 10px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       background: transparent;
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       font-weight: 700;
       cursor: pointer;
-      color: var(--text-muted);
-      touch-action: manipulation;
+      color: #94a3b8;
+      transition: all 0.2s;
     }
-
     .tab-btn.active {
-      background: var(--btn-maroon) !important;
-      color: #ffffff !important;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+      background: #f59e0b !important;
+      color: #000000 !important;
+      font-weight: 800;
+      box-shadow: 0 2px 8px rgba(245, 158, 11, 0.3);
     }
-
-    .spec-banner {
-      background: #fff8f5;
-      border-left: 4px solid var(--accent-saffron);
-      border-radius: 6px;
-      padding: 12px 14px;
-      font-size: 0.82rem;
-      color: #9a3412;
-      font-weight: 600;
-    }
-
     .upload-frame {
       width: 100%;
       height: 220px;
-      border: 2px dashed var(--btn-maroon);
-      border-radius: 10px;
-      background: #fffaf9;
+      border: 2px dashed rgba(245, 158, 11, 0.4);
+      border-radius: 12px;
+      background: rgba(245, 158, 11, 0.02);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       overflow: hidden;
-      touch-action: manipulation;
+      transition: border-color 0.2s, background 0.2s;
     }
-
-    .upload-frame img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      display: none;
-      padding: 6px;
+    .upload-frame:hover {
+      border-color: #fbbf24;
+      background: rgba(245, 158, 11, 0.05);
     }
-
-    .upload-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      padding: 10px;
-    }
-
-    .upload-icon {
-      font-size: 2.4rem;
-      margin-bottom: 8px;
-    }
-
-    .upload-text {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
-
-    .upload-sub {
-      font-size: 0.75rem;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 14px;
-      border: none;
-      border-radius: 8px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      touch-action: manipulation;
-    }
-
-    .btn:disabled {
-      opacity: 0.6;
-      cursor: wait;
-    }
-
-    .btn-generate {
-      background: var(--btn-maroon);
-      color: #ffffff;
-    }
-
-    .btn-download {
-      background: var(--success-green);
-      color: #ffffff;
-      margin-top: 12px;
-    }
-
-    .output-card {
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      background: var(--card-white);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      padding: 16px;
-    }
-
     .verified-pill {
-      background: #ecfdf5;
-      border: 1px solid var(--success-green);
-      color: var(--success-green);
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid #10b981;
+      color: #34d399;
       padding: 6px 14px;
       border-radius: 20px;
       font-size: 0.78rem;
@@ -344,361 +172,493 @@
       margin-bottom: 12px;
       text-align: center;
     }
-
     .verified-pill.warn {
-      background: #fffbeb;
-      border-color: #b45309;
-      color: #b45309;
+      background: rgba(245, 158, 11, 0.15);
+      border-color: #f59e0b;
+      color: #fbbf24;
     }
-
-    .output-preview {
-      max-width: 100%;
-      max-height: 220px;
-      border-radius: 6px;
-      border: 2px solid var(--success-green);
-      object-fit: contain;
-    }
-
-    .reference-section {
-      background: var(--card-white);
-      border-radius: 12px;
-      border: 1px solid var(--border-color);
-      padding: 20px;
-      font-size: 0.84rem;
-      line-height: 1.6;
-    }
-
-    .reference-section h2, .reference-section h3 {
-      font-size: 1.05rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-      color: var(--primary-maroon);
-    }
-
-    .reference-section h4 {
-      font-size: 0.92rem;
-      font-weight: 700;
-      color: var(--text-main);
-      margin: 14px 0 6px;
-    }
-
-    .reference-section p {
-      margin-bottom: 10px;
-      color: #334155;
-    }
-
-    .reference-section ul, .reference-section ol {
-      margin-left: 20px;
-      margin-bottom: 14px;
-      color: #334155;
-    }
-
-    .reference-section li {
-      margin-bottom: 6px;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.76rem;
-      margin: 12px 0 16px;
-    }
-
-    th, td {
-      border: 1px solid var(--border-color);
+    table th, table td {
+      border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 9px;
       text-align: left;
     }
-
-    th {
-      background-color: #f1f5f9;
+    table th {
+      background-color: rgba(255, 255, 255, 0.03);
       font-weight: 700;
-      color: var(--text-main);
-    }
-
-    table a {
-      color: var(--btn-maroon);
-      font-weight: 700;
-      text-decoration: underline;
-    }
-
-    .faq-item {
-      border-bottom: 1px solid var(--border-color);
-      padding: 12px 0;
-    }
-
-    .faq-q {
-      font-weight: 700;
-      font-size: 0.86rem;
-      color: var(--text-main);
-    }
-
-    .faq-a {
-      font-size: 0.80rem;
-      color: var(--text-muted);
-      margin-top: 5px;
-      line-height: 1.5;
-    }
-
-    .legal-footer {
-      width: 100%;
-      text-align: center;
-      padding: 24px 14px 40px;
-      font-size: 0.78rem;
-      color: var(--text-muted);
-      border-top: 1px solid var(--border-color);
-      margin-top: 24px;
-    }
-
-    .legal-links {
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      margin-bottom: 12px;
-      flex-wrap: wrap;
-    }
-
-    .legal-links a {
-      color: var(--primary-maroon);
-      text-decoration: underline;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 4px;
+      color: #f8fafc;
     }
   </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col selection:bg-gold-500 selection:text-black">
 
-  <header>
-    <div class="header-badge">Government Recruitment Portal Guidelines</div>
-    <h1>ALL EXAMS PHOTO & SIGNATURE RESIZER</h1>
-    <p>In-Browser Client-Side Processing Utility</p>
+  <!-- TOP STICKY LUXURY APP NAV BAR -->
+  <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <!-- Luxury Logo -->
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchZone('resizer-zone')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-gold-600 via-gold-400 to-amber-200 p-[1.5px] gold-glow flex items-center justify-center">
+          <div class="w-full h-full bg-obsidian rounded-[10px] flex items-center justify-center">
+            <span class="font-heading font-extrabold text-gold-400 text-lg">ER</span>
+          </div>
+        </div>
+        <div>
+          <h1 class="font-heading font-bold text-lg tracking-wider text-white flex items-center">
+            EXAM<span class="gold-gradient-text ml-1">RESIZER</span>
+          </h1>
+          <p class="text-[9px] uppercase tracking-widest text-slate-400 font-medium">Pan-India Career Suite</p>
+        </div>
+      </div>
+
+      <!-- Quick Switcher Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 text-xs">
+        <button onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3 py-1.5 rounded-lg text-gold-400 bg-gold-500/10 border border-gold-500/30 flex items-center space-x-1.5 transition">
+          <i data-lucide="crop" class="w-3.5 h-3.5"></i>
+          <span>Resizer Pro</span>
+        </button>
+        <button onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span>PYQ Hub</span>
+        </button>
+        <button onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5">
+          <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+          <span>Mock CBT</span>
+        </button>
+        <button onclick="switchZone('pdf-zone')" id="nav-btn-pdf" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5">
+          <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+          <span>PDF Tools</span>
+        </button>
+        <button onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5">
+          <i data-lucide="bell" class="w-3.5 h-3.5 text-rose-400 animate-pulse"></i>
+          <span>Live Alerts</span>
+        </button>
+      </nav>
+
+      <!-- Install App Button (PWA Trigger) -->
+      <button id="pwa-install-btn" class="text-xs bg-gradient-to-r from-gold-500 to-amber-600 text-black font-bold px-3 py-1.5 rounded-lg shadow-md hover:brightness-110 transition flex items-center space-x-1.5">
+        <i data-lucide="download" class="w-3.5 h-3.5"></i>
+        <span>Install App</span>
+      </button>
+    </div>
   </header>
 
-  <!-- Added google-anno-skip to stop Auto Ads inserting empty slots inside interactive area -->
-  <div class="container google-anno-skip">
-    <div class="intro-banner">
-      <strong>Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet the exact pixel dimensions and byte thresholds stipulated by government recruitment portals across India. Select your examination below to apply official notification parameters.
-    </div>
+  <!-- MAIN CONTAINER -->
+  <main class="flex-grow max-w-4xl mx-auto w-full px-4 py-6 space-y-6">
 
-    <div class="section-card">
-      <div class="section-title">
-        <span>Select Target Examination</span>
-        <span id="activeExamIndicator" style="color: var(--accent-saffron); font-weight: 800;">SSC</span>
+    <!-- 4 SWAPPING HORIZONTAL BARS SECTION (IMAGE STYLE WITH ICONS) -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-3.5" id="swapping-bars-container">
+
+      <!-- Bar 1: PYQ Papers Hub -->
+      <div onclick="switchZone('pyq-zone')" class="glass-card hover:border-gold-500/50 p-4 rounded-xl cursor-pointer transition transform hover:-translate-y-0.5 relative overflow-hidden group">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full border-2 border-amber-400/80 bg-amber-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
+            <i data-lucide="graduation-cap" class="w-6 h-6 text-gold-400"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="inline-block bg-amber-500/20 text-gold-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase mb-1">
+              PYQ ARCHIVE (10th to PG)
+            </div>
+            <h3 class="font-heading font-semibold text-white text-sm md:text-base group-hover:text-gold-400 transition">
+              Previous Years Papers Hub
+            </h3>
+            <p class="text-xs text-slate-400 line-clamp-1">
+              10th, Inter, JEE, NEET, SBTET, B.Tech & Govt Papers with Watermark
+            </p>
+          </div>
+          <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-gold-400 group-hover:translate-x-1 transition flex-shrink-0"></i>
+        </div>
       </div>
+
+      <!-- Bar 2: Real CBT Mock Test Ladder -->
+      <div onclick="switchZone('mock-zone')" class="glass-card hover:border-blue-500/50 p-4 rounded-xl cursor-pointer transition transform hover:-translate-y-0.5 relative overflow-hidden group">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full border-2 border-blue-400/80 bg-blue-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
+            <i data-lucide="timer" class="w-6 h-6 text-blue-400"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase mb-1">
+              REAL TCS iON SIMULATOR
+            </div>
+            <h3 class="font-heading font-semibold text-white text-sm md:text-base group-hover:text-blue-400 transition">
+              Candy Crush CBT Mock Test Ladder
+            </h3>
+            <p class="text-xs text-slate-400 line-clamp-1">
+              Live Timer, Policy Checkbox, Level 1 to Paper 2 Unlock & Keys
+            </p>
+          </div>
+          <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition flex-shrink-0"></i>
+        </div>
+      </div>
+
+      <!-- Bar 3: PDF Mega Tools -->
+      <div onclick="switchZone('pdf-zone')" class="glass-card hover:border-emerald-500/50 p-4 rounded-xl cursor-pointer transition transform hover:-translate-y-0.5 relative overflow-hidden group">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full border-2 border-emerald-400/80 bg-emerald-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
+            <i data-lucide="file-cog" class="w-6 h-6 text-emerald-400"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase mb-1">
+              iLovePDF STYLE CLIENT TOOLS
+            </div>
+            <h3 class="font-heading font-semibold text-white text-sm md:text-base group-hover:text-emerald-400 transition">
+              PDF Mega Suite (Under 100/200 KB)
+            </h3>
+            <p class="text-xs text-slate-400 line-clamp-1">
+              Compress Certificate, Image to PDF, Merge & Offline Privacy
+            </p>
+          </div>
+          <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-1 transition flex-shrink-0"></i>
+        </div>
+      </div>
+
+      <!-- Bar 4: Live Govt Job Alerts & Results -->
+      <div onclick="switchZone('jobs-zone')" class="glass-card hover:border-rose-500/50 p-4 rounded-xl cursor-pointer transition transform hover:-translate-y-0.5 relative overflow-hidden group">
+        <div class="flex items-center space-x-4">
+          <div class="w-12 h-12 rounded-full border-2 border-rose-400/80 bg-rose-500/10 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition">
+            <i data-lucide="bell-ring" class="w-6 h-6 text-rose-400 animate-pulse"></i>
+          </div>
+          <div class="flex-grow">
+            <div class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-bold px-2 py-0.5 rounded tracking-wider uppercase mb-1">
+              CLOSING IN 48H PULSE
+            </div>
+            <h3 class="font-heading font-semibold text-white text-sm md:text-base group-hover:text-rose-400 transition">
+              Live Govt Recruitment & Admit Cards
+            </h3>
+            <p class="text-xs text-slate-400 line-clamp-1">
+              SSC, Railways, APPSC, UPSC Active Drives + Direct Result Server
+            </p>
+          </div>
+          <i data-lucide="chevron-right" class="w-5 h-5 text-slate-500 group-hover:text-rose-400 group-hover:translate-x-1 transition flex-shrink-0"></i>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- ZONE 1: CORE PHOTO & SIGNATURE RESIZER (100% OLD LOGIC INTACT) -->
+    <!-- ============================================================ -->
+    <section id="resizer-zone" class="active-zone block space-y-4">
       
-      <div class="exam-grid">
-        <button type="button" class="exam-btn active" data-exam="SSC">SSC</button>
-        <button type="button" class="exam-btn" data-exam="UPSC">UPSC</button>
-        <button type="button" class="exam-btn" data-exam="IBPS">IBPS / SBI</button>
-        <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
-        <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
-        <button type="button" class="exam-btn" data-exam="GATE">GATE</button>
+      <div class="glass-card p-4 rounded-xl border border-white/10 text-xs leading-relaxed text-slate-300">
+        <strong class="text-gold-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet the exact pixel dimensions and byte thresholds stipulated by government recruitment portals across India. Select your examination below to apply official notification parameters.
       </div>
 
-      <div class="split-grid">
-        <button type="button" class="exam-btn exam-btn-highlight" data-exam="STATE_PSC">🏛️ State PSC (Groups)</button>
-        <button type="button" class="exam-btn exam-btn-highlight" data-exam="PSU_HUB">⚡ PSUs (TRANSCO/GENCO)</button>
+      <div class="glass-card p-5 rounded-xl border border-white/10 space-y-4">
+        <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400">
+          <span>Select Target Examination</span>
+          <span id="activeExamIndicator" class="text-gold-400 font-extrabold">SSC</span>
+        </div>
+
+        <!-- 6 Main National Buttons -->
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" class="exam-btn active" data-exam="SSC">SSC</button>
+          <button type="button" class="exam-btn" data-exam="UPSC">UPSC</button>
+          <button type="button" class="exam-btn" data-exam="IBPS">IBPS / SBI</button>
+          <button type="button" class="exam-btn" data-exam="RRB">Railway RRB</button>
+          <button type="button" class="exam-btn" data-exam="NTA">NTA NEET/JEE</button>
+          <button type="button" class="exam-btn" data-exam="GATE">GATE</button>
+        </div>
+
+        <!-- Split Grid for State PSC and PSUs -->
+        <div class="grid grid-cols-2 gap-2">
+          <button type="button" class="exam-btn exam-btn-highlight" data-exam="STATE_PSC">🏛️ State PSC (Groups)</button>
+          <button type="button" class="exam-btn exam-btn-highlight" data-exam="PSU_HUB">⚡ PSUs (TRANSCO/GENCO)</button>
+        </div>
+
+        <!-- State PSC Dropdown Box -->
+        <div class="hidden p-3 rounded-lg bg-amber-500/10 border border-amber-500/30" id="stateSelectorBox">
+          <label for="stateDropdown" class="block text-[11px] font-extrabold text-gold-400 uppercase mb-1.5">Select State Public Service Commission</label>
+          <select class="w-full bg-slateDark border border-white/20 rounded-md p-2 text-xs text-white outline-none" id="stateDropdown">
+            <optgroup label="South States" class="bg-slateDark text-white">
+              <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
+              <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
+              <option value="TNPSC">Tamil Nadu - TNPSC</option>
+              <option value="KPSC">Karnataka - KPSC</option>
+              <option value="KERALAPSC">Kerala - KPSC</option>
+            </optgroup>
+            <optgroup label="North & Central States" class="bg-slateDark text-white">
+              <option value="MPSC">Maharashtra - MPSC</option>
+              <option value="UPPSC">Uttar Pradesh - UPPSC</option>
+              <option value="BPSC">Bihar - BPSC</option>
+              <option value="RPSC">Rajasthan - RPSC</option>
+              <option value="WBPSC">West Bengal - WBPSC</option>
+              <option value="OPSC">Odisha - OPSC</option>
+            </optgroup>
+            <optgroup label="Other States" class="bg-slateDark text-white">
+              <option value="GENERIC_PSC">Other State PSC Exams (10-100 KB)</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- PSU Dropdown Box -->
+        <div class="hidden p-3 rounded-lg bg-amber-500/10 border border-amber-500/30" id="psuSelectorBox">
+          <label for="psuDropdown" class="block text-[11px] font-extrabold text-gold-400 uppercase mb-1.5">Select Power Utility / Public Sector Enterprise</label>
+          <select class="w-full bg-slateDark border border-white/20 rounded-md p-2 text-xs text-white outline-none" id="psuDropdown">
+            <optgroup label="State Power Utilities (AE / Sub-Engineer)" class="bg-slateDark text-white">
+              <option value="AP_PSU">APTRANSCO / APGENCO / AP Discoms</option>
+              <option value="TG_PSU">TSTRANSCO / TSGENCO / TS Discoms</option>
+            </optgroup>
+            <optgroup label="Central Maharatna & Navratna PSUs" class="bg-slateDark text-white">
+              <option value="PGCIL_NTPC">PowerGrid (PGCIL) / NTPC / NHPC</option>
+              <option value="BHEL_ONGC">BHEL / ONGC / IOCL / GAIL / SAIL</option>
+              <option value="GENERIC_PSU">All Other Central/State PSUs</option>
+            </optgroup>
+          </select>
+        </div>
+
+        <!-- Mode Pills (Photo vs Sign) -->
+        <div class="tab-pills">
+          <button type="button" class="tab-btn active" id="tabPhoto">📷 Passport Photo</button>
+          <button type="button" class="tab-btn" id="tabSign">✍️ Signature</button>
+        </div>
       </div>
 
-      <div class="selector-box" id="stateSelectorBox">
-        <label for="stateDropdown">Select State Public Service Commission</label>
-        <select class="dropdown-select" id="stateDropdown">
-          <optgroup label="South States">
-            <option value="APPSC">Andhra Pradesh - APPSC (Groups 1, 2, 4)</option>
-            <option value="TGPSC">Telangana - TGPSC / TSPSC (Groups 1, 2, 3)</option>
-            <option value="TNPSC">Tamil Nadu - TNPSC</option>
-            <option value="KPSC">Karnataka - KPSC</option>
-            <option value="KERALAPSC">Kerala - KPSC</option>
-          </optgroup>
-          <optgroup label="North & Central States">
-            <option value="MPSC">Maharashtra - MPSC</option>
-            <option value="UPPSC">Uttar Pradesh - UPPSC</option>
-            <option value="BPSC">Bihar - BPSC</option>
-            <option value="RPSC">Rajasthan - RPSC</option>
-            <option value="WBPSC">West Bengal - WBPSC</option>
-            <option value="OPSC">Odisha - OPSC</option>
-          </optgroup>
-          <optgroup label="Other States">
-            <option value="GENERIC_PSC">Other State PSC Exams (10-100 KB)</option>
-          </optgroup>
-        </select>
+      <!-- Spec Banner -->
+      <div class="p-3.5 rounded-lg bg-amber-500/10 border-l-4 border-gold-500 text-xs font-semibold text-gold-300" id="specInfo">
+        ⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm
       </div>
 
-      <div class="selector-box" id="psuSelectorBox">
-        <label for="psuDropdown">Select Power Utility / Public Sector Enterprise</label>
-        <select class="dropdown-select" id="psuDropdown">
-          <optgroup label="State Power Utilities (AE / Sub-Engineer)">
-            <option value="AP_PSU">APTRANSCO / APGENCO / AP Discoms</option>
-            <option value="TG_PSU">TSTRANSCO / TSGENCO / TS Discoms</option>
-          </optgroup>
-          <optgroup label="Central Maharatna & Navratna PSUs">
-            <option value="PGCIL_NTPC">PowerGrid (PGCIL) / NTPC / NHPC</option>
-            <option value="BHEL_ONGC">BHEL / ONGC / IOCL / GAIL / SAIL</option>
-            <option value="GENERIC_PSU">All Other Central/State PSUs</option>
-          </optgroup>
-        </select>
+      <!-- Hidden Input & Upload Container -->
+      <input type="file" id="fileInput" accept="image/*" style="display: none;">
+      
+      <div class="upload-frame" id="uploadBox">
+        <div class="flex flex-col items-center text-center p-3" id="uploadPrompt">
+          <span class="text-3xl mb-2" id="modeIcon">📷</span>
+          <span class="text-sm font-bold text-white" id="uploadMainText">Tap to Select Passport Photo</span>
+          <span class="text-[11px] text-slate-400 mt-1">Supports JPG, JPEG, PNG (Client-Side Safe)</span>
+        </div>
+        <img id="inputPreview" alt="Preview" class="max-w-full max-h-full object-contain p-2 hidden">
       </div>
 
-      <div class="tab-pills">
-        <button type="button" class="tab-btn active" id="tabPhoto">📷 Passport Photo</button>
-        <button type="button" class="tab-btn" id="tabSign">✍️ Signature</button>
+      <!-- Generate Button -->
+      <button type="button" class="w-full py-3.5 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-black font-extrabold text-sm hover:brightness-110 transition shadow-lg flex items-center justify-center space-x-2" id="generateBtn">
+        <span>⚡ Generate Your Photo</span>
+      </button>
+
+      <!-- Output Card -->
+      <div class="hidden flex-col items-center glass-card rounded-xl p-4 border border-white/10" id="outputCard">
+        <div class="verified-pill" id="verifiedPill">✅ Image Ready to Download</div>
+        <img id="outputImg" class="max-w-full max-h-[220px] rounded-lg border-2 border-emerald-500 object-contain" alt="Exam Ready File">
+        <button type="button" class="w-full py-3 mt-3 rounded-xl bg-emerald-500 text-black font-extrabold text-sm hover:bg-emerald-400 transition" id="downloadBtn">
+          📥 Download Resized File
+        </button>
       </div>
-    </div>
 
-    <div class="spec-banner" id="specInfo">
-      ⚡ SSC Passport Photo: 20 KB to 50 KB | 3.5 cm × 4.5 cm
-    </div>
-
-    <input type="file" id="fileInput" accept="image/*" style="display: none;">
-    
-    <div class="upload-frame" id="uploadBox">
-      <div class="upload-content" id="uploadPrompt">
-        <span class="upload-icon" id="modeIcon">📷</span>
-        <span class="upload-text" id="uploadMainText">Tap to Select Passport Photo</span>
-        <span class="upload-sub">Supports JPG, JPEG, PNG</span>
+      <!-- Reference Specifications Table (All Official Sources Intact) -->
+      <div class="glass-card rounded-xl p-5 border border-white/10 text-xs leading-relaxed space-y-3">
+        <h2 class="text-sm font-extrabold text-gold-400 uppercase tracking-wider">Official Examination Specifications & Verification Sources</h2>
+        <p class="text-slate-300">Candidates must verify specific requirements on the official portals before final submission to avoid portal rejection.</p>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse text-[11px]">
+            <thead>
+              <tr>
+                <th>Exam Authority</th>
+                <th>Photo (KB & Specs)</th>
+                <th>Signature (KB & Specs)</th>
+                <th>Official Source</th>
+              </tr>
+            </thead>
+            <tbody class="text-slate-300">
+              <tr>
+                <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
+                <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
+                <td>10 KB – 20 KB | 4.0 cm × 2.0 cm</td>
+                <td><a href="https://ssc.gov.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">ssc.gov.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>UPSC</strong> (Civil Services, NDA, CDS)</td>
+                <td>20 KB – 300 KB | Min 350 × 350 px</td>
+                <td>20 KB – 300 KB | Min 350 × 350 px (Aspect ratio 1:1)</td>
+                <td><a href="https://upsconline.nic.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">upsconline.nic.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>IBPS / SBI</strong> (PO, Clerk, SO)</td>
+                <td>20 KB – 50 KB | 200 × 230 px</td>
+                <td>10 KB – 20 KB | 140 × 60 px</td>
+                <td><a href="https://ibps.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">ibps.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>Railway RRB</strong> (ALP, NTPC, JE)</td>
+                <td>30 KB – 70 KB | 35 mm × 45 mm</td>
+                <td>15 KB – 30 KB | 50 mm × 20 mm</td>
+                <td><a href="https://rrbapply.gov.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">rrbapply.gov.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>NTA (NEET / JEE Main)</strong></td>
+                <td>10 KB – 200 KB | 80% Face Coverage</td>
+                <td>4 KB – 30 KB | Clear Background</td>
+                <td><a href="https://nta.ac.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">nta.ac.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>GATE (IITs)</strong></td>
+                <td>5 KB – 200 KB | Aspect Ratio 0.66–0.86</td>
+                <td>5 KB – 200 KB | Aspect Ratio 2.75–3.75</td>
+                <td><a href="https://gate.iitg.ac.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">gate.iitg.ac.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>APPSC & TGPSC</strong> (State Groups)</td>
+                <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
+                <td>10 KB – 30 KB | 3.5 cm × 1.5 cm</td>
+                <td><a href="https://psc.ap.gov.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">psc.ap.gov.in</a></td>
+              </tr>
+              <tr>
+                <td><strong>APTRANSCO / TSGENCO</strong> (Power PSUs)</td>
+                <td>20 KB – 50 KB | White Background</td>
+                <td>10 KB – 30 KB | Dark Black Ink</td>
+                <td><a href="https://aptransco.co.in" target="_blank" rel="noopener" class="text-gold-400 underline font-semibold">aptransco.co.in</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
-      <img id="inputPreview" alt="Preview">
-    </div>
 
-    <button type="button" class="btn btn-generate" id="generateBtn">
-      ⚡ Generate Your Photo
-    </button>
-
-    <div class="output-card" id="outputCard">
-      <div class="verified-pill" id="verifiedPill">✅ Image Ready to Download</div>
-      <img id="outputImg" class="output-preview" alt="Exam Ready File">
-      <button type="button" class="btn btn-download" id="downloadBtn">📥 Download Resized File</button>
-    </div>
-
-    <!-- Official Specification Matrix -->
-    <div class="reference-section">
-      <h2>Official Examination Specifications & Verification Sources</h2>
-      <p>Candidates must verify specific requirements on the official portals before final submission to avoid portal rejection.</p>
-      <table>
-        <thead>
-          <tr>
-            <th>Exam Authority</th>
-            <th>Photo (KB & Specs)</th>
-            <th>Signature (KB & Specs)</th>
-            <th>Official Source</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td><strong>SSC</strong> (CGL, CHSL, MTS, GD)</td>
-            <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
-            <td>10 KB – 20 KB | 4.0 cm × 2.0 cm</td>
-            <td><a href="https://ssc.gov.in" target="_blank" rel="noopener">ssc.gov.in</a></td>
-          </tr>
-         <tr>
-            <td><strong>UPSC</strong> (Civil Services, NDA, CDS)</td>
-            <td>20 KB – 300 KB | Min 350 × 350 px</td>
-            <td>20 KB – 300 KB | Min 350 × 350 px (Aspect ratio 1:1)</td>
-            <td><a href="https://upsconline.nic.in" target="_blank" rel="noopener">upsconline.nic.in</a></td>
-          </tr>
-            <td><strong>IBPS / SBI</strong> (PO, Clerk, SO)</td>
-            <td>20 KB – 50 KB | 200 × 230 px</td>
-            <td>10 KB – 20 KB | 140 × 60 px</td>
-            <td><a href="https://ibps.in" target="_blank" rel="noopener">ibps.in</a></td>
-          </tr>
-          <tr>
-            <td><strong>Railway RRB</strong> (ALP, NTPC, JE)</td>
-            <td>30 KB – 70 KB | 35 mm × 45 mm</td>
-            <td>15 KB – 30 KB | 50 mm × 20 mm</td>
-            <td><a href="https://rrbapply.gov.in" target="_blank" rel="noopener">rrbapply.gov.in</a></td>
-          </tr>
-          <tr>
-            <td><strong>NTA (NEET / JEE Main)</strong></td>
-            <td>10 KB – 200 KB | 80% Face Coverage</td>
-            <td>4 KB – 30 KB | Clear Background</td>
-            <td><a href="https://nta.ac.in" target="_blank" rel="noopener">nta.ac.in</a></td>
-          </tr>
-          <tr>
-            <td><strong>GATE (IITs)</strong></td>
-            <td>5 KB – 200 KB | Aspect Ratio 0.66–0.86</td>
-            <td>5 KB – 200 KB | Aspect Ratio 2.75–3.75</td>
-            <td><a href="https://gate.iitg.ac.in" target="_blank" rel="noopener">gate.iitg.ac.in</a></td>
-          </tr>
-          <tr>
-            <td><strong>APPSC & TGPSC</strong> (State Groups)</td>
-            <td>20 KB – 50 KB | 3.5 cm × 4.5 cm</td>
-            <td>10 KB – 30 KB | 3.5 cm × 1.5 cm</td>
-            <td><a href="https://psc.ap.gov.in" target="_blank" rel="noopener">psc.ap.gov.in</a></td>
-          </tr>
-          <tr>
-            <td><strong>APTRANSCO / TSGENCO</strong> (Power PSUs)</td>
-            <td>20 KB – 50 KB | White Background</td>
-            <td>10 KB – 30 KB | Dark Black Ink</td>
-            <td><a href="https://aptransco.co.in" target="_blank" rel="noopener">aptransco.co.in</a></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Usage & Troubleshooting Guide -->
-    <div class="reference-section">
-      <h2>Step-by-Step Usage & Troubleshooting Guide</h2>
-      <h4>How to Resize Your Documents Correctly:</h4>
-      <ol>
-        <li>Select your target recruitment commission or public sector examination from the top buttons.</li>
-        <li>Choose whether you want to format a <strong>Passport Photo</strong> or a <strong>Signature</strong>.</li>
-        <li>Click on the dotted upload container to pick your source image file from your device.</li>
-        <li>Tap the maroon <strong>Generate Your Photo / Signature</strong> button. The browser engine processes the exact pixel and byte dimensions.</li>
-        <li>Click <strong>Download Resized File</strong> to save the final image to your local device storage.</li>
-      </ol>
-
-      <h4>Troubleshooting Compression Bounds:</h4>
-      <ul>
-        <li><strong>Output Below Permissible Minimum KB:</strong> Very low-resolution or heavily pre-compressed images can end up under-size. Always capture your photograph in sharp focus with high resolution.</li>
-        <li><strong>Output Exceeding Maximum Limit:</strong> Avoid cluttered backgrounds. Plain white or light grey backgrounds compress cleanly without exceeding portal thresholds.</li>
-        <li><strong>Signature Clarity Tips:</strong> For better clarity, use a dark blue or black ink pen on a clean, unruled white sheet under uniform ambient lighting.</li>
-      </ul>
-    </div>
-
-    <!-- Educational Formatting Rules Guide -->
-    <div class="reference-section">
-      <h2>Comprehensive Guide: Image Formatting & Portal Compliance</h2>
-      <p>Automated verification gateways at central commissions and state power utilities reject application submissions that fail exact byte boundaries or dimension aspect ratios.</p>
-
-     <h4>1. Facial Coverage & Portrait Guidelines</h4>
-      <p>Major recruitment bodies (such as NTA and SSC) recommend that the applicant's face cover approximately 70% to 80% of the photograph area. Ensure straight eye contact with both ears clearly visible against a light background.</p>
-
-      <h4>2. Background Tone and Illumination</h4>
-      <p>Always maintain a clean, uniform, white or light grey backdrop. Avoid flash reflections, dark cast shadows, or casual background locations to prevent automated document scrutiny failures.</p>
-
-      <h4>3. Client-Side Browser Security Architecture</h4>
-      <p>Our resizer operates purely client-side through the HTML5 Canvas API. All compression and scaling procedures execute directly in your local device memory without uploading images to any remote server.</p>
-    </div>
-
-    <!-- FAQ Section -->
-    <div class="reference-section">
-      <h2>Frequently Asked Questions (FAQ)</h2>
-      <div class="faq-item">
-        <div class="faq-q">Why do exam portals show "File size out of range"?</div>
-        <div class="faq-a">Server gateways check file headers strictly. If a portal requires 20 KB to 50 KB, uploading 19.9 KB or 50.1 KB will trigger an automated upload block. Our engine uses binary search compression to fit files safely within the bounds.</div>
+      <!-- FAQ Section -->
+      <div class="glass-card rounded-xl p-5 border border-white/10 text-xs space-y-3">
+        <h2 class="text-sm font-extrabold text-gold-400 uppercase tracking-wider">Frequently Asked Questions (FAQ)</h2>
+        <div class="border-b border-white/10 pb-2.5">
+          <div class="font-bold text-white">Why do exam portals show "File size out of range"?</div>
+          <div class="text-slate-400 mt-1">Server gateways check file headers strictly. If a portal requires 20 KB to 50 KB, uploading 19.9 KB or 50.1 KB will trigger an automated upload block. Our engine uses binary search compression to fit files safely within the bounds.</div>
+        </div>
+        <div class="pt-1">
+          <div class="font-bold text-white">Will reducing KB reduce print quality on my Admit Card?</div>
+          <div class="text-slate-400 mt-1">No. Our engine maintains standard proportional aspect ratios using high-quality bicubic canvas interpolation so that your hall ticket photo remains crisp and clear.</div>
+        </div>
       </div>
-      <div class="faq-item">
-        <div class="faq-q">Will reducing KB reduce print quality on my Admit Card?</div>
-        <div class="faq-a">No. Our engine maintains standard proportional aspect ratios using high-quality bicubic canvas interpolation so that your hall ticket photo remains crisp and clear.</div>
-      </div>
-    </div>
-  </div>
 
-  <footer class="legal-footer">
-    <div class="legal-links">
-      <a href="/privacy-policy.html">Privacy Policy</a>
+    </section>
+
+    <!-- ZONE 2: PREVIOUS PAPERS HUB (PLACEHOLDER CONTAINER) -->
+    <section id="pyq-zone" class="hidden">
+      <div class="glass-card rounded-2xl p-6 border border-white/10">
+        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+          <div>
+            <h2 class="font-heading font-bold text-xl text-white flex items-center">
+              <i data-lucide="book-open" class="w-5 h-5 text-gold-400 mr-2"></i>
+              All-India Previous Papers Hub
+            </h2>
+            <p class="text-xs text-slate-400">Step-by-step qualification drilldown with in-app preview reader & watermark download</p>
+          </div>
+          <button onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1">
+            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
+            <span>Back to Resizer</span>
+          </button>
+        </div>
+        <div id="papers-list-container" class="space-y-3 pt-4"></div>
+      </div>
+    </section>
+
+    <!-- ZONE 3: REAL CBT MOCK TEST ENGINE -->
+    <section id="mock-zone" class="hidden">
+      <div class="glass-card rounded-2xl p-6 border border-blue-500/30">
+        <div id="mock-instructions-screen" class="space-y-5">
+          <div class="flex items-center justify-between pb-4 border-b border-white/10">
+            <div>
+              <h2 class="font-heading font-bold text-xl text-white flex items-center">
+                <i data-lucide="shield-check" class="w-5 h-5 text-blue-400 mr-2"></i>
+                Official CBT Examination Terminal
+              </h2>
+              <p class="text-xs text-slate-400">Level 1: SSC CGL Tier-1 Official Simulator (Candy Crush Ladder Mode)</p>
+            </div>
+            <span class="px-3 py-1 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">TCS iON Pattern</span>
+          </div>
+
+          <div class="bg-black/40 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2 leading-relaxed">
+            <h4 class="font-bold text-white uppercase tracking-wider">General Examination Instructions:</h4>
+            <p>1. Total duration is 60 minutes for 100 questions (+2.00 marks for correct, -0.50 negative marking).</p>
+            <p>2. Green indicates answered, Red indicates unanswered, Violet indicates marked for review.</p>
+            <p>3. Clearing Level 1 unlocks Paper 2 automatically. Questions will not be repeated in subsequent levels.</p>
+          </div>
+
+          <!-- Condition Bar & Policy Checkbox -->
+          <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
+            <input type="checkbox" id="policyAgreementCheckbox" class="mt-1 w-4 h-4 rounded accent-gold-500 cursor-pointer">
+            <label for="policyAgreementCheckbox" class="text-xs text-slate-300 cursor-pointer">
+              I have read and understood all the instructions. All computer hardware allotted to me is in proper working condition. I agree to the exam rules, terms of evaluation, and portal privacy policy. I declare that I will not engage in any unfair means.
+            </label>
+          </div>
+
+          <div class="flex justify-end">
+            <button id="startExamBtn" disabled class="px-6 py-3 rounded-xl bg-slate-700 text-slate-400 font-bold text-sm cursor-not-allowed transition flex items-center space-x-2">
+              <i data-lucide="play" class="w-4 h-4"></i>
+              <span>I AM READY TO BEGIN</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 4: PDF MEGA TOOLS SUITE -->
+    <section id="pdf-zone" class="hidden">
+      <div class="glass-card rounded-2xl p-6 border border-emerald-500/30">
+        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+          <div>
+            <h2 class="font-heading font-bold text-xl text-white flex items-center">
+              <i data-lucide="file-cog" class="w-5 h-5 text-emerald-400 mr-2"></i>
+              PDF Mega Studio (iLovePDF Style)
+            </h2>
+            <p class="text-xs text-slate-400">100% Client-Side Privacy: Compress certificates strictly under 100 KB, 200 KB, or 300 KB</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+          <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 cursor-pointer transition text-center">
+            <i data-lucide="minimize-2" class="w-8 h-8 text-emerald-400 mx-auto mb-2"></i>
+            <h4 class="font-semibold text-sm text-white">Compress to 100 KB</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Govt Certificate Uploads</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 cursor-pointer transition text-center">
+            <i data-lucide="images" class="w-8 h-8 text-emerald-400 mx-auto mb-2"></i>
+            <h4 class="font-semibold text-sm text-white">Image to PDF</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Multi-page A4 document</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 cursor-pointer transition text-center">
+            <i data-lucide="git-merge" class="w-8 h-8 text-emerald-400 mx-auto mb-2"></i>
+            <h4 class="font-semibold text-sm text-white">Merge Multiple PDFs</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Combine Marksheets</p>
+          </div>
+          <div class="p-4 rounded-xl bg-white/5 border border-white/10 hover:border-emerald-500/50 cursor-pointer transition text-center">
+            <i data-lucide="file-text" class="w-8 h-8 text-emerald-400 mx-auto mb-2"></i>
+            <h4 class="font-semibold text-sm text-white">PDF to JPG</h4>
+            <p class="text-[11px] text-slate-400 mt-1">Extract high-res images</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ZONE 5: LIVE GOVT JOB ALERTS & RESULTS -->
+    <section id="jobs-zone" class="hidden">
+      <div class="glass-card rounded-2xl p-6 border border-rose-500/30">
+        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+          <div>
+            <h2 class="font-heading font-bold text-xl text-white flex items-center">
+              <i data-lucide="bell" class="w-5 h-5 text-rose-400 mr-2 animate-pulse"></i>
+              Live Govt Recruitment & Results
+            </h2>
+            <p class="text-xs text-slate-400">Direct Official Links & Closing in 48 Hours Urgency Alerts</p>
+          </div>
+        </div>
+        <div class="space-y-3 mt-6" id="job-alerts-list"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="w-full text-center py-8 px-4 text-xs text-slate-500 border-t border-white/10 mt-8">
+    <div class="flex justify-center gap-4 mb-3 flex-wrap">
+      <a href="/privacy-policy.html" class="text-gold-400 hover:underline">Privacy Policy</a>
       <span>•</span>
-      <a href="/terms.html">Terms of Service</a>
+      <a href="/terms.html" class="text-gold-400 hover:underline">Terms of Service</a>
       <span>•</span>
-      <a href="/about.html">About Us</a>
+      <a href="/about.html" class="text-gold-400 hover:underline">About Us</a>
       <span>•</span>
-      <a href="/contact.html">Contact Us</a>
+      <a href="/contact.html" class="text-gold-400 hover:underline">Contact Us</a>
     </div>
     <p>© 2026 Exam Resizer Pro. Images are processed directly within your browser session using standard web APIs.</p>
   </footer>
 
+  <!-- ============================================================ -->
+  <!-- COMPLETE ENGINE SCRIPT (ALL ORIGINAL RESIZER PRESETS & LOGIC) -->
+  <!-- ============================================================ -->
   <script>
+    // 100% UNTOUCHED ORIGINAL EXAM PRESETS WITH ACCURATE SPECS
     const EXAM_PRESETS = {
       SSC: {
         photo: { minKb: 20, maxKb: 45, width: 350, height: 450, desc: "20 KB to 50 KB | 3.5 cm × 4.5 cm" },
@@ -826,28 +786,23 @@
       const btn = $('downloadBtn');
       if (btn) {
         btn.innerText = '📥 Download Resized File';
-        btn.style.background = '#15803d';
+        btn.style.background = '#10b981';
         btn.disabled = false;
       }
     }
 
     function triggerDownload() {
       if (!outputUrl) return;
-      
       const key = getActivePresetKey();
       const a = document.createElement('a');
       a.href = outputUrl;
-      
       const ext = outputUrl.includes('image/png') ? '.png' : '.jpg';
       a.download = key + '_' + currentMode.toUpperCase() + '_' + Date.now() + ext;
-      
       document.body.appendChild(a);
       a.click();
-      
       setTimeout(() => {
         if (a && a.parentNode) document.body.removeChild(a);
       }, 500);
-
       updateDownloadBtn();
     }
 
@@ -878,7 +833,6 @@
       $('specInfo').innerText = '⚡ ' + examLabel + ' ' + modeLabel + ': ' + spec.desc;
       $('modeIcon').innerText = currentMode === 'photo' ? '📷' : '✍️';
       $('uploadMainText').innerText = 'Tap to Select ' + modeLabel;
-      
       $('generateBtn').innerText = currentMode === 'photo' ? '⚡ Generate Your Photo' : '⚡ Generate Your Signature';
 
       document.querySelectorAll('.exam-btn').forEach((b) => {
@@ -929,7 +883,6 @@
 
     $('tabPhoto').addEventListener('click', () => setMode('photo'));
     $('tabSign').addEventListener('click', () => setMode('sign'));
-
     $('uploadBox').addEventListener('click', () => $('fileInput').click());
 
     $('fileInput').addEventListener('change', (e) => {
@@ -961,7 +914,6 @@
       canvas.width = w; 
       canvas.height = h;
       const ctx = canvas.getContext('2d');
-      
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, w, h);
       ctx.imageSmoothingEnabled = true;
@@ -986,6 +938,7 @@
       return new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', quality));
     }
 
+    // ORIGINAL BINARY SEARCH COMPRESSION LOGIC
     async function compressToTarget(img, spec) {
       const maxBytes = spec.maxKb * 1024;
       const minBytes = spec.minKb * 1024;
@@ -1074,7 +1027,46 @@
       }
     });
 
+    // ============================================================
+    // SWAPPING ZONE CONTROLLER & POLICY CHECKBOX UNLOCK
+    // ============================================================
+    function switchZone(targetZoneId) {
+      const zones = ['resizer-zone', 'pyq-zone', 'mock-zone', 'pdf-zone', 'jobs-zone'];
+      zones.forEach(id => {
+        const el = $(id);
+        if (el) {
+          if (id === targetZoneId) {
+            el.classList.remove('hidden');
+            el.classList.add('block');
+          } else {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+          }
+        }
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Policy Checkbox listener for Mock Test
+    const policyCb = $('policyAgreementCheckbox');
+    const startExamBtn = $('startExamBtn');
+    if (policyCb && startExamBtn) {
+      policyCb.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          startExamBtn.disabled = false;
+          startExamBtn.classList.remove('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+          startExamBtn.classList.add('bg-gradient-to-r', 'from-gold-500', 'to-amber-600', 'text-black', 'gold-glow', 'cursor-pointer');
+        } else {
+          startExamBtn.disabled = true;
+          startExamBtn.classList.add('bg-slate-700', 'text-slate-400', 'cursor-not-allowed');
+          startExamBtn.classList.remove('bg-gradient-to-r', 'from-gold-500', 'to-amber-600', 'text-black', 'gold-glow', 'cursor-pointer');
+        }
+      });
+    }
+
+    // Initialize UI and Icons
     updateUI();
+    lucide.createIcons();
   </script>
 </body>
 </html>
