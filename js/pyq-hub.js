@@ -4,7 +4,8 @@
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
-const SUPABASE_STORAGE_BASE = "https://your-supabase-project.supabase.co/storage/v1/object/public/exam-papers";
+// Replace this line:
+const SUPABASE_STORAGE_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers";
 
 const COMPREHENSIVE_AUTHORITY_CATALOG = {
   GATE: {
