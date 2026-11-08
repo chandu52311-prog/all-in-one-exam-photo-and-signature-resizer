@@ -217,6 +217,19 @@
       text-align: center; 
       box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
     }
+
+    /* Ambient Center Watermark Engine */
+    .cbt-canvas-watermark {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.035;
+      user-select: none;
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
@@ -271,8 +284,8 @@
         <div class="w-14 h-14 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg">⏱️</div>
         <div class="flex-grow">
           <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">TCS-iON PATTERN</span>
-          <h3 class="font-extrabold text-white text-base group-hover:text-blue-400 transition">Real CBT Examination Terminal</h3>
-          <p class="text-xs text-slate-400 leading-snug mt-0.5">Live 60-Minute Countdown Timer, Palette Grid & Real-time Marking</p>
+          <h3 class="font-extrabold text-white text-base group-hover:text-blue-400 transition">Official CBT Examination Terminal</h3>
+          <p class="text-xs text-slate-400 leading-snug mt-0.5">10 Sequential Levels • 35% Qualifying Pass Rule • Complete Solutions</p>
         </div>
         <span class="text-slate-500 group-hover:text-blue-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
@@ -473,73 +486,217 @@
       </div>
     </section>
 
-    <!-- SECTION 3: CBT MOCK TEST ENGINE -->
-    <section id="mock-zone" class="hidden space-y-4">
-      <div class="glass-card rounded-2xl p-6 border border-blue-500/30">
-        <div id="mock-gatekeeper-screen" class="space-y-5">
+    <!-- ======================================================== -->
+    <!-- SECTION 3: CBT MOCK TEST ENGINE (UPDATED FOR PYQ STAGES) -->
+    <!-- ======================================================== -->
+    <section id="mock-zone" class="hidden space-y-5">
+      <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
+        
+        <!-- STUDENT PROFILE DOCK -->
+        <div class="glass-card border border-white/10 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div id="studentLoginBox" class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <input type="text" id="studentNameInput" placeholder="Enter Full Name" class="bg-black/60 border border-white/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400">
+            <input type="tel" id="studentPhoneInput" maxlength="10" placeholder="10-Digit Mobile No" class="bg-black/60 border border-white/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400">
+            <button type="button" onclick="loginStudent()" class="px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs shadow-md">
+              Save / Load Progress
+            </button>
+          </div>
+
+          <div id="studentProfileBox" class="hidden flex items-center justify-between w-full">
+            <div class="flex items-center space-x-2.5">
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">
+                👤
+              </div>
+              <div>
+                <p class="text-xs font-bold text-white flex items-center">
+                  Welcome back, <span id="displayStudentName" class="text-amber-400 ml-1">Candidate</span>!
+                </p>
+                <p class="text-[10px] text-slate-400" id="displayStudentPhone">📱 Mobile ID: Not Synced</p>
+              </div>
+            </div>
+            <button type="button" onclick="logoutStudent()" class="text-[11px] text-slate-400 hover:text-rose-400 font-bold transition">
+              Switch User ➔
+            </button>
+          </div>
+        </div>
+
+        <!-- MODULE 1: EXAM SELECTOR & 10-STAGE PROGRESSION DOCK -->
+        <div id="mock-hub-dashboard" class="space-y-6">
+          <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-white/10 gap-3">
+            <div>
+              <h2 class="font-black text-xl text-white flex items-center">
+                ⏱️ Official CBT Practice Assessment Hub
+              </h2>
+              <p class="text-xs text-slate-400">Past Master Examination Question Drills • 35% Qualifying Pass Gatekeeper</p>
+            </div>
+            <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition self-start md:self-auto">
+              ← Return to Resizer
+            </button>
+          </div>
+
+          <!-- Exam Selection Tabs -->
+          <div>
+            <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
+              Select Examination Domain
+            </label>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2" id="mockDomainTabsNav">
+              <button type="button" onclick="selectMockDomain('APPSC')" id="domain-btn-APPSC" class="exam-btn active p-2.5 text-xs text-center">APPSC (Groups)</button>
+              <button type="button" onclick="selectMockDomain('TGPSC')" id="domain-btn-TGPSC" class="exam-btn p-2.5 text-xs text-center">TGPSC (Groups)</button>
+              <button type="button" onclick="selectMockDomain('SSC')" id="domain-btn-SSC" class="exam-btn p-2.5 text-xs text-center">SSC (CGL/CHSL)</button>
+              <button type="button" onclick="selectMockDomain('RRB')" id="domain-btn-RRB" class="exam-btn p-2.5 text-xs text-center">Railway (RRB)</button>
+              <button type="button" onclick="selectMockDomain('POWER_PSU')" id="domain-btn-POWER_PSU" class="exam-btn p-2.5 text-xs text-center">Power PSUs</button>
+              <button type="button" onclick="selectMockDomain('GATE')" id="domain-btn-GATE" class="exam-btn p-2.5 text-xs text-center">GATE Engineering</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Active Stream Bar -->
+          <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
+            <div>
+              <h3 class="font-bold text-white text-base" id="activeMockDomainTitle">Andhra Pradesh PSC (Groups & AEE)</h3>
+              <p class="text-xs text-slate-300">Passing Threshold: 35% required to sequentially unlock subsequent tests.</p>
+            </div>
+            <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-amber-400 font-bold text-xs" id="userTierStatus">
+              Active Tier: Practice Test 1 Unlocked
+            </span>
+          </div>
+
+          <!-- 10 Mock Tests Series Grid + 11th Coming Soon -->
+          <div>
+            <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Sequential Test Progression Matrix</h4>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5" id="mockTestsGridContainer"></div>
+          </div>
+        </div>
+
+        <!-- MODULE 2: GATEKEEPER & CANDIDATE GUIDELINES SCREEN -->
+        <div id="mock-gatekeeper-screen" class="hidden space-y-5">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
             <div>
-              <h2 class="font-bold text-xl text-white">⏱️ Official CBT Examination Terminal</h2>
-              <p class="text-xs text-slate-400">TCS-iON Simulator with Negative Marking & Palette Progression</p>
+              <h3 class="font-bold text-lg text-white" id="gatekeeperTestTitle">Official Practice Assessment 01</h3>
+              <p class="text-xs text-slate-400">Strict CBT Simulator • Negative Marking Applicable</p>
             </div>
-            <span class="px-3 py-1 rounded-md bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-bold">TCS Pattern</span>
+            <button type="button" onclick="returnToMockHub()" class="text-xs text-amber-400 hover:underline">
+              ← Change Test
+            </button>
           </div>
-          <div class="bg-black/40 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2">
-            <h4 class="font-bold text-white uppercase">Candidate Instructions:</h4>
-            <p>1. Test duration is <strong>60 minutes</strong> with live countdown timer.</p>
-            <p>2. Marking scheme: <strong>+2.00 marks</strong> for correct, <strong>-0.50 marks</strong> for incorrect.</p>
-            <p>3. Scoring 60% unlocks sequential progression to Paper-2.</p>
+
+          <div class="bg-black/50 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2.5 leading-relaxed">
+            <h4 class="font-bold text-white uppercase tracking-wider">Candidate Guidelines & Examination Rules:</h4>
+            <p>1. <strong>Passing Criterion:</strong> You must score at least <strong>35.00% Marks</strong> to unlock the next practice test in this series.</p>
+            <p>2. <strong>Scoring System:</strong> Each correct response awards <strong>+2.00 marks</strong>. Each incorrect choice carries a penalty of <strong>-0.50 negative marks</strong>.</p>
+            <p>3. <strong>Timer Control:</strong> Session timer runs uninterrupted. Answers are auto-submitted when the clock reaches zero.</p>
+            <p>4. <strong>Certified Verification:</strong> Post completion, you can download a complete Watermarked Analytical Result Card including mathematical solutions.</p>
           </div>
+
           <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
-            <input type="checkbox" id="policyAgreementCheckbox" onchange="if(window.toggleCBTReady) window.toggleCBTReady(this);" class="mt-1 w-4 h-4 rounded accent-amber-500 cursor-pointer">
+            <input type="checkbox" id="policyAgreementCheckbox" onchange="toggleCBTReady(this)" class="mt-1 w-4 h-4 rounded accent-amber-500 cursor-pointer">
             <label for="policyAgreementCheckbox" class="text-xs text-slate-300 cursor-pointer select-none">
-              I have read, understood, and agree to adhere to all examination guidelines and portal policies.
+              I have thoroughly read the examination instructions. I declare that I will attempt this practice assessment under strict exam conditions.
             </label>
           </div>
-          <div class="flex justify-end">
-            <button type="button" id="startCbtBtn" onclick="startCbtSession()" disabled class="px-6 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed transition">
+
+          <div class="flex justify-between items-center pt-2">
+            <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-xs font-bold hover:bg-white/10">
+              Cancel
+            </button>
+            <button type="button" id="startCbtBtn" onclick="startCbtSession()" disabled class="px-7 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed transition">
               I AM READY TO BEGIN
             </button>
           </div>
         </div>
 
+        <!-- MODULE 3: LIVE TCS-iON CBT TERMINAL -->
         <div id="mock-live-screen" class="hidden space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
-            <div>
-              <h3 class="font-bold text-white text-base">CBT Master Simulator</h3>
-              <span class="text-[11px] text-slate-400">Marks: +2.00 / -0.50</span>
-            </div>
             <div class="flex items-center space-x-3">
-              <span class="px-3.5 py-1.5 rounded-xl bg-black/80 border border-amber-500/40 text-amber-400 font-mono text-sm font-bold shadow-inner" id="cbtClock">59:59</span>
-              <button type="button" onclick="submitCBT()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-black text-xs hover:brightness-110 shadow-lg cursor-pointer">Submit Test</button>
+              <div class="w-9 h-9 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-xs font-bold text-amber-400">
+                <span id="cbtAvatar">👤</span>
+              </div>
+              <div>
+                <h3 class="font-bold text-white text-base leading-tight" id="liveExamHeaderTitle">Level Assessment Terminal</h3>
+                <span class="text-[11px] text-slate-400" id="candidateNameBar">Candidate: Verified Aspirant</span>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-3">
+              <div class="flex items-center space-x-1.5 bg-black/60 border border-white/10 px-2.5 py-1 rounded-lg">
+                <span class="text-[10px] text-slate-400 uppercase font-bold">View in:</span>
+                <select id="cbtLanguageSelect" onchange="cbtChangeLanguage(this.value)" class="bg-transparent text-amber-400 text-xs font-bold outline-none cursor-pointer"></select>
+              </div>
+              <span class="px-3.5 py-1.5 rounded-xl bg-black/80 border border-amber-500/40 text-amber-400 font-mono text-sm font-bold shadow-inner" id="cbtClock">60:00</span>
+              <button type="button" onclick="submitCBT()" class="px-4 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 text-white font-black text-xs hover:brightness-110 shadow-lg cursor-pointer">
+                Submit Test
+              </button>
             </div>
           </div>
+
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="md:col-span-3 space-y-4">
-              <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-3">
-                <div class="flex items-center justify-between border-b border-white/5 pb-2">
-                  <span class="text-xs font-bold text-amber-400 uppercase" id="cbtQuestionNum">Question No. 1</span>
-                  <span class="text-[10px] text-slate-400" id="cbtSectionTag">General Science</span>
+              <div class="relative p-6 rounded-xl bg-white/[0.02] border border-white/10 space-y-4 min-h-[380px] flex flex-col justify-between overflow-hidden">
+                
+                <!-- Watermark -->
+                <div class="cbt-canvas-watermark">
+                  <span class="text-5xl md:text-6xl font-black rotate-[-25deg] tracking-widest text-white">EXAMRESIZER.ME</span>
                 </div>
-                <div class="text-xs md:text-sm text-slate-200 space-y-1">
-                  <p class="font-medium" id="cbtQuestionEn"></p>
-                  <p class="text-slate-400 italic" id="cbtQuestionTe"></p>
+
+                <div class="relative z-10 space-y-4">
+                  <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <span class="text-xs font-bold text-amber-400 uppercase tracking-wider" id="cbtQuestionNum">Question No. 1</span>
+                    <div class="flex items-center space-x-2">
+                      <span class="text-[10px] text-slate-400 bg-white/5 px-2.5 py-0.5 rounded-md border border-white/10" id="cbtSectionTag">General Studies</span>
+                      <span class="text-[10px] text-emerald-400 font-bold">+2.00 / -0.50</span>
+                    </div>
+                  </div>
+                  
+                  <div class="text-xs md:text-sm text-slate-100 space-y-2">
+                    <p class="font-semibold text-white leading-relaxed text-sm md:text-base" id="cbtQuestionText"></p>
+                  </div>
+
+                  <div class="space-y-2.5 pt-2" id="cbtOptionsContainer"></div>
                 </div>
-                <div class="space-y-2 pt-2" id="cbtOptionsContainer"></div>
-                <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
-                  <button type="button" onclick="cbtClearResponse()" class="exam-btn px-4 py-2">Clear</button>
-                  <button type="button" onclick="cbtSaveAndNext()" class="px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black hover:brightness-110 cursor-pointer shadow-md">Save & Next</button>
+                
+                <div class="relative z-10 flex items-center justify-between pt-4 border-t border-white/10 text-xs">
+                  <div class="flex space-x-2">
+                    <button type="button" onclick="cbtClearResponse()" class="exam-btn px-4 py-2">Clear Response</button>
+                    <button type="button" onclick="cbtToggleReview()" id="cbtReviewBtn" class="exam-btn px-4 py-2">Mark for Review</button>
+                  </div>
+                  <button type="button" onclick="cbtSaveAndNext()" class="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black hover:brightness-110 cursor-pointer shadow-md">
+                    Save & Next ➔
+                  </button>
                 </div>
               </div>
             </div>
+
+            <!-- Palette Dock -->
             <div class="md:col-span-1 border-t md:border-t-0 md:border-l border-white/10 md:pl-4 space-y-3">
-              <h4 class="text-xs font-bold text-white uppercase">Question Palette</h4>
-              <div class="grid grid-cols-5 gap-1.5" id="cbtPaletteGrid"></div>
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-white uppercase tracking-wider">Question Palette</h4>
+                <span class="text-[10px] text-slate-400" id="paletteAnsweredCount">0 Answered</span>
+              </div>
+              <div class="grid grid-cols-5 gap-1.5 max-h-[350px] overflow-y-auto p-1" id="cbtPaletteGrid"></div>
+              
+              <div class="space-y-1.5 text-[10px] text-slate-400 pt-3 border-t border-white/10">
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center"><span class="w-3 h-3 rounded-sm bg-emerald-500 mr-2"></span> Answered</span>
+                  <span class="flex items-center"><span class="w-3 h-3 rounded-sm bg-rose-500/80 mr-2"></span> Not Answered</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center"><span class="w-3 h-3 rounded-sm bg-purple-600 mr-2"></span> Marked for Review</span>
+                  <span class="flex items-center"><span class="w-3 h-3 rounded-sm bg-slate-800 border border-white/10 mr-2"></span> Not Visited</span>
+                </div>
+                <div class="flex items-center">
+                  <span class="w-3 h-3 rounded-sm bg-purple-600 relative mr-2 flex items-center justify-center">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                  </span>
+                  <span>Answered & Marked for Review</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
+        <!-- MODULE 4: ANALYTICAL SCORECARD & STEP-BY-STEP SOLUTIONS -->
         <div id="mock-result-screen" class="hidden space-y-5"></div>
+
       </div>
     </section>
 
@@ -562,9 +719,9 @@
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-white uppercase">Target Limit:</span>
             <div class="flex space-x-2 text-xs">
-              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(100); if(window.setTargetLimit) setTargetLimit(100);" id="limit-btn-100" class="exam-btn active px-3 py-1">Under 100 KB</button>
-              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(200); if(window.setTargetLimit) setTargetLimit(200);" id="limit-btn-200" class="exam-btn px-3 py-1">Under 200 KB</button>
-              <button type="button" onclick="if(window.setPdfLimit) setPdfLimit(300); if(window.setTargetLimit) setTargetLimit(300);" id="limit-btn-300" class="exam-btn px-3 py-1">Under 300 KB</button>
+              <button type="button" onclick="setPdfLimit(100)" id="limit-btn-100" class="exam-btn active px-3 py-1">Under 100 KB</button>
+              <button type="button" onclick="setPdfLimit(200)" id="limit-btn-200" class="exam-btn px-3 py-1">Under 200 KB</button>
+              <button type="button" onclick="setPdfLimit(300)" id="limit-btn-300" class="exam-btn px-3 py-1">Under 300 KB</button>
             </div>
           </div>
           <div onclick="document.getElementById('actualPdfFileInput').click()" class="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 rounded-xl p-8 text-center cursor-pointer bg-white/[0.01] transition">
@@ -591,53 +748,7 @@
           </div>
           <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:underline">Back to Resizer</button>
         </div>
-        <div class="space-y-3" id="liveAlertsContainer">
-          <!-- Job 1 -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/30 text-[10px] font-bold animate-pulse">CLOSING IN 48 HOURS</span>
-                <span class="text-xs text-slate-400">Staff Selection Commission</span>
-              </div>
-              <h4 class="font-bold text-white text-base mt-1">SSC Combined Graduate Level (CGL) 2026</h4>
-              <p class="text-xs text-slate-300">17,727 Vacancies | Any Degree Eligible</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="if(window.routeToExamPreset) routeToExamPreset('SSC')" class="px-3.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold hover:bg-amber-500/20 transition">Resize for SSC</button>
-              <a href="https://ssc.gov.in" target="_blank" rel="noopener" class="px-4 py-1.5 rounded-lg bg-rose-500 text-white font-bold text-xs hover:bg-rose-600 transition">Apply Official</a>
-            </div>
-          </div>
-          <!-- Job 2 -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/30 text-[10px] font-bold">ACTIVE APPLICATION</span>
-                <span class="text-xs text-slate-400">Railway Recruitment Boards</span>
-              </div>
-              <h4 class="font-bold text-white text-base mt-1">RRB NTPC (Graduate & Undergraduate Posts)</h4>
-              <p class="text-xs text-slate-300">11,558 Posts (Station Master, Goods Train Manager, Clerks)</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="if(window.routeToExamPreset) routeToExamPreset('RRB')" class="px-3.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold hover:bg-amber-500/20 transition">Resize for RRB</button>
-              <a href="https://rrbapply.gov.in" target="_blank" rel="noopener" class="px-4 py-1.5 rounded-lg bg-rose-500 text-white font-bold text-xs hover:bg-rose-600 transition">Apply Official</a>
-            </div>
-          </div>
-          <!-- Job 3 -->
-          <div class="p-4 rounded-xl glass-card border border-white/10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-            <div>
-              <div class="flex items-center space-x-2">
-                <span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold">STATE RECRUITMENT</span>
-                <span class="text-xs text-slate-400">Andhra Pradesh PSC</span>
-              </div>
-              <h4 class="font-bold text-white text-base mt-1">APPSC Group-2 Services Recruitment</h4>
-              <p class="text-xs text-slate-300">897 Executive & Non-Executive State Cadre Posts</p>
-            </div>
-            <div class="flex items-center space-x-2">
-              <button onclick="if(window.routeToExamPreset) routeToExamPreset('APPSC')" class="px-3.5 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-bold hover:bg-amber-500/20 transition">Resize for APPSC</button>
-              <a href="https://psc.ap.gov.in" target="_blank" rel="noopener" class="px-4 py-1.5 rounded-lg bg-rose-500 text-white font-bold text-xs hover:bg-rose-600 transition">Apply Official</a>
-            </div>
-          </div>
-        </div>
+        <div class="space-y-3" id="liveAlertsContainer"></div>
       </div>
     </section>
 
@@ -704,7 +815,6 @@
       const el = document.getElementById(id);
       if (el) el.classList.add('hidden'); 
     }
-    // ESC Key listener to close active modals
     window.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal('aboutModal');
