@@ -4,8 +4,8 @@
 // ====================================================================
 
 // Supabase Storage Endpoint for Official PYQ Papers
-const SUPABASE_MOCK_BASE = "https://your-supabase-project.supabase.co/storage/v1/object/public/exam-papers/mock-tests";
-
+// Replace this line:
+const SUPABASE_MOCK_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/mock-tests";
 const MOCK_DOMAINS = {
   APPSC: { 
     title: "Andhra Pradesh PSC (Groups & State PSUs)", 
