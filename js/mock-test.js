@@ -1,36 +1,45 @@
 // ====================================================================
-// ⏱️ EXAMRESIZER PRO - OFFICIAL CBT SIMULATOR ENGINE (TCS-iON ARCHITECTURE)
-// Sequential Progression • 35% Gatekeeper • Multi-Language • Math Steps • PDF Card
+// ⏱️ EXAMRESIZER PRO - PURE SUPABASE PYQ FETCH CBT ENGINE
+// Zero Hardcoded Questions • Dynamic Stream from Cloud Storage
 // ====================================================================
+
+// Supabase Storage Endpoint for Official PYQ Papers
+const SUPABASE_MOCK_BASE = "https://your-supabase-project.supabase.co/storage/v1/object/public/exam-papers/mock-tests";
 
 const MOCK_DOMAINS = {
   APPSC: { 
     title: "Andhra Pradesh PSC (Groups & State PSUs)", 
+    prefix: "appsc",
     languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
     count: 10 
   },
   TGPSC: { 
     title: "Telangana PSC (Group Services & State PSUs)", 
+    prefix: "tgpsc",
     languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
     count: 10 
   },
   SSC: { 
     title: "Staff Selection Commission (CGL, CHSL & JE)", 
+    prefix: "ssc",
     languages: [{ code: "en", name: "English" }, { code: "hi", name: "हिन्दी" }, { code: "te", name: "తెలుగు" }],
     count: 10 
   },
   RRB: { 
     title: "Railway Recruitment Boards (NTPC, ALP & JE)", 
+    prefix: "rrb",
     languages: [{ code: "en", name: "English" }, { code: "hi", name: "हिन्दी" }, { code: "te", name: "తెలుగు" }],
     count: 10 
   },
   POWER_PSU: { 
     title: "Power Utilities & Technical PSUs (PGCIL/TRANSCO/GENCO)", 
+    prefix: "psu",
     languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
     count: 10 
   },
   GATE: { 
     title: "GATE National Engineering Assessment", 
+    prefix: "gate",
     languages: [{ code: "en", name: "English (Only)" }],
     count: 10 
   }
@@ -39,7 +48,7 @@ const MOCK_DOMAINS = {
 let currentDomain = 'APPSC';
 let currentTestStage = 1;
 let currentLanguage = 'en';
-let CBT_ACTIVE_QUESTIONS = [];
+let CBT_ACTIVE_QUESTIONS = []; // Filled dynamically from Supabase
 let cbtIndex = 0;
 let cbtAnswers = {};
 let cbtVisited = new Set();
@@ -169,7 +178,7 @@ function renderStageCards() {
             </span>
           </div>
           <h4 class="font-bold text-white text-sm">Practice Test 0${stage}</h4>
-          <p class="text-[11px] text-slate-400 mt-0.5">100 Bits • 200 Marks • Pass 35%</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">Official PYQ Set • Pass 35%</p>
         </div>
 
         <div>
@@ -243,42 +252,68 @@ function toggleCBTReady(el) {
 window.toggleCBTReady = toggleCBTReady;
 
 // ----------------------------------------------------
-// 3. LIVE CBT SIMULATOR ENGINE (TCS ARCHITECTURE)
+// 3. LIVE CBT SIMULATOR ENGINE (FETCHES REAL PYQ FROM SUPABASE)
 // ----------------------------------------------------
-function startCbtSession() {
-  document.getElementById('mock-gatekeeper-screen').classList.add('hidden');
-  document.getElementById('mock-live-screen').classList.remove('hidden');
-  document.getElementById('liveExamHeaderTitle').innerText = `${MOCK_DOMAINS[currentDomain].title} - Test 0${currentTestStage}`;
+async function startCbtSession() {
+  const startBtn = document.getElementById('startCbtBtn');
+  const originalText = startBtn.innerText;
+  startBtn.innerText = "⏳ Loading Official PYQ Questions...";
+  startBtn.disabled = true;
 
-  // Populate Domain-Specific Languages
-  const langSelect = document.getElementById('cbtLanguageSelect');
-  if (langSelect) {
-    langSelect.innerHTML = MOCK_DOMAINS[currentDomain].languages.map(l => 
-      `<option value="${l.code}">${l.name}</option>`
-    ).join('');
-    currentLanguage = MOCK_DOMAINS[currentDomain].languages[0].code;
+  const domainConfig = MOCK_DOMAINS[currentDomain];
+  const pyqFileName = `${domainConfig.prefix}_stage_${currentTestStage}.json`;
+  const fetchUrl = `${SUPABASE_MOCK_BASE}/${pyqFileName}`;
+
+  try {
+    const res = await fetch(fetchUrl);
+    if (!res.ok) {
+      throw new Error("Unable to fetch PYQ file from storage");
+    }
+    CBT_ACTIVE_QUESTIONS = await res.json();
+
+    if (!Array.isArray(CBT_ACTIVE_QUESTIONS) || CBT_ACTIVE_QUESTIONS.length === 0) {
+      alert("This test's official PYQ data is currently being digitized. Please try another stage.");
+      return;
+    }
+
+    document.getElementById('mock-gatekeeper-screen').classList.add('hidden');
+    document.getElementById('mock-live-screen').classList.remove('hidden');
+    document.getElementById('liveExamHeaderTitle').innerText = `${domainConfig.title} - Test 0${currentTestStage}`;
+
+    // Populate Languages
+    const langSelect = document.getElementById('cbtLanguageSelect');
+    if (langSelect) {
+      langSelect.innerHTML = domainConfig.languages.map(l => 
+        `<option value="${l.code}">${l.name}</option>`
+      ).join('');
+      currentLanguage = domainConfig.languages[0].code;
+    }
+
+    cbtIndex = 0;
+    cbtAnswers = {};
+    cbtVisited = new Set([0]);
+    cbtReview = new Set();
+    cbtTimerSeconds = 3600;
+
+    renderCbtQuestion();
+    renderCbtPalette();
+
+    clearInterval(cbtTimerInterval);
+    cbtTimerInterval = setInterval(() => {
+      cbtTimerSeconds--;
+      const m = Math.floor(cbtTimerSeconds / 60);
+      const s = cbtTimerSeconds % 60;
+      const clock = document.getElementById('cbtClock');
+      if (clock) clock.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+      if (cbtTimerSeconds <= 0) submitCBT();
+    }, 1000);
+
+  } catch (err) {
+    alert(`PYQ Data connection failed for ${pyqFileName}. Verify that Supabase file exists.`);
+  } finally {
+    startBtn.innerText = originalText;
+    startBtn.disabled = false;
   }
-
-  // Load authentic question suite
-  CBT_ACTIVE_QUESTIONS = generateStageQuestions(currentDomain, currentTestStage);
-  cbtIndex = 0;
-  cbtAnswers = {};
-  cbtVisited = new Set([0]);
-  cbtReview = new Set();
-  cbtTimerSeconds = 3600;
-
-  renderCbtQuestion();
-  renderCbtPalette();
-
-  clearInterval(cbtTimerInterval);
-  cbtTimerInterval = setInterval(() => {
-    cbtTimerSeconds--;
-    const m = Math.floor(cbtTimerSeconds / 60);
-    const s = cbtTimerSeconds % 60;
-    const clock = document.getElementById('cbtClock');
-    if (clock) clock.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-    if (cbtTimerSeconds <= 0) submitCBT();
-  }, 1000);
 }
 window.startCbtSession = startCbtSession;
 
@@ -295,9 +330,8 @@ function renderCbtQuestion() {
   cbtVisited.add(cbtIndex);
 
   document.getElementById('cbtQuestionNum').innerText = `Question No. ${cbtIndex + 1} of ${CBT_ACTIVE_QUESTIONS.length}`;
-  document.getElementById('cbtSectionTag').innerText = q.section;
+  document.getElementById('cbtSectionTag').innerText = q.section || "General Section";
 
-  // Render question text in selected language
   const qText = (currentLanguage === 'te' && q.te) ? q.te : ((currentLanguage === 'hi' && q.hi) ? q.hi : q.en);
   document.getElementById('cbtQuestionText').innerText = qText;
 
@@ -333,19 +367,18 @@ function renderCbtPalette() {
 
     if (isAnswered) answeredCount++;
 
-    // TCS Standard 5-Color Code System
-    let colorClass = 'bg-slate-800 text-slate-400 border border-white/5'; // Not visited
+    let colorClass = 'bg-slate-800 text-slate-400 border border-white/5';
     let badgeDot = '';
 
     if (isAnswered && isReviewed) {
-      colorClass = 'bg-purple-600 text-white font-extrabold relative'; // Answered & Marked for Review
+      colorClass = 'bg-purple-600 text-white font-extrabold relative';
       badgeDot = '<span class="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>';
     } else if (isAnswered) {
-      colorClass = 'bg-emerald-500 text-black font-extrabold shadow-sm'; // Answered
+      colorClass = 'bg-emerald-500 text-black font-extrabold shadow-sm';
     } else if (isReviewed) {
-      colorClass = 'bg-purple-600 text-white font-extrabold'; // Marked for Review
+      colorClass = 'bg-purple-600 text-white font-extrabold';
     } else if (isVisited) {
-      colorClass = 'bg-rose-500/80 text-white font-bold'; // Not Answered
+      colorClass = 'bg-rose-500/80 text-white font-bold';
     }
 
     return `
@@ -420,7 +453,7 @@ function submitCBT() {
   const rawScore = (correctCount * 2.0) - (wrongCount * 0.5);
   const totalMarks = Math.max(0, rawScore);
   const maxPossibleMarks = CBT_ACTIVE_QUESTIONS.length * 2.0;
-  const percentage = (totalMarks / maxPossibleMarks) * 100;
+  const percentage = maxPossibleMarks > 0 ? (totalMarks / maxPossibleMarks) * 100 : 0;
   const isPassed = percentage >= 35.0;
 
   if (isPassed) {
@@ -485,7 +518,7 @@ function submitCBT() {
         return `
           <div class="p-4 rounded-xl glass-card border border-white/10 space-y-2 text-xs">
             <div class="flex items-center justify-between border-b border-white/5 pb-2">
-              <span class="font-bold text-amber-400 uppercase">Q${idx + 1} • ${q.section}</span>
+              <span class="font-bold text-amber-400 uppercase">Q${idx + 1} • ${q.section || 'General'}</span>
               <span class="font-black ${isRight ? 'text-emerald-400' : (userChoice === undefined ? 'text-slate-500' : 'text-rose-400')}">
                 ${isRight ? '+2.00 Marks' : (userChoice === undefined ? '0.00 Marks' : '-0.50 Marks')}
               </span>
@@ -500,7 +533,7 @@ function submitCBT() {
 
             <div class="mt-2 p-3 rounded-lg ${q.isMath ? 'bg-amber-500/10 border border-amber-500/20 text-amber-200' : 'bg-white/[0.02] border border-white/5 text-slate-300'} text-[11px] leading-relaxed">
               <strong>${q.isMath ? '🧮 Step-by-Step Mathematical Solution:' : '💡 Official Regulatory Solution:'}</strong>
-              <p class="mt-1 font-mono">${q.explanation}</p>
+              <p class="mt-1 font-mono">${q.explanation || 'Official answer verified against regulatory key.'}</p>
             </div>
           </div>
         `;
@@ -563,7 +596,8 @@ async function downloadOfficialResultPDF(score, pct, correct, wrong) {
 
     CBT_ACTIVE_QUESTIONS.slice(0, 10).forEach((q, i) => {
       const isRight = cbtAnswers[i] === q.correct;
-      page.drawText(`Q.${i + 1} [${q.section.substring(0, 15)}...] Key: (${String.fromCharCode(65 + q.correct)}) | Verdict: ${isRight ? "CORRECT (+2.0)" : "INCORRECT (-0.5)"}`, {
+      const secTag = (q.section || 'Core').substring(0, 15);
+      page.drawText(`Q.${i + 1} [${secTag}...] Key: (${String.fromCharCode(65 + q.correct)}) | Verdict: ${isRight ? "CORRECT (+2.0)" : "INCORRECT (-0.5)"}`, {
         x: 45, y: yPos, size: 8.5, color: isRight ? PDFLib.rgb(0.1, 0.5, 0.1) : PDFLib.rgb(0.7, 0.1, 0.1)
       });
       yPos -= 16;
@@ -593,79 +627,7 @@ async function downloadOfficialResultPDF(score, pct, correct, wrong) {
 }
 window.downloadOfficialResultPDF = downloadOfficialResultPDF;
 
-// ----------------------------------------------------
-// 6. QUESTION BANK ENGINE WITH MULTI-LANGUAGE
-// ----------------------------------------------------
-function generateStageQuestions(domain, stage) {
-  return [
-    {
-      id: 1,
-      section: "Quantitative Aptitude & Mathematics",
-      isMath: true,
-      en: "If a sum of money doubles itself at compound interest in 6 years, in how many years will it become 8 times of itself at the same rate?",
-      te: "ఒక నిర్దిష్ట మొత్తం చక్రవడ్డీ ప్రకారం 6 సంవత్సరాలలో 2 రెట్లు అయితే, అదే వడ్డీ రేటు వద్ద ఎన్ని సంవత్సరాలలో అది 8 రెట్లు అవుతుంది?",
-      hi: "यदि कोई राशि चक्रवृद्धि ब्याज पर 6 वर्षों में दोगुनी हो जाती है, तो उसी दर पर यह कितने वर्षों में 8 गुना हो जाएगी?",
-      options: ["18 Years", "12 Years", "24 Years", "16 Years"],
-      options_te: ["18 సంవత్సరాలు", "12 సంవత్సరాలు", "24 సంవత్సరాలు", "16 సంవత్సరాలు"],
-      options_hi: ["18 वर्ष", "12 वर्ष", "24 वर्ष", "16 वर्ष"],
-      correct: 0,
-      explanation: "Step 1: Formula for compound growth is P(1 + r/100)^t = A.\nStep 2: Here 2P occurs at t = 6 years.\nStep 3: To become 8P = (2)^3 P, time required = 3 × 6 = 18 Years."
-    },
-    {
-      id: 2,
-      section: "Logical Reasoning",
-      isMath: true,
-      en: "Find the missing number in the sequential numerical series: 12, 36, 108, 324, (?)",
-      te: "ఇచ్చిన శ్రేణిలో తర్వాతి సంఖ్యను కనుగొనండి: 12, 36, 108, 324, (?)",
-      hi: "श्रृंखला में लुप्त संख्या ज्ञात कीजिए: 12, 36, 108, 324, (?)",
-      options: ["972", "648", "864", "996"],
-      options_te: ["972", "648", "864", "996"],
-      options_hi: ["972", "648", "864", "996"],
-      correct: 0,
-      explanation: "Step 1: Notice the geometric progression multiplier: 12 × 3 = 36; 36 × 3 = 108; 108 × 3 = 324.\nStep 2: Next number = 324 × 3 = 972."
-    },
-    {
-      id: 3,
-      section: "Indian Polity & Constitution",
-      isMath: false,
-      en: "Which Constitutional Amendment Act is known as the 'Mini-Constitution' of India?",
-      te: "భారత రాజ్యాంగంలో ఏ సవరణ చట్టాన్ని 'మినీ రాజ్యాంగం' (Mini-Constitution) అని పిలుస్తారు?",
-      hi: "किस संविधान संशोधन अधिनियम को भारत का 'लघु संविधान' कहा जाता है?",
-      options: ["42nd Amendment Act (1976)", "44th Amendment Act (1978)", "73rd Amendment Act (1992)", "86th Amendment Act (2002)"],
-      options_te: ["42వ సవరణ చట్టం (1976)", "44వ సవరణ చట్టం (1978)", "73వ సవరణ చట్టం (1992)", "86వ సవరణ చట్టం (2002)"],
-      options_hi: ["42वां संशोधन अधिनियम (1976)", "44वां संशोधन अधिनियम (1978)", "73वां संशोधन अधिनियम (1992)", "86वां संशोधन अधिनियम (2002)"],
-      correct: 0,
-      explanation: "The 42nd Constitutional Amendment Act, 1976 introduced fundamental changes including the words 'Socialist, Secular, Integrity' to the Preamble."
-    },
-    {
-      id: 4,
-      section: "General Science & Technology",
-      isMath: false,
-      en: "Which part of the human brain regulates cardiovascular activities, respiration, and swallowing reflexes?",
-      te: "మానవ మెదడులోని ఏ భాగం హృదయ స్పందనలు, శ్వాసక్రియ మరియు మింగే చర్యలను నియంత్రిస్తుంది?",
-      hi: "मानव मस्तिष्क का कौन सा भाग हृदय गति, श्वसन और निगलने की क्रिया को नियंत्रित करता है?",
-      options: ["Medulla Oblongata", "Cerebellum", "Cerebrum", "Hypothalamus"],
-      options_te: ["మెడుల్లా ఆబ్లాంగటా (మజ్జాముఖం)", "సెరెబెల్లమ్ (చిన్న మెదడు)", "సెరెబ్రమ్ (పెద్ద మెదడు)", "హైపోథాలమస్"],
-      options_hi: ["मेडुला ऑब्लांगेटा", "सेरिबैलम", "सेरेब्रम", "हाइपोथैलेमस"],
-      correct: 0,
-      explanation: "The Medulla Oblongata in the hindbrain coordinates involuntary cardiac, vasomotor, and respiratory reflex centers."
-    },
-    {
-      id: 5,
-      section: "Economy & Sustainable Development",
-      isMath: false,
-      en: "What is the primary indicator used to measure inflation trends on consumer baskets in India?",
-      te: "భారతదేశంలో వినియోగదారుల స్థాయిలో ద్రవ్యోల్బణాన్ని (Inflation) లెక్కించడానికి ఉపయోగించే ప్రామాణిక సూచిక ఏది?",
-      hi: "भारत में उपभोक्ता स्तर पर मुद्रास्फीति को मापने के लिए किस सूचकांक का उपयोग किया जाता है?",
-      options: ["Consumer Price Index (CPI Combined)", "Wholesale Price Index (WPI)", "Gross Domestic Product Deflator", "Index of Industrial Production"],
-      options_te: ["వినియోగదారుల ధరల సూచిక (CPI కంబైన్డ్)", "టోకు ధరల సూచిక (WPI)", "జిడిపి డిఫ్లేటర్", "పారిశ్రామిక ఉత్పత్తి సూచిక (IIP)"],
-      options_hi: ["उपभोक्ता मूल्य सूचकांक (CPI संयुक्त)", "थोक मूल्य सूचकांक (WPI)", "सकल घरेलू उत्पाद डिफ्लेटर", "औद्योगिक उत्पादन सूचकांक"],
-      correct: 0,
-      explanation: "The Reserve Bank of India adopts the Consumer Price Index (CPI-Combined) as the key metric for inflation targeting and monetary policy formulation."
-    }
-  ];
-}
-
+// Initialize Session & Matrix on Load
 document.addEventListener('DOMContentLoaded', () => {
   checkExistingStudentSession();
   renderStageCards();
