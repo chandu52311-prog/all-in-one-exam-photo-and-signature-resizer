@@ -1,582 +1,672 @@
-/**
- * ExamResizer Pro - Institutional CBT Examination Simulator & Assessment Engine
- * Module: js/mock-test.js
- * Architecture: Standard TCS iON Simulation Protocol, Client-Side Timer, Palette Matrix & Sequential Paper Progression
- */
+// ====================================================================
+// ⏱️ EXAMRESIZER PRO - OFFICIAL CBT SIMULATOR ENGINE (TCS-iON ARCHITECTURE)
+// Sequential Progression • 35% Gatekeeper • Multi-Language • Math Steps • PDF Card
+// ====================================================================
 
-const CBTSimulator = {
-  currentStage: 'GATEKEEPER', // GATEKEEPER | IN_EXAM | EVALUATION
-  activePaperLevel: 1,
-  totalTimeSeconds: 3600, // 60 Minutes standard session
-  timerInterval: null,
-  currentQuestionIndex: 0,
-  candidateAnswers: {}, // { qIndex: selectedOptionIndex }
-  questionStatus: {}, // { qIndex: 'NOT_VISITED' | 'NOT_ANSWERED' | 'ANSWERED' | 'MARKED_FOR_REVIEW' | 'ANSWERED_MARKED' }
-
-  // Question Repository (Level 1: General Studies & Core Reasoning)
-  questionBank: [
-    {
-      id: "CGL_2026_Q01",
-      section: "General Intelligence & Reasoning",
-      bilingual: {
-        en: "Select the related word from the given alternatives: Current : Ampere :: Potential Difference : ?",
-        te: "క్రింది ప్రత్యామ్నాయాల నుండి సరైన పదాన్ని ఎంచుకోండి: విద్యుత్ ప్రవాహం : ఆంపియర్ :: విద్యుత్ పొటెన్షియల్ తేడా (వోల్టేజ్) : ?"
-      },
-      options: ["Watt (వాట్)", "Volt (వోల్ట్)", "Ohm (ఓమ్)", "Joule (జౌల్)"],
-      correct: 1,
-      explanation: "Ampere is the SI unit of electric current. Similarly, Volt is the SI unit of Potential Difference (Voltage)."
-    },
-    {
-      id: "CGL_2026_Q02",
-      section: "General Awareness & Science",
-      bilingual: {
-        en: "Under which Article of the Constitution of India is the Finance Commission constituted?",
-        te: "భారత రాజ్యాంగంలోని ఏ ఆర్టికల్ ప్రకారం ఆర్థిక సంఘం (Finance Commission) ఏర్పాటు చేయబడుతుంది?"
-      },
-      options: ["Article 280", "Article 324", "Article 352", "Article 112"],
-      correct: 0,
-      explanation: "Article 280 of the Indian Constitution empowers the President of India to constitute a Finance Commission every fifth year."
-    },
-    {
-      id: "CGL_2026_Q03",
-      section: "Quantitative Aptitude",
-      bilingual: {
-        en: "If x + (1/x) = 4, then find the numerical value of x² + (1/x²):",
-        te: "x + (1/x) = 4 అయితే, x² + (1/x²) విలువను కనుగొనండి:"
-      },
-      options: ["16", "14", "18", "12"],
-      correct: 1,
-      explanation: "Formula: If x + (1/x) = k, then x² + (1/x²) = k² - 2. Here, 4² - 2 = 16 - 2 = 14."
-    },
-    {
-      id: "CGL_2026_Q04",
-      section: "English Language & Comprehension",
-      bilingual: {
-        en: "Select the most appropriate synonym of the given word: 'METICULOUS'",
-        te: "'METICULOUS' పదానికి అత్యంత సరైన సమానార్థక పదాన్ని (Synonym) ఎంచుకోండి:"
-      },
-      options: ["Careless", "Painstaking", "Hasty", "Ignorant"],
-      correct: 1,
-      explanation: "Meticulous means showing great attention to detail; very careful and precise. Painstaking is the exact synonym."
-    },
-    {
-      id: "CGL_2026_Q05",
-      section: "General Intelligence & Reasoning",
-      bilingual: {
-        en: "Which number replaces the question mark in the sequence: 7, 14, 28, 56, ?",
-        te: "క్రింది శ్రేణిలో ప్రశ్నార్థకం స్థానంలో వచ్చే సరైన సంఖ్యను గుర్తించండి: 7, 14, 28, 56, ?"
-      },
-      options: ["102", "112", "118", "124"],
-      correct: 1,
-      explanation: "The series follows a simple geometric doubling progression: 7×2=14, 14×2=28, 28×2=56, 56×2=112."
-    }
-  ],
-
-  init() {
-    this.loadProgressionState();
-    this.renderGatekeeper();
+const MOCK_DOMAINS = {
+  APPSC: { 
+    title: "Andhra Pradesh PSC (Groups & State PSUs)", 
+    languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
+    count: 10 
   },
-
-  loadProgressionState() {
-    const savedLevel = localStorage.getItem('ER_CBT_ACTIVE_LEVEL');
-    if (savedLevel) {
-      this.activePaperLevel = parseInt(savedLevel, 10);
-    }
+  TGPSC: { 
+    title: "Telangana PSC (Group Services & State PSUs)", 
+    languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
+    count: 10 
   },
-
-  renderGatekeeper() {
-    const zone = document.getElementById('mock-zone');
-    if (!zone) return;
-
-    zone.innerHTML = `
-      <div class="glass-card rounded-2xl p-6 border border-blue-500/30 space-y-6" id="cbt-main-card">
-        <div class="flex items-center justify-between pb-4 border-b border-white/10">
-          <div>
-            <h2 class="font-heading font-bold text-xl text-white flex items-center">
-              <i data-lucide="shield-check" class="w-5 h-5 text-blue-400 mr-2"></i>
-              Official Institutional CBT Terminal
-            </h2>
-            <p class="text-xs text-slate-400">Level ${this.activePaperLevel}: National Standard Objective Assessment</p>
-          </div>
-          <span class="px-3 py-1 rounded bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold">TCS iON Simulation</span>
-        </div>
-
-        <!-- Examination Protocol & Instructions -->
-        <div class="bg-black/40 p-5 rounded-xl border border-white/10 text-xs text-slate-300 space-y-3 leading-relaxed">
-          <h4 class="font-bold text-white uppercase tracking-wider">Candidate Instructions & Guidelines:</h4>
-          <ul class="list-disc ml-5 space-y-1.5 text-slate-400">
-            <li>Session duration: <strong>60 Minutes</strong>. System clock auto-terminates the test upon completion.</li>
-            <li>Grading metric: <span class="text-emerald-400 font-semibold">+2.00 marks</span> for valid selection, <span class="text-rose-400 font-semibold">-0.50 marks</span> for incorrect attempts.</li>
-            <li>Minimum qualification threshold to unlock subsequent Paper: <strong>60% Cumulative Score</strong>.</li>
-            <li>Questions attempted successfully are added to your authenticated index and will not re-occur in subsequent levels.</li>
-          </ul>
-        </div>
-
-        <!-- Mandatory Declaration & Policy Checkbox -->
-        <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
-          <input type="checkbox" id="policyAgreementCheckbox" onchange="CBTSimulator.toggleGate(event)" class="mt-1 w-4 h-4 rounded accent-gold-500 cursor-pointer">
-          <label for="policyAgreementCheckbox" class="text-xs text-slate-300 cursor-pointer select-none">
-            I have read, understood, and agree to adhere to all official examination instructions, evaluation procedures, and institutional privacy protocols. I affirm that my system is operational and that I will observe strict assessment integrity.
-          </label>
-        </div>
-
-        <div class="flex justify-end">
-          <button id="startExamBtn" onclick="CBTSimulator.startExamination()" disabled class="px-6 py-3 rounded-xl bg-slate-700 text-slate-400 font-extrabold text-xs cursor-not-allowed transition flex items-center space-x-2">
-            <i data-lucide="play" class="w-4 h-4"></i>
-            <span>I AM READY TO BEGIN</span>
-          </button>
-        </div>
-      </div>
-    `;
-
-    if (window.lucide) lucide.createIcons();
+  SSC: { 
+    title: "Staff Selection Commission (CGL, CHSL & JE)", 
+    languages: [{ code: "en", name: "English" }, { code: "hi", name: "हिन्दी" }, { code: "te", name: "తెలుగు" }],
+    count: 10 
   },
-
-  toggleGate(e) {
-    const btn = document.getElementById('startExamBtn');
-    if (!btn) return;
-    if (e.target.checked) {
-      btn.disabled = false;
-      btn.className = 'px-6 py-3 rounded-xl bg-gradient-to-r from-gold-500 to-amber-600 text-black font-extrabold text-xs cursor-pointer shadow-lg hover:brightness-110 transition flex items-center space-x-2';
-    } else {
-      btn.disabled = true;
-      btn.className = 'px-6 py-3 rounded-xl bg-slate-700 text-slate-400 font-extrabold text-xs cursor-not-allowed transition flex items-center space-x-2';
-    }
+  RRB: { 
+    title: "Railway Recruitment Boards (NTPC, ALP & JE)", 
+    languages: [{ code: "en", name: "English" }, { code: "hi", name: "हिन्दी" }, { code: "te", name: "తెలుగు" }],
+    count: 10 
   },
-
-  startExamination() {
-    this.currentStage = 'IN_EXAM';
-    this.currentQuestionIndex = 0;
-    this.candidateAnswers = {};
-    
-    // Initialize Status Palette
-    this.questionBank.forEach((_, idx) => {
-      this.questionStatus[idx] = idx === 0 ? 'NOT_ANSWERED' : 'NOT_VISITED';
-    });
-
-    this.renderActiveTerminal();
-    this.startTimer();
+  POWER_PSU: { 
+    title: "Power Utilities & Technical PSUs (PGCIL/TRANSCO/GENCO)", 
+    languages: [{ code: "en", name: "English" }, { code: "te", name: "తెలుగు" }],
+    count: 10 
   },
-
-  startTimer() {
-    clearInterval(this.timerInterval);
-    this.timerInterval = setInterval(() => {
-      this.totalTimeSeconds--;
-      this.updateTimerDisplay();
-      if (this.totalTimeSeconds <= 0) {
-        clearInterval(this.timerInterval);
-        this.submitExamination(true);
-      }
-    }, 1000);
-  },
-
-  updateTimerDisplay() {
-    const timerEl = document.getElementById('cbt-live-timer');
-    if (!timerEl) return;
-    const mins = Math.floor(this.totalTimeSeconds / 60);
-    const secs = this.totalTimeSeconds % 60;
-    timerEl.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  },
-
-  renderActiveTerminal() {
-    const zone = document.getElementById('mock-zone');
-    if (!zone) return;
-
-    zone.innerHTML = `
-      <div class="glass-card rounded-2xl p-4 md:p-6 border border-white/10 space-y-4">
-        <!-- Terminal Master Header Bar -->
-        <div class="flex items-center justify-between pb-3 border-b border-white/10">
-          <div>
-            <h3 class="font-heading font-bold text-white text-sm md:text-base">Level ${this.activePaperLevel}: SSC CGL / All-India Master Simulator</h3>
-            <span class="text-[11px] text-slate-400">Official Marking: +2.00 / -0.50</span>
-          </div>
-          <div class="flex items-center space-x-3">
-            <div class="px-3 py-1.5 rounded-lg bg-black/50 border border-gold-500/40 text-gold-400 text-xs font-mono font-bold flex items-center space-x-1.5">
-              <i data-lucide="clock" class="w-3.5 h-3.5"></i>
-              <span id="cbt-live-timer">59:59</span>
-            </div>
-            <button onclick="CBTSimulator.submitExamination(false)" class="px-4 py-1.5 rounded-lg bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs transition">
-              Submit Test
-            </button>
-          </div>
-        </div>
-
-        <!-- Terminal Workspace Split Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
-          <!-- Question Pane (75% Screen) -->
-          <div class="lg:col-span-3 space-y-4" id="cbt-question-pane">
-            <!-- Dynamically rendered question -->
-          </div>
-
-          <!-- Status & Question Palette Dock (25% Screen) -->
-          <div class="lg:col-span-1 space-y-4 border-t lg:border-t-0 lg:border-l border-white/10 lg:pl-4">
-            <div>
-              <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-2">Question Palette</h4>
-              <div class="grid grid-cols-5 gap-1.5" id="cbt-palette-grid">
-                <!-- Dynamically rendered palette buttons -->
-              </div>
-            </div>
-
-            <!-- Legend Matrix -->
-            <div class="text-[10px] space-y-1.5 text-slate-400 pt-3 border-t border-white/10">
-              <div class="flex items-center space-x-2">
-                <span class="w-3.5 h-3.5 rounded bg-emerald-500 inline-block"></span>
-                <span>Answered</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="w-3.5 h-3.5 rounded bg-rose-500 inline-block"></span>
-                <span>Not Answered</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="w-3.5 h-3.5 rounded bg-purple-500 inline-block"></span>
-                <span>Marked for Review</span>
-              </div>
-              <div class="flex items-center space-x-2">
-                <span class="w-3.5 h-3.5 rounded bg-slate-700 inline-block"></span>
-                <span>Not Visited</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    `;
-
-    this.renderCurrentQuestion();
-    this.renderPalette();
-    if (window.lucide) lucide.createIcons();
-  },
-
-  renderCurrentQuestion() {
-    const pane = document.getElementById('cbt-question-pane');
-    if (!pane) return;
-
-    const q = this.questionBank[this.currentQuestionIndex];
-    const isSelected = this.candidateAnswers[this.currentQuestionIndex];
-
-    pane.innerHTML = `
-      <div class="p-4 rounded-xl bg-white/[0.02] border border-white/10 space-y-4">
-        <div class="flex items-center justify-between border-b border-white/5 pb-2">
-          <span class="text-xs font-bold text-gold-400 uppercase tracking-wider">Question No. ${this.currentQuestionIndex + 1}</span>
-          <span class="text-[10px] text-slate-400 uppercase font-semibold">${q.section}</span>
-        </div>
-
-        <!-- Bilingual Content Container -->
-        <div class="space-y-2 text-xs md:text-sm text-slate-200 leading-relaxed">
-          <p class="font-medium">${q.bilingual.en}</p>
-          <p class="text-slate-400 italic">${q.bilingual.te}</p>
-        </div>
-
-        <!-- Options Container -->
-        <div class="space-y-2 pt-2">
-          ${q.options.map((opt, oIdx) => `
-            <label class="flex items-center space-x-3 p-3 rounded-xl border ${isSelected === oIdx ? 'border-gold-500 bg-gold-500/10 text-white font-semibold' : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/[0.08]'} cursor-pointer transition text-xs">
-              <input type="radio" name="cbtOption" value="${oIdx}" ${isSelected === oIdx ? 'checked' : ''} onchange="CBTSimulator.recordOption(${oIdx})" class="w-4 h-4 accent-gold-500">
-              <span>(${String.fromCharCode(65 + oIdx)})${opt}</span>
-            </label>
-          `).join('')}
-        </div>
-
-        <!-- Bottom Action Dock -->
-        <div class="flex items-center justify-between pt-3 border-t border-white/10 text-xs">
-          <div class="flex space-x-2">
-            <button onclick="CBTSimulator.markForReview()" class="px-3.5 py-2 rounded-xl bg-purple-500/20 border border-purple-500/40 text-purple-300 font-bold hover:bg-purple-500/30 transition">
-              Mark for Review
-            </button>
-            <button onclick="CBTSimulator.clearResponse()" class="px-3.5 py-2 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 transition">
-              Clear Response
-            </button>
-          </div>
-          <button onclick="CBTSimulator.saveAndNext()" class="px-5 py-2 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold transition">
-            Save & Next
-          </button>
-        </div>
-      </div>
-    `;
-  },
-
-  renderPalette() {
-    const grid = document.getElementById('cbt-palette-grid');
-    if (!grid) return;
-
-    grid.innerHTML = this.questionBank.map((_, idx) => {
-      const st = this.questionStatus[idx];
-      let bg = 'bg-slate-700 text-slate-300';
-      if (st === 'ANSWERED') bg = 'bg-emerald-500 text-black font-bold';
-      else if (st === 'NOT_ANSWERED') bg = 'bg-rose-500 text-white font-bold';
-      else if (st === 'MARKED_FOR_REVIEW') bg = 'bg-purple-500 text-white font-bold';
-
-      const isCurrent = idx === this.currentQuestionIndex ? 'ring-2 ring-gold-400 scale-105' : '';
-      return `
-        <button onclick="CBTSimulator.jumpToQuestion(${idx})" class="w-full aspect-square rounded-lg text-xs transition flex items-center justify-center ${bg} ${isCurrent}">
-          ${idx + 1}
-        </button>
-      `;
-    }).join('');
-  },
-
-  recordOption(optionIndex) {
-    this.candidateAnswers[this.currentQuestionIndex] = optionIndex;
-  },
-
-  saveAndNext() {
-    if (this.candidateAnswers[this.currentQuestionIndex] !== undefined) {
-      this.questionStatus[this.currentQuestionIndex] = 'ANSWERED';
-    } else {
-      this.questionStatus[this.currentQuestionIndex] = 'NOT_ANSWERED';
-    }
-
-    if (this.currentQuestionIndex < this.questionBank.length - 1) {
-      this.currentQuestionIndex++;
-      if (this.questionStatus[this.currentQuestionIndex] === 'NOT_VISITED') {
-        this.questionStatus[this.currentQuestionIndex] = 'NOT_ANSWERED';
-      }
-      this.renderCurrentQuestion();
-      this.renderPalette();
-    } else {
-      this.renderPalette();
-    }
-  },
-
-  markForReview() {
-    this.questionStatus[this.currentQuestionIndex] = 'MARKED_FOR_REVIEW';
-    if (this.currentQuestionIndex < this.questionBank.length - 1) {
-      this.currentQuestionIndex++;
-      this.renderCurrentQuestion();
-    }
-    this.renderPalette();
-  },
-
-  clearResponse() {
-    delete this.candidateAnswers[this.currentQuestionIndex];
-    this.questionStatus[this.currentQuestionIndex] = 'NOT_ANSWERED';
-    this.renderCurrentQuestion();
-    this.renderPalette();
-  },
-
-  jumpToQuestion(index) {
-    this.currentQuestionIndex = index;
-    if (this.questionStatus[index] === 'NOT_VISITED') {
-      this.questionStatus[index] = 'NOT_ANSWERED';
-    }
-    this.renderCurrentQuestion();
-    this.renderPalette();
-  },
-
-  submitExamination(isForced) {
-    clearInterval(this.timerInterval);
-    if (!isForced && !confirm("Are you sure you wish to submit your examination session for official grading?")) {
-      this.startTimer();
-      return;
-    }
-
-    this.currentStage = 'EVALUATION';
-    this.evaluateResults();
-  },
-
-  // Grading, Verification Key & Sequential Progression Logic
-  evaluateResults() {
-    let correctCount = 0;
-    let wrongCount = 0;
-    let attempted = 0;
-
-    this.questionBank.forEach((q, idx) => {
-      const candidateChoice = this.candidateAnswers[idx];
-      if (candidateChoice !== undefined) {
-        attempted++;
-        if (candidateChoice === q.correct) {
-          correctCount++;
-        } else {
-          wrongCount++;
-        }
-      }
-    });
-
-    const rawScore = (correctCount * 2.0) - (wrongCount * 0.5);
-    const maxScore = this.questionBank.length * 2.0;
-    const percentage = Math.max(0, Math.round((rawScore / maxScore) * 100));
-    const passed = percentage >= 60;
-
-    if (passed) {
-      this.activePaperLevel++;
-      localStorage.setItem('ER_CBT_ACTIVE_LEVEL', this.activePaperLevel);
-    }
-
-    this.renderEvaluationReport(correctCount, wrongCount, attempted, rawScore, maxScore, percentage, passed);
-  },
-
-  renderEvaluationReport(correct, wrong, attempted, score, maxScore, percentage, passed) {
-    const zone = document.getElementById('mock-zone');
-    if (!zone) return;
-
-    let bannerHeader = passed 
-      ? 'Institutional Assessment Cleared: Exceptional Performance' 
-      : 'Session Completed: Additional Review Recommended';
-    let bannerDesc = passed 
-      ? `You have satisfied the 60% standard benchmark. Sequential Progression unlocked for Paper-${this.activePaperLevel}.`
-      : 'Review the verified official answer key and structural solutions below to rectify discrepancies.';
-
-    zone.innerHTML = `
-      <div class="glass-card rounded-2xl p-6 border border-white/10 space-y-6">
-        <!-- Result Ribbon -->
-        <div class="p-5 rounded-xl border ${passed ? 'border-emerald-500/40 bg-emerald-500/10' : 'border-amber-500/40 bg-amber-500/10'} text-center space-y-2">
-          <span class="px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${passed ? 'bg-emerald-500 text-black' : 'bg-amber-500 text-black'}">
-            ${passed ? 'Verified Competency Standard' : 'Evaluation Completed'}
-          </span>
-          <h2 class="font-heading font-extrabold text-white text-lg md:text-xl">${bannerHeader}</h2>
-          <p class="text-xs text-slate-300 max-w-xl mx-auto">${bannerDesc}</p>
-        </div>
-
-        <!-- Metric Metrics Grid -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-center">
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[10px] font-bold text-slate-400 uppercase">Final Net Score</span>
-            <h4 class="font-heading font-extrabold text-white text-xl mt-1">${score.toFixed(2)} / ${maxScore}</h4>
-          </div>
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[10px] font-bold text-slate-400 uppercase">Accuracy Rate</span>
-            <h4 class="font-heading font-extrabold text-gold-400 text-xl mt-1">${percentage}%</h4>
-          </div>
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[10px] font-bold text-slate-400 uppercase">Correct Responses</span>
-            <h4 class="font-heading font-extrabold text-emerald-400 text-xl mt-1">${correct}</h4>
-          </div>
-          <div class="p-3.5 rounded-xl bg-white/5 border border-white/10">
-            <span class="text-[10px] font-bold text-slate-400 uppercase">Incorrect Deductions</span>
-            <h4 class="font-heading font-extrabold text-rose-400 text-xl mt-1">${wrong}</h4>
-          </div>
-        </div>
-
-        <!-- Progression & Action Buttons -->
-        <div class="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-          <button onclick="CBTSimulator.downloadScorecard(${score}, ${percentage})" class="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-bold text-white transition flex items-center justify-center space-x-2">
-            <i data-lucide="download" class="w-4 h-4"></i>
-            <span>Download Verified Assessment Report</span>
-          </button>
-          
-          ${passed ? `
-            <button onclick="CBTSimulator.startNextLevel()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-gold-500 hover:bg-gold-400 text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg">
-              <span>Initiate Paper-${this.activePaperLevel} Sequence</span>
-              <i data-lucide="arrow-right" class="w-4 h-4"></i>
-            </button>
-          ` : `
-            <button onclick="CBTSimulator.renderGatekeeper()" class="w-full sm:w-auto px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-extrabold text-xs transition flex items-center justify-center space-x-2">
-              <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-              <span>Re-Attempt Examination Session</span>
-            </button>
-          `}
-        </div>
-
-        <!-- Master Official Answer Key & Explanations -->
-        <div class="space-y-4 pt-4 border-t border-white/10">
-          <h3 class="font-heading font-bold text-sm text-white uppercase tracking-wider flex items-center">
-            <i data-lucide="file-check-2" class="w-4 h-4 text-emerald-400 mr-2"></i>
-            Official Regulatory Answer Key & Step-by-Step Solutions
-          </h3>
-
-          <div class="space-y-3">
-            ${this.questionBank.map((q, idx) => {
-              const userChoice = this.candidateAnswers[idx];
-              const isCorrect = userChoice === q.correct;
-              const notAttempted = userChoice === undefined;
-
-              return `
-                <div class="p-4 rounded-xl border border-white/10 bg-white/[0.02] space-y-2.5 text-xs">
-                  <div class="flex items-center justify-between">
-                    <span class="font-bold text-slate-300">Question ${idx + 1} (${q.section})</span>${notAttempted 
-                      ? '<span class="text-slate-400 font-semibold">Not Attempted (0.00)</span>' 
-                      : (isCorrect 
-                        ? '<span class="text-emerald-400 font-bold">Correct (+2.00)</span>' 
-                        : '<span class="text-rose-400 font-bold">Incorrect (-0.50)</span>')}
-                  </div>
-
-                  <p class="text-slate-200">${q.bilingual.en}</p>
-
-                  <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-[11px] pt-1">
-                    <div class="p-2 rounded bg-black/40 border border-white/5">
-                      <span class="text-slate-400">Candidate Choice: </span>
-                      <strong class="${isCorrect ? 'text-emerald-400' : 'text-rose-400'}">
-                        ${notAttempted ? 'None' : `(${String.fromCharCode(65 + userChoice)}) ${q.options[userChoice]}`}
-                      </strong>
-                    </div>
-                    <div class="p-2 rounded bg-emerald-500/10 border border-emerald-500/20">
-                      <span class="text-emerald-300 font-semibold">Official Regulatory Key: </span>
-                      <strong class="text-emerald-400">(${String.fromCharCode(65 + q.correct)})${q.options[q.correct]}</strong>
-                    </div>
-                  </div>
-
-                  <div class="p-2.5 rounded-lg bg-white/5 text-slate-300 text-[11px] leading-relaxed">
-                    <strong class="text-gold-400">Institutional Explanation: </strong> ${q.explanation}
-                  </div>
-                </div>
-              `;
-            }).join('')}
-          </div>
-        </div>
-      </div>
-    `;
-
-    if (window.lucide) lucide.createIcons();
-  },
-
-  startNextLevel() {
-    this.totalTimeSeconds = 3600;
-    this.startExamination();
-  },
-
-  // Client-Side Canvas Assessment Scorecard Watermarking
-  downloadScorecard(score, percentage) {
-    const canvas = document.createElement('canvas');
-    canvas.width = 800;
-    canvas.height = 450;
-    const ctx = canvas.getContext('2d');
-
-    // Obsidian Luxury Background
-    ctx.fillStyle = '#090d16';
-    ctx.fillRect(0, 0, 800, 450);
-
-    // Decorative Gold Border
-    ctx.strokeStyle = '#f59e0b';
-    ctx.lineWidth = 4;
-    ctx.strokeRect(20, 20, 760, 410);
-
-    // Institutional Watermark Stamp
-    ctx.font = 'bold 54px sans-serif';
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.04)';
-    ctx.textAlign = 'center';
-    ctx.fillText('EXAMRESIZER.ME', 400, 240);
-
-    // Header
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('OFFICIAL CBT ASSESSMENT REPORT', 400, 80);
-
-    ctx.font = '14px sans-serif';
-    ctx.fillStyle = '#94a3b8';
-    ctx.fillText(`SSC CGL National Simulator - Level ${this.activePaperLevel}`, 400, 110);
-
-    // Score Metrics
-    ctx.fillStyle = '#f59e0b';
-    ctx.font = 'bold 42px sans-serif';
-    ctx.fillText(`${score.toFixed(2)} Marks`, 400, 200);
-
-    ctx.fillStyle = '#34d399';
-    ctx.font = 'bold 20px sans-serif';
-    ctx.fillText(`Overall Accuracy: ${percentage}%`, 400, 240);
-
-    // Footer
-    ctx.fillStyle = '#64748b';
-    ctx.font = '12px sans-serif';
-    ctx.fillText('Authenticated at www.examresizer.me | National Educational Career Suite', 400, 390);
-
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = `ExamResizer_Scorecard_Level_${this.activePaperLevel}.png`;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => document.body.removeChild(a), 500);
+  GATE: { 
+    title: "GATE National Engineering Assessment", 
+    languages: [{ code: "en", name: "English (Only)" }],
+    count: 10 
   }
 };
 
-// Initialize on DOM load
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => CBTSimulator.
+let currentDomain = 'APPSC';
+let currentTestStage = 1;
+let currentLanguage = 'en';
+let CBT_ACTIVE_QUESTIONS = [];
+let cbtIndex = 0;
+let cbtAnswers = {};
+let cbtVisited = new Set();
+let cbtReview = new Set();
+let cbtTimerSeconds = 3600;
+let cbtTimerInterval = null;
+
+// User Identity & Progression Model
+let currentStudent = {
+  name: localStorage.getItem('er_student_name') || '',
+  phone: localStorage.getItem('er_student_phone') || '',
+  progress: JSON.parse(localStorage.getItem('er_student_progress') || '{"APPSC": 1, "TGPSC": 1, "SSC": 1, "RRB": 1, "POWER_PSU": 1, "GATE": 1}')
+};
+
+// ----------------------------------------------------
+// 1. SESSION MANAGEMENT & PERSISTENCE
+// ----------------------------------------------------
+function checkExistingStudentSession() {
+  const loginBox = document.getElementById('studentLoginBox');
+  const profileBox = document.getElementById('studentProfileBox');
+  const candidateBar = document.getElementById('candidateNameBar');
+  if (!loginBox || !profileBox) return;
+
+  if (currentStudent.phone && currentStudent.name) {
+    loginBox.classList.add('hidden');
+    profileBox.classList.remove('hidden');
+    document.getElementById('displayStudentName').innerText = currentStudent.name;
+    document.getElementById('displayStudentPhone').innerText = `📱 Mobile ID: ${currentStudent.phone}`;
+    if (candidateBar) candidateBar.innerText = `Candidate: ${currentStudent.name}`;
+  } else {
+    loginBox.classList.remove('hidden');
+    profileBox.classList.add('hidden');
+    if (candidateBar) candidateBar.innerText = `Candidate: Guest Aspirant`;
+  }
+}
+
+function loginStudent() {
+  const name = document.getElementById('studentNameInput').value.trim();
+  const phone = document.getElementById('studentPhoneInput').value.trim();
+
+  if (!name || phone.length < 10) {
+    alert("Please enter a valid Full Name and 10-digit Mobile Number.");
+    return;
+  }
+
+  currentStudent.name = name;
+  currentStudent.phone = phone;
+
+  localStorage.setItem('er_student_name', currentStudent.name);
+  localStorage.setItem('er_student_phone', currentStudent.phone);
+  localStorage.setItem('er_student_progress', JSON.stringify(currentStudent.progress));
+
+  checkExistingStudentSession();
+  renderStageCards();
+}
+window.loginStudent = loginStudent;
+
+function logoutStudent() {
+  localStorage.removeItem('er_student_name');
+  localStorage.removeItem('er_student_phone');
+  localStorage.removeItem('er_student_progress');
+  currentStudent = {
+    name: '',
+    phone: '',
+    progress: {"APPSC": 1, "TGPSC": 1, "SSC": 1, "RRB": 1, "POWER_PSU": 1, "GATE": 1}
+  };
+  checkExistingStudentSession();
+  renderStageCards();
+}
+window.logoutStudent = logoutStudent;
+
+function getUserProgress(domain) {
+  return currentStudent.progress[domain] || 1;
+}
+
+function saveUserProgress(domain, unlockedStage) {
+  const current = getUserProgress(domain);
+  if (unlockedStage > current) {
+    currentStudent.progress[domain] = unlockedStage;
+    localStorage.setItem('er_student_progress', JSON.stringify(currentStudent.progress));
+  }
+}
+
+// ----------------------------------------------------
+// 2. DASHBOARD & STAGE MATRIX
+// ----------------------------------------------------
+function selectMockDomain(domain) {
+  currentDomain = domain;
+  
+  Object.keys(MOCK_DOMAINS).forEach(d => {
+    const btn = document.getElementById('domain-btn-' + d);
+    if (btn) {
+      if (d === domain) btn.classList.add('active');
+      else btn.classList.remove('active');
+    }
+  });
+
+  const titleEl = document.getElementById('activeMockDomainTitle');
+  if (titleEl) titleEl.innerText = MOCK_DOMAINS[domain].title;
+
+  renderStageCards();
+}
+window.selectMockDomain = selectMockDomain;
+
+function renderStageCards() {
+  const container = document.getElementById('mockTestsGridContainer');
+  if (!container) return;
+
+  const unlockedStage = getUserProgress(currentDomain);
+  const statusEl = document.getElementById('userTierStatus');
+  if (statusEl) statusEl.innerText = `Active Tier: Practice Test ${unlockedStage} Unlocked`;
+
+  let html = '';
+  for (let stage = 1; stage <= 10; stage++) {
+    const isUnlocked = stage <= unlockedStage;
+    const isNextTarget = stage === unlockedStage;
+
+    html += `
+      <div class="p-4 rounded-xl glass-card border ${isUnlocked ? (isNextTarget ? 'border-amber-400 gold-glow' : 'border-emerald-500/40') : 'border-white/5 opacity-50'} flex flex-col justify-between space-y-3 transition transform hover:-translate-y-1">
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase ${isUnlocked ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-500'}">
+              Stage 0${stage}
+            </span>
+            <span class="text-[10px] font-bold ${isUnlocked ? (stage < unlockedStage ? 'text-emerald-400' : 'text-amber-400') : 'text-slate-500'}">
+              ${isUnlocked ? (stage < unlockedStage ? '✔ CLEARED' : '★ ACTIVE') : '🔒 LOCKED'}
+            </span>
+          </div>
+          <h4 class="font-bold text-white text-sm">Practice Test 0${stage}</h4>
+          <p class="text-[11px] text-slate-400 mt-0.5">100 Bits • 200 Marks • Pass 35%</p>
+        </div>
+
+        <div>
+          ${isUnlocked ? `
+            <button onclick="prepareTestStage(${stage})" class="w-full py-2.5 rounded-xl ${isNextTarget ? 'luxury-action-btn text-black' : 'bg-emerald-500 hover:bg-emerald-400 text-black'} font-extrabold text-xs transition shadow-md cursor-pointer">
+              ${stage < unlockedStage ? 'Retake Assessment' : 'Take Practice Test'}
+            </button>
+          ` : `
+            <button disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs cursor-not-allowed">
+              🔒 Clear Stage 0${stage - 1} First
+            </button>
+          `}
+        </div>
+      </div>
+    `;
+  }
+
+  html += `
+    <div class="p-4 rounded-xl glass-card border border-white/5 opacity-40 flex flex-col justify-between space-y-3">
+      <div>
+        <div class="flex items-center justify-between mb-1.5">
+          <span class="px-2 py-0.5 rounded text-[10px] font-black uppercase bg-slate-800 text-slate-400">Stage 11</span>
+          <span class="text-[10px] font-bold text-rose-400">COMING SOON</span>
+        </div>
+        <h4 class="font-bold text-white text-sm">Pro Mastery Test 11</h4>
+        <p class="text-[11px] text-slate-400 mt-0.5">High-Yield Regulatory Pack</p>
+      </div>
+      <button disabled class="w-full py-2.5 rounded-xl bg-slate-800/80 text-slate-500 font-bold text-xs cursor-not-allowed">
+        🔒 Next Release
+      </button>
+    </div>
+  `;
+
+  container.innerHTML = html;
+}
+window.renderStageCards = renderStageCards;
+
+function prepareTestStage(stage) {
+  currentTestStage = stage;
+  document.getElementById('mock-hub-dashboard').classList.add('hidden');
+  document.getElementById('mock-gatekeeper-screen').classList.remove('hidden');
+  document.getElementById('gatekeeperTestTitle').innerText = `${MOCK_DOMAINS[currentDomain].title} • Practice Test 0${stage}`;
+  
+  const chk = document.getElementById('policyAgreementCheckbox');
+  if (chk) { chk.checked = false; toggleCBTReady(chk); }
+}
+window.prepareTestStage = prepareTestStage;
+
+function returnToMockHub() {
+  document.getElementById('mock-gatekeeper-screen').classList.add('hidden');
+  document.getElementById('mock-live-screen').classList.add('hidden');
+  document.getElementById('mock-result-screen').classList.add('hidden');
+  document.getElementById('mock-hub-dashboard').classList.remove('hidden');
+  renderStageCards();
+}
+window.returnToMockHub = returnToMockHub;
+
+function toggleCBTReady(el) {
+  const btn = document.getElementById('startCbtBtn');
+  const isChecked = el.checked;
+  if (btn) {
+    if (isChecked) {
+      btn.disabled = false;
+      btn.className = 'px-7 py-3 rounded-xl luxury-action-btn text-black font-extrabold text-xs cursor-pointer shadow-lg hover:brightness-110 transition';
+    } else {
+      btn.disabled = true;
+      btn.className = 'px-7 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed transition';
+    }
+  }
+}
+window.toggleCBTReady = toggleCBTReady;
+
+// ----------------------------------------------------
+// 3. LIVE CBT SIMULATOR ENGINE (TCS ARCHITECTURE)
+// ----------------------------------------------------
+function startCbtSession() {
+  document.getElementById('mock-gatekeeper-screen').classList.add('hidden');
+  document.getElementById('mock-live-screen').classList.remove('hidden');
+  document.getElementById('liveExamHeaderTitle').innerText = `${MOCK_DOMAINS[currentDomain].title} - Test 0${currentTestStage}`;
+
+  // Populate Domain-Specific Languages
+  const langSelect = document.getElementById('cbtLanguageSelect');
+  if (langSelect) {
+    langSelect.innerHTML = MOCK_DOMAINS[currentDomain].languages.map(l => 
+      `<option value="${l.code}">${l.name}</option>`
+    ).join('');
+    currentLanguage = MOCK_DOMAINS[currentDomain].languages[0].code;
+  }
+
+  // Load authentic question suite
+  CBT_ACTIVE_QUESTIONS = generateStageQuestions(currentDomain, currentTestStage);
+  cbtIndex = 0;
+  cbtAnswers = {};
+  cbtVisited = new Set([0]);
+  cbtReview = new Set();
+  cbtTimerSeconds = 3600;
+
+  renderCbtQuestion();
+  renderCbtPalette();
+
+  clearInterval(cbtTimerInterval);
+  cbtTimerInterval = setInterval(() => {
+    cbtTimerSeconds--;
+    const m = Math.floor(cbtTimerSeconds / 60);
+    const s = cbtTimerSeconds % 60;
+    const clock = document.getElementById('cbtClock');
+    if (clock) clock.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    if (cbtTimerSeconds <= 0) submitCBT();
+  }, 1000);
+}
+window.startCbtSession = startCbtSession;
+
+function cbtChangeLanguage(langCode) {
+  currentLanguage = langCode;
+  renderCbtQuestion();
+}
+window.cbtChangeLanguage = cbtChangeLanguage;
+
+function renderCbtQuestion() {
+  const q = CBT_ACTIVE_QUESTIONS[cbtIndex];
+  if (!q) return;
+
+  cbtVisited.add(cbtIndex);
+
+  document.getElementById('cbtQuestionNum').innerText = `Question No. ${cbtIndex + 1} of ${CBT_ACTIVE_QUESTIONS.length}`;
+  document.getElementById('cbtSectionTag').innerText = q.section;
+
+  // Render question text in selected language
+  const qText = (currentLanguage === 'te' && q.te) ? q.te : ((currentLanguage === 'hi' && q.hi) ? q.hi : q.en);
+  document.getElementById('cbtQuestionText').innerText = qText;
+
+  const cont = document.getElementById('cbtOptionsContainer');
+  const opts = (currentLanguage === 'te' && q.options_te) ? q.options_te : ((currentLanguage === 'hi' && q.options_hi) ? q.options_hi : q.options);
+
+  cont.innerHTML = opts.map((opt, idx) => {
+    const isSelected = cbtAnswers[cbtIndex] === idx;
+    return `
+      <label class="flex items-center space-x-3 p-3.5 rounded-xl border ${isSelected ? 'border-amber-400 bg-amber-500/15 text-white font-bold shadow-md' : 'border-white/10 bg-white/[0.02] text-slate-300 hover:border-white/20'} cursor-pointer text-xs transition">
+        <input type="radio" name="cbtOptionChoice" value="${idx}" ${isSelected ? 'checked' : ''} onchange="cbtSelectOpt(${idx})" class="w-4 h-4 accent-amber-500">
+        <span class="leading-relaxed">(${String.fromCharCode(65 + idx)}) ${opt}</span>
+      </label>
+    `;
+  }).join('');
+
+  const revBtn = document.getElementById('cbtReviewBtn');
+  if (revBtn) {
+    revBtn.innerText = cbtReview.has(cbtIndex) ? "Unmark Review" : "Mark for Review";
+  }
+}
+
+function renderCbtPalette() {
+  const grid = document.getElementById('cbtPaletteGrid');
+  if (!grid) return;
+
+  let answeredCount = 0;
+  grid.innerHTML = CBT_ACTIVE_QUESTIONS.map((_, idx) => {
+    const isAnswered = cbtAnswers[idx] !== undefined;
+    const isReviewed = cbtReview.has(idx);
+    const isVisited = cbtVisited.has(idx);
+    const isCurrent = idx === cbtIndex ? 'ring-2 ring-amber-400' : '';
+
+    if (isAnswered) answeredCount++;
+
+    // TCS Standard 5-Color Code System
+    let colorClass = 'bg-slate-800 text-slate-400 border border-white/5'; // Not visited
+    let badgeDot = '';
+
+    if (isAnswered && isReviewed) {
+      colorClass = 'bg-purple-600 text-white font-extrabold relative'; // Answered & Marked for Review
+      badgeDot = '<span class="absolute bottom-1 right-1 w-1.5 h-1.5 rounded-full bg-emerald-400"></span>';
+    } else if (isAnswered) {
+      colorClass = 'bg-emerald-500 text-black font-extrabold shadow-sm'; // Answered
+    } else if (isReviewed) {
+      colorClass = 'bg-purple-600 text-white font-extrabold'; // Marked for Review
+    } else if (isVisited) {
+      colorClass = 'bg-rose-500/80 text-white font-bold'; // Not Answered
+    }
+
+    return `
+      <button onclick="jumpCbt(${idx})" class="w-full aspect-square rounded-md text-[11px] font-mono transition transform hover:scale-105 ${colorClass} ${isCurrent}">
+        ${idx + 1}
+        ${badgeDot}
+      </button>
+    `;
+  }).join('');
+
+  const countBadge = document.getElementById('paletteAnsweredCount');
+  if (countBadge) countBadge.innerText = `${answeredCount} / ${CBT_ACTIVE_QUESTIONS.length} Answered`;
+}
+
+function cbtSelectOpt(idx) {
+  cbtAnswers[cbtIndex] = idx;
+  renderCbtPalette();
+}
+window.cbtSelectOpt = cbtSelectOpt;
+
+function cbtToggleReview() {
+  if (cbtReview.has(cbtIndex)) cbtReview.delete(cbtIndex);
+  else cbtReview.add(cbtIndex);
+  renderCbtQuestion();
+  renderCbtPalette();
+}
+window.cbtToggleReview = cbtToggleReview;
+
+function cbtSaveAndNext() {
+  if (cbtIndex < CBT_ACTIVE_QUESTIONS.length - 1) {
+    cbtIndex++;
+    renderCbtQuestion();
+    renderCbtPalette();
+  }
+}
+window.cbtSaveAndNext = cbtSaveAndNext;
+
+function cbtClearResponse() {
+  delete cbtAnswers[cbtIndex];
+  renderCbtQuestion();
+  renderCbtPalette();
+}
+window.cbtClearResponse = cbtClearResponse;
+
+function jumpCbt(idx) {
+  cbtIndex = idx;
+  renderCbtQuestion();
+  renderCbtPalette();
+}
+window.jumpCbt = jumpCbt;
+
+// ----------------------------------------------------
+// 4. SCORING ANALYTICS & 35% PASS GATEKEEPER
+// ----------------------------------------------------
+function submitCBT() {
+  clearInterval(cbtTimerInterval);
+  document.getElementById('mock-live-screen').classList.add('hidden');
+  const resScreen = document.getElementById('mock-result-screen');
+  resScreen.classList.remove('hidden');
+
+  let correctCount = 0;
+  let attemptedCount = 0;
+
+  CBT_ACTIVE_QUESTIONS.forEach((q, idx) => {
+    if (cbtAnswers[idx] !== undefined) {
+      attemptedCount++;
+      if (cbtAnswers[idx] === q.correct) correctCount++;
+    }
+  });
+
+  const wrongCount = attemptedCount - correctCount;
+  const rawScore = (correctCount * 2.0) - (wrongCount * 0.5);
+  const totalMarks = Math.max(0, rawScore);
+  const maxPossibleMarks = CBT_ACTIVE_QUESTIONS.length * 2.0;
+  const percentage = (totalMarks / maxPossibleMarks) * 100;
+  const isPassed = percentage >= 35.0;
+
+  if (isPassed) {
+    saveUserProgress(currentDomain, currentTestStage + 1);
+  }
+
+  resScreen.innerHTML = `
+    <div class="glass-card gold-border p-6 rounded-2xl text-center space-y-4">
+      <span class="text-4xl">${isPassed ? '🎉' : '⚠️'}</span>
+      <h3 class="text-xl md:text-2xl font-black text-white">
+        ${isPassed ? 'Assessment Qualified & Next Stage Unlocked!' : 'Qualifying Threshold Not Met'}
+      </h3>
+      <p class="text-xs text-slate-300">
+        ${MOCK_DOMAINS[currentDomain].title} • Practice Test 0${currentTestStage} Official Performance Report
+      </p>
+
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+        <div class="p-3.5 bg-white/5 rounded-xl border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-slate-400">Net Score</span>
+          <p class="text-lg font-black text-amber-400">${totalMarks.toFixed(2)} / ${maxPossibleMarks.toFixed(0)}</p>
+        </div>
+        <div class="p-3.5 bg-white/5 rounded-xl border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-slate-400">Score Percentage</span>
+          <p class="text-lg font-black ${isPassed ? 'text-emerald-400' : 'text-rose-400'}">${percentage.toFixed(1)}%</p>
+        </div>
+        <div class="p-3.5 bg-white/5 rounded-xl border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-slate-400">Correct Answers</span>
+          <p class="text-lg font-black text-emerald-400">${correctCount} Qs</p>
+        </div>
+        <div class="p-3.5 bg-white/5 rounded-xl border border-white/10">
+          <span class="text-[10px] uppercase font-bold text-slate-400">Negative Penalty</span>
+          <p class="text-lg font-black text-rose-400">-${(wrongCount * 0.5).toFixed(2)}</p>
+        </div>
+      </div>
+
+      <div class="p-3.5 rounded-xl ${isPassed ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-300' : 'bg-rose-500/10 border border-rose-500/30 text-rose-300'} text-xs font-semibold leading-relaxed">
+        ${isPassed 
+          ? `✅ <strong>Congratulations!</strong> You scored above the 35% pass mark threshold (${percentage.toFixed(1)}%). <strong>Practice Test 0${currentTestStage + 1}</strong> is now unlocked in your portal!` 
+          : `❌ <strong>Attempt Locked:</strong> You achieved ${percentage.toFixed(1)}% (Pass requirement is 35%). Review your mistakes below and retake Practice Test 0${currentTestStage} to unlock the next level.`
+        }
+      </div>
+
+      <div class="flex flex-col sm:flex-row gap-3 pt-2">
+        <button onclick="downloadOfficialResultPDF('${totalMarks.toFixed(2)}', '${percentage.toFixed(1)}', ${correctCount}, ${wrongCount})" class="flex-1 py-3.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs shadow-lg flex items-center justify-center space-x-2 cursor-pointer">
+          <span>📥 Download Watermarked Result Card (PDF)</span>
+        </button>
+        <button onclick="returnToMockHub()" class="flex-1 py-3.5 rounded-xl gaming-btn text-white font-extrabold text-xs cursor-pointer">
+          ${isPassed ? 'Proceed to Stage Matrix ➔' : 'Re-attempt Test 0' + currentTestStage}
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-3 pt-4">
+      <h4 class="font-extrabold text-white text-sm uppercase tracking-wider">
+        Comprehensive Solutions & Mathematical Steps
+      </h4>
+      ${CBT_ACTIVE_QUESTIONS.map((q, idx) => {
+        const userChoice = cbtAnswers[idx];
+        const isRight = userChoice === q.correct;
+        const userText = userChoice !== undefined ? `(${String.fromCharCode(65 + userChoice)}) ${q.options[userChoice]}` : "Not Attempted";
+
+        return `
+          <div class="p-4 rounded-xl glass-card border border-white/10 space-y-2 text-xs">
+            <div class="flex items-center justify-between border-b border-white/5 pb-2">
+              <span class="font-bold text-amber-400 uppercase">Q${idx + 1} • ${q.section}</span>
+              <span class="font-black ${isRight ? 'text-emerald-400' : (userChoice === undefined ? 'text-slate-500' : 'text-rose-400')}">
+                ${isRight ? '+2.00 Marks' : (userChoice === undefined ? '0.00 Marks' : '-0.50 Marks')}
+              </span>
+            </div>
+            <p class="text-white font-medium">${q.en}</p>
+            ${q.te ? `<p class="text-slate-400 italic">${q.te}</p>` : ''}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-2 pt-1 text-[11px]">
+              <p class="${isRight ? 'text-emerald-400 font-bold' : 'text-rose-400'}">Your Response: ${userText}</p>
+              <p class="text-emerald-400 font-bold">Official Key: (${String.fromCharCode(65 + q.correct)}) ${q.options[q.correct]}</p>
+            </div>
+
+            <div class="mt-2 p-3 rounded-lg ${q.isMath ? 'bg-amber-500/10 border border-amber-500/20 text-amber-200' : 'bg-white/[0.02] border border-white/5 text-slate-300'} text-[11px] leading-relaxed">
+              <strong>${q.isMath ? '🧮 Step-by-Step Mathematical Solution:' : '💡 Official Regulatory Solution:'}</strong>
+              <p class="mt-1 font-mono">${q.explanation}</p>
+            </div>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
+}
+window.submitCBT = submitCBT;
+
+// ----------------------------------------------------
+// 5. OFFICIAL WATERMARKED PDF RESULT CARD
+// ----------------------------------------------------
+async function downloadOfficialResultPDF(score, pct, correct, wrong) {
+  try {
+    const pdfDoc = await PDFLib.PDFDocument.create();
+    const page = pdfDoc.addPage([595.28, 841.89]);
+    const { width, height } = page.getSize();
+
+    page.drawRectangle({
+      x: 25, y: 25, width: width - 50, height: height - 50,
+      borderColor: PDFLib.rgb(0.85, 0.65, 0.15), borderWidth: 2,
+      color: PDFLib.rgb(0.98, 0.98, 0.99)
+    });
+
+    page.drawText("EXAMRESIZER.ME OFFICIAL PRACTICE SCORECARD", {
+      x: 45, y: height - 60, size: 14, color: PDFLib.rgb(0.1, 0.1, 0.1)
+    });
+    page.drawText(`${MOCK_DOMAINS[currentDomain].title} - PRACTICE STAGE 0${currentTestStage}`, {
+      x: 45, y: height - 80, size: 10, color: PDFLib.rgb(0.4, 0.4, 0.4)
+    });
+
+    page.drawLine({
+      start: { x: 45, y: height - 90 }, end: { x: width - 45, y: height - 90 },
+      thickness: 1, color: PDFLib.rgb(0.8, 0.8, 0.8)
+    });
+
+    const studentTitle = currentStudent.name ? `Candidate: ${currentStudent.name} (${currentStudent.phone})` : "Candidate: Guest Aspirant";
+    page.drawText(studentTitle, {
+      x: 45, y: height - 110, size: 10, color: PDFLib.rgb(0.2, 0.2, 0.2)
+    });
+
+    page.drawText(`Candidate Status: ${parseFloat(pct) >= 35 ? "QUALIFIED (Stage Unlocked)" : "UNQUALIFIED (Needs Re-attempt)"}`, {
+      x: 45, y: height - 130, size: 12, color: parseFloat(pct) >= 35 ? PDFLib.rgb(0.1, 0.6, 0.2) : PDFLib.rgb(0.8, 0.2, 0.2)
+    });
+    page.drawText(`Net Score: ${score} / ${(CBT_ACTIVE_QUESTIONS.length * 2)}`, {
+      x: 45, y: height - 150, size: 11, color: PDFLib.rgb(0.15, 0.15, 0.15)
+    });
+    page.drawText(`Percentage: ${pct}% (Threshold: 35.0%)`, {
+      x: 45, y: height - 170, size: 11, color: PDFLib.rgb(0.15, 0.15, 0.15)
+    });
+    page.drawText(`Correct Answers: ${correct} | Negative Penalty Hits: ${wrong}`, {
+      x: 45, y: height - 190, size: 10, color: PDFLib.rgb(0.35, 0.35, 0.35)
+    });
+
+    let yPos = height - 225;
+    page.drawText("Question-wise Response & Master Validation:", {
+      x: 45, y: yPos, size: 10, color: PDFLib.rgb(0.2, 0.2, 0.2)
+    });
+    yPos -= 20;
+
+    CBT_ACTIVE_QUESTIONS.slice(0, 10).forEach((q, i) => {
+      const isRight = cbtAnswers[i] === q.correct;
+      page.drawText(`Q.${i + 1} [${q.section.substring(0, 15)}...] Key: (${String.fromCharCode(65 + q.correct)}) | Verdict: ${isRight ? "CORRECT (+2.0)" : "INCORRECT (-0.5)"}`, {
+        x: 45, y: yPos, size: 8.5, color: isRight ? PDFLib.rgb(0.1, 0.5, 0.1) : PDFLib.rgb(0.7, 0.1, 0.1)
+      });
+      yPos -= 16;
+    });
+
+    page.drawText("EXAMRESIZER.ME", {
+      x: 100, y: height / 2 - 40, size: 48, rotate: PDFLib.degrees(45),
+      color: PDFLib.rgb(0.85, 0.85, 0.9), opacity: 0.25
+    });
+
+    page.drawText("Verified Academic Diagnostic Report | In-Browser Privacy Protection | www.examresizer.me", {
+      x: 45, y: 40, size: 8, color: PDFLib.rgb(0.5, 0.5, 0.5)
+    });
+
+    const pdfBytes = await pdfDoc.save();
+    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `ExamResizer_ScoreCard_Stage0${currentTestStage}.pdf`;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => document.body.removeChild(a), 500);
+
+  } catch (err) {
+    alert("Could not generate result PDF card.");
+  }
+}
+window.downloadOfficialResultPDF = downloadOfficialResultPDF;
+
+// ----------------------------------------------------
+// 6. QUESTION BANK ENGINE WITH MULTI-LANGUAGE
+// ----------------------------------------------------
+function generateStageQuestions(domain, stage) {
+  return [
+    {
+      id: 1,
+      section: "Quantitative Aptitude & Mathematics",
+      isMath: true,
+      en: "If a sum of money doubles itself at compound interest in 6 years, in how many years will it become 8 times of itself at the same rate?",
+      te: "ఒక నిర్దిష్ట మొత్తం చక్రవడ్డీ ప్రకారం 6 సంవత్సరాలలో 2 రెట్లు అయితే, అదే వడ్డీ రేటు వద్ద ఎన్ని సంవత్సరాలలో అది 8 రెట్లు అవుతుంది?",
+      hi: "यदि कोई राशि चक्रवृद्धि ब्याज पर 6 वर्षों में दोगुनी हो जाती है, तो उसी दर पर यह कितने वर्षों में 8 गुना हो जाएगी?",
+      options: ["18 Years", "12 Years", "24 Years", "16 Years"],
+      options_te: ["18 సంవత్సరాలు", "12 సంవత్సరాలు", "24 సంవత్సరాలు", "16 సంవత్సరాలు"],
+      options_hi: ["18 वर्ष", "12 वर्ष", "24 वर्ष", "16 वर्ष"],
+      correct: 0,
+      explanation: "Step 1: Formula for compound growth is P(1 + r/100)^t = A.\nStep 2: Here 2P occurs at t = 6 years.\nStep 3: To become 8P = (2)^3 P, time required = 3 × 6 = 18 Years."
+    },
+    {
+      id: 2,
+      section: "Logical Reasoning",
+      isMath: true,
+      en: "Find the missing number in the sequential numerical series: 12, 36, 108, 324, (?)",
+      te: "ఇచ్చిన శ్రేణిలో తర్వాతి సంఖ్యను కనుగొనండి: 12, 36, 108, 324, (?)",
+      hi: "श्रृंखला में लुप्त संख्या ज्ञात कीजिए: 12, 36, 108, 324, (?)",
+      options: ["972", "648", "864", "996"],
+      options_te: ["972", "648", "864", "996"],
+      options_hi: ["972", "648", "864", "996"],
+      correct: 0,
+      explanation: "Step 1: Notice the geometric progression multiplier: 12 × 3 = 36; 36 × 3 = 108; 108 × 3 = 324.\nStep 2: Next number = 324 × 3 = 972."
+    },
+    {
+      id: 3,
+      section: "Indian Polity & Constitution",
+      isMath: false,
+      en: "Which Constitutional Amendment Act is known as the 'Mini-Constitution' of India?",
+      te: "భారత రాజ్యాంగంలో ఏ సవరణ చట్టాన్ని 'మినీ రాజ్యాంగం' (Mini-Constitution) అని పిలుస్తారు?",
+      hi: "किस संविधान संशोधन अधिनियम को भारत का 'लघु संविधान' कहा जाता है?",
+      options: ["42nd Amendment Act (1976)", "44th Amendment Act (1978)", "73rd Amendment Act (1992)", "86th Amendment Act (2002)"],
+      options_te: ["42వ సవరణ చట్టం (1976)", "44వ సవరణ చట్టం (1978)", "73వ సవరణ చట్టం (1992)", "86వ సవరణ చట్టం (2002)"],
+      options_hi: ["42वां संशोधन अधिनियम (1976)", "44वां संशोधन अधिनियम (1978)", "73वां संशोधन अधिनियम (1992)", "86वां संशोधन अधिनियम (2002)"],
+      correct: 0,
+      explanation: "The 42nd Constitutional Amendment Act, 1976 introduced fundamental changes including the words 'Socialist, Secular, Integrity' to the Preamble."
+    },
+    {
+      id: 4,
+      section: "General Science & Technology",
+      isMath: false,
+      en: "Which part of the human brain regulates cardiovascular activities, respiration, and swallowing reflexes?",
+      te: "మానవ మెదడులోని ఏ భాగం హృదయ స్పందనలు, శ్వాసక్రియ మరియు మింగే చర్యలను నియంత్రిస్తుంది?",
+      hi: "मानव मस्तिष्क का कौन सा भाग हृदय गति, श्वसन और निगलने की क्रिया को नियंत्रित करता है?",
+      options: ["Medulla Oblongata", "Cerebellum", "Cerebrum", "Hypothalamus"],
+      options_te: ["మెడుల్లా ఆబ్లాంగటా (మజ్జాముఖం)", "సెరెబెల్లమ్ (చిన్న మెదడు)", "సెరెబ్రమ్ (పెద్ద మెదడు)", "హైపోథాలమస్"],
+      options_hi: ["मेडुला ऑब्लांगेटा", "सेरिबैलम", "सेरेब्रम", "हाइपोथैलेमस"],
+      correct: 0,
+      explanation: "The Medulla Oblongata in the hindbrain coordinates involuntary cardiac, vasomotor, and respiratory reflex centers."
+    },
+    {
+      id: 5,
+      section: "Economy & Sustainable Development",
+      isMath: false,
+      en: "What is the primary indicator used to measure inflation trends on consumer baskets in India?",
+      te: "భారతదేశంలో వినియోగదారుల స్థాయిలో ద్రవ్యోల్బణాన్ని (Inflation) లెక్కించడానికి ఉపయోగించే ప్రామాణిక సూచిక ఏది?",
+      hi: "भारत में उपभोक्ता स्तर पर मुद्रास्फीति को मापने के लिए किस सूचकांक का उपयोग किया जाता है?",
+      options: ["Consumer Price Index (CPI Combined)", "Wholesale Price Index (WPI)", "Gross Domestic Product Deflator", "Index of Industrial Production"],
+      options_te: ["వినియోగదారుల ధరల సూచిక (CPI కంబైన్డ్)", "టోకు ధరల సూచిక (WPI)", "జిడిపి డిఫ్లేటర్", "పారిశ్రామిక ఉత్పత్తి సూచిక (IIP)"],
+      options_hi: ["उपभोक्ता मूल्य सूचकांक (CPI संयुक्त)", "थोक मूल्य सूचकांक (WPI)", "सकल घरेलू उत्पाद डिफ्लेटर", "औद्योगिक उत्पादन सूचकांक"],
+      correct: 0,
+      explanation: "The Reserve Bank of India adopts the Consumer Price Index (CPI-Combined) as the key metric for inflation targeting and monetary policy formulation."
+    }
+  ];
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  checkExistingStudentSession();
+  renderStageCards();
+});
