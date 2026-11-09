@@ -19,10 +19,12 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="/favicon.png">
 
-  <!-- Core CDNs -->
+ <!-- Core CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
-
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -700,43 +702,8 @@
       </div>
     </section>
 
-    <!-- SECTION 4: PDF MEGA STUDIO -->
-    <section id="pdf-zone" class="hidden space-y-4">
-      <div class="glass-card rounded-2xl p-6 border border-emerald-500/30 space-y-5">
-        <div class="flex items-center justify-between pb-3 border-b border-white/10">
-          <div>
-            <h2 class="font-bold text-xl text-white">📄 PDF Mega Studio (Govt Portal Tools)</h2>
-            <p class="text-xs text-slate-400">100% Client-Side Privacy: Caste, Income & Marksheet Certificate Tools</p>
-          </div>
-          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:underline">Back to Resizer</button>
-        </div>
-        <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
-          <button type="button" onclick="selectPdfTool('compress')" id="pdf-tool-compress" class="exam-btn active p-3">Compress (100KB/200KB)</button>
-          <button type="button" onclick="selectPdfTool('img2pdf')" id="pdf-tool-img2pdf" class="exam-btn p-3">Images to A4 PDF</button>
-          <button type="button" onclick="selectPdfTool('merge')" id="pdf-tool-merge" class="exam-btn p-3">Merge PDFs</button>
-        </div>
-        <div class="p-5 rounded-xl border border-white/10 bg-[#05070e] space-y-4">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-bold text-white uppercase">Target Limit:</span>
-            <div class="flex space-x-2 text-xs">
-              <button type="button" onclick="setPdfLimit(100)" id="limit-btn-100" class="exam-btn active px-3 py-1">Under 100 KB</button>
-              <button type="button" onclick="setPdfLimit(200)" id="limit-btn-200" class="exam-btn px-3 py-1">Under 200 KB</button>
-              <button type="button" onclick="setPdfLimit(300)" id="limit-btn-300" class="exam-btn px-3 py-1">Under 300 KB</button>
-            </div>
-          </div>
-          <div onclick="document.getElementById('actualPdfFileInput').click()" class="border-2 border-dashed border-emerald-500/40 hover:border-emerald-400 rounded-xl p-8 text-center cursor-pointer bg-white/[0.01] transition">
-            <p class="text-sm font-semibold text-white" id="pdfFileSelectedLabel">Click to Select Certificate PDF / Image</p>
-            <p class="text-[11px] text-slate-400 mt-1">Processed locally on your device with Zero Server Uploads</p>
-            <input type="file" id="actualPdfFileInput" class="hidden" onchange="handlePdfToolFile(event)">
-          </div>
-          <button type="button" id="pdfToolActionBtn" onclick="runSelectedPdfTool()" disabled class="w-full py-3.5 rounded-xl bg-slate-800 text-slate-500 font-black text-xs cursor-not-allowed transition">Execute Tool Action</button>
-          <div id="pdfDownloadCard" class="hidden p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-center space-y-2">
-            <p class="text-xs font-bold text-emerald-400" id="pdfDownloadStatus">✅ Document Ready</p>
-            <a id="pdfFinalDownloadLink" class="inline-block px-5 py-2 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black text-xs hover:brightness-110 shadow-md">Download Processed PDF</a>
-          </div>
-        </div>
-      </div>
-    </section>
+   <!-- SECTION 4: PDF MEGA STUDIO (CONTROLLED BY JS/PDF-SUITE.JS) -->
+<section id="pdf-zone" class="hidden space-y-4"></section>
 
     <!-- SECTION 5: LIVE ALERTS -->
     <section id="jobs-zone" class="hidden space-y-4">
