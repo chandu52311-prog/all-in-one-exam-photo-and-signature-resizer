@@ -408,41 +408,29 @@
           <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition">← Return to Resizer</button>
         </div>
 
+        <!-- Tier 1: Main Authority Buttons -->
         <div>
           <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">Select Examination Authority / Sector</label>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-9 gap-2" id="authorityTabsNav">
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2" id="authorityTabsNav">
             <button type="button" onclick="switchAuthority('GATE')" id="auth-btn-GATE" class="exam-btn active p-2.5 text-xs text-center">GATE</button>
             <button type="button" onclick="switchAuthority('SSC')" id="auth-btn-SSC" class="exam-btn p-2.5 text-xs text-center">SSC</button>
             <button type="button" onclick="switchAuthority('RRB')" id="auth-btn-RRB" class="exam-btn p-2.5 text-xs text-center">RRB</button>
+            <button type="button" onclick="switchAuthority('STATE_PSC')" id="auth-btn-STATE_PSC" class="exam-btn p-2.5 text-xs text-center">APPSC / TSPSC</button>
+            <button type="button" onclick="switchAuthority('BTECH')" id="auth-btn-BTECH" class="exam-btn p-2.5 text-xs text-center">B.Tech (JNTU)</button>
             <button type="button" onclick="switchAuthority('UPSC')" id="auth-btn-UPSC" class="exam-btn p-2.5 text-xs text-center">UPSC</button>
-            <button type="button" onclick="switchAuthority('STATE_PSC')" id="auth-btn-STATE_PSC" class="exam-btn p-2.5 text-xs text-center">State PSCs</button>
-            <button type="button" onclick="switchAuthority('POWER_PSU')" id="auth-btn-POWER_PSU" class="exam-btn p-2.5 text-xs text-center">Power PSUs</button>
-            <button type="button" onclick="switchAuthority('DEFENCE')" id="auth-btn-DEFENCE" class="exam-btn p-2.5 text-xs text-center">Defence</button>
             <button type="button" onclick="switchAuthority('ENTRANCE')" id="auth-btn-ENTRANCE" class="exam-btn p-2.5 text-xs text-center">NEET / JEE</button>
-            <button type="button" onclick="switchAuthority('BTECH')" id="auth-btn-BTECH" class="exam-btn p-2.5 text-xs text-center">B.Tech</button>
           </div>
         </div>
 
-        <div class="p-4 rounded-xl bg-[#05070e] border border-white/10 grid grid-cols-1 md:grid-cols-2 gap-3 items-center">
-          <div>
-            <label for="subStreamDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase mb-1">Select Discipline / Specific Post Cadre</label>
-            <select id="subStreamDropdown" onchange="renderPapersByStream()" class="w-full bg-[#0a0f1d] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition"></select>
-          </div>
-          <div>
-            <label for="yearFilterDropdown" class="block text-[11px] font-extrabold text-amber-400 uppercase mb-1">Filter by Examination Session Year</label>
-            <select id="yearFilterDropdown" onchange="renderPapersByStream()" class="w-full bg-[#0a0f1d] border border-white/20 rounded-xl p-2.5 text-xs text-white outline-none focus:border-amber-400 transition">
-              <option value="ALL">All Examination Years (2020–2026 Archive)</option>
-              <option value="2026">2026 Examination Session</option>
-              <option value="2025">2025 Examination Session</option>
-              <option value="2024">2024 Examination Session</option>
-              <option value="2023">2023 Examination Session</option>
-              <option value="2022">2022 Examination Session</option>
-              <option value="2021">2021 Examination Session</option>
-              <option value="2020">2020 Examination Session</option>
-            </select>
+        <!-- Tier 2: Dynamic Sub-Buttons (Engineering Branches / Exam Cadres) -->
+        <div class="p-4 rounded-xl bg-[#05070e] border border-white/10 space-y-2.5">
+          <label class="block text-[11px] font-extrabold text-amber-400 uppercase tracking-wider">Select Stream / Discipline / Post Cadre</label>
+          <div class="flex flex-wrap gap-2 items-center" id="streamSubButtonsContainer">
+            <!-- Populated dynamically via JS -->
           </div>
         </div>
 
+        <!-- Active Authority Summary Banner -->
         <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h3 class="font-bold text-white text-base" id="activeAuthorityTitle">Graduate Aptitude Test in Engineering (GATE)</h3>
@@ -451,12 +439,13 @@
           <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
         </div>
 
+        <!-- Paper List Display Container -->
         <div class="space-y-3" id="papersStackContainer"></div>
       </div>
 
-      <!-- IN-APP PROTECTED VIEWER MODAL -->
+      <!-- IN-APP PROTECTED VIEWER MODAL (REAL PDF ONLY - ZERO MOCK TEXT) -->
       <div id="pyqReaderModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 select-none" oncontextmenu="return false;">
-        <div class="glass-card w-full max-w-4xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
+        <div class="glass-card w-full max-w-5xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
           <div class="p-3.5 md:p-4 border-b border-white/10 flex items-center justify-between bg-black/80">
             <div class="space-y-0.5">
               <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase border border-amber-500/30" id="readerPaperTag">OFFICIAL ARCHIVE</span>
@@ -469,16 +458,13 @@
               <button type="button" onclick="closePyqReader()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition">✕</button>
             </div>
           </div>
-          <div id="readerScrollArea" class="flex-grow overflow-y-auto p-4 md:p-8 space-y-6 text-slate-200 text-xs md:text-sm bg-[#070a12] relative">
-            <div class="sticky top-1/3 left-0 right-0 flex items-center justify-center pointer-events-none opacity-[0.04] z-0">
-              <span class="text-5xl md:text-7xl font-black rotate-[-25deg] tracking-widest text-white">EXAMRESIZER.ME</span>
-            </div>
-            <div class="relative z-10 border border-white/10 rounded-xl p-5 md:p-6 bg-white/[0.02] text-center space-y-2">
+          <div id="readerScrollArea" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 text-slate-200 text-xs md:text-sm bg-[#070a12] relative">
+            <div class="relative z-10 border border-white/10 rounded-xl p-4 bg-white/[0.02] text-center space-y-1">
               <p class="text-[10px] tracking-widest text-slate-400 font-bold uppercase">Official Master Examination Record</p>
-              <h2 class="text-base md:text-xl font-extrabold text-white" id="readerMainSubject">Examination Paper Title</h2>
+              <h2 class="text-base md:text-lg font-extrabold text-white" id="readerMainSubject">Examination Paper Title</h2>
               <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Verified Regulatory Key Attached</p>
             </div>
-            <div class="relative z-10 space-y-4" id="readerQuestionsBody"></div>
+            <div class="relative z-10 w-full" id="readerQuestionsBody"></div>
           </div>
           <div class="p-3 border-t border-white/10 bg-black/80 text-center text-[11px] text-slate-400 flex items-center justify-between px-6">
             <span>Authorized Academic Reference | ExamResizer Pan-India Hub</span>
