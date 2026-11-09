@@ -1,6 +1,7 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Dynamic Sub-Button Architecture & Strict Availability Verification
+// Complete Dynamic Catalog & Two-Tier HUD Navigation Engine
+// Module: js/pyq-hub.js
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
@@ -112,30 +113,38 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     }
   },
   STATE_PSC: {
-    title: "APPSC & TSPSC (State Public Service Commissions)",
-    desc: "State Gazetted, Group Services, and Engineering Executive papers.",
+    title: "Andhra Pradesh (APPSC) & Telangana (TGPSC / TSPSC)",
+    desc: "State Gazetted, Executive Services, and Assistant Executive Engineers (AEE) Master Papers.",
     folder: "pyq",
     subStreams: {
-      "APPSC Group-1": [
-        { year: "2024", session: "General Studies Paper-I & II", file: "APPSC/GROUP_1/2024/APPSC_GROUP_1_2024.pdf", available: false }
+      "APPSC Group-1 Services": [
+        { year: "2024", session: "General Studies Paper-I & II Preliminary", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
+        { year: "2023", session: "Screening Objective Master Set", file: "APPSC/GENERAL/2023/APPSC_GENERAL_2023.pdf", available: false }
       ],
-      "APPSC Group-2": [
-        { year: "2024", session: "Screening General Studies", file: "APPSC/GROUP_2/2024/APPSC_GROUP_2_2024.pdf", available: false }
+      "APPSC Group-2 Services": [
+        { year: "2024", session: "Screening General Studies & Mental Ability", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
+        { year: "2021", session: "Executive Paper Official Screening", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true },
+        { year: "2020", session: "State Screening Master Booklet", file: "APPSC/GENERAL/2020/APPSC_GENERAL_2020.pdf", available: true }
       ],
-      "APPSC General / AEE": [
-        { year: "2024", session: "General Screening Master", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
-        { year: "2021", session: "Executive Paper Official", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true },
-        { year: "2020", session: "Screening Test Paper", file: "APPSC/GENERAL/2020/APPSC_GENERAL_2020.pdf", available: true }
+      "APPSC AEE (Civil / Electrical)": [
+        { year: "2024", session: "Assistant Executive Engineers Paper-1 GS", file: "APPSC/AEE/2024/APPSC_AEE_2024.pdf", available: false },
+        { year: "2021", session: "Engineering Technical Subject Paper", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true }
       ],
-      "TSPSC Group-1": [
-        { year: "2024", session: "Preliminary Master Set 1", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Set 2", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_02.pdf", available: true }
+      "TSPSC Group-1 Services": [
+        { year: "2024", session: "Preliminary Master Question Booklet (Set 1)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Question Booklet (Set 2)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_02.pdf", available: true }
+      ],
+      "TSPSC Group-2 & Group-3": [
+        { year: "2024", session: "Paper-I General Studies & General Abilities", file: "TSPSC/GROUP_2/2024/TSPSC_GROUP_2_2024.pdf", available: false }
+      ],
+      "TSPSC AEE (Engineering Cadres)": [
+        { year: "2024", session: "Assistant Executive Engineers General Studies", file: "TSPSC/AEE/2024/TSPSC_AEE_2024.pdf", available: false }
       ]
     }
   },
   BTECH: {
     title: "Undergraduate Engineering (B.Tech JNTU Regulations)",
-    desc: "Semester final examination question papers across core university regulations.",
+    desc: "Autonomous & University Semester Final Examination Question Papers (R19/R20/R23).",
     folder: "pyq/BTECH",
     subStreams: {
       "EEE": [
@@ -158,7 +167,7 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
   },
   UPSC: {
     title: "Union Public Service Commission (UPSC)",
-    desc: "Civil Services and Central Engineering recruitment papers.",
+    desc: "Civil Services Preliminary and Central Engineering recruitment examination papers.",
     folder: "pyq/UPSC",
     subStreams: {
       "Civil Services Prelims (GS-1)": [
@@ -174,7 +183,7 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
   },
   ENTRANCE: {
     title: "National & State Entrance (JEE & EAMCET)",
-    desc: "National and state entrance papers with official final answer keys.",
+    desc: "NTA JEE Main and AP/TG EAPCET Entrance Papers with Official Final Keys.",
     folder: "pyq/ENTRANCE",
     subStreams: {
       "JEE Main": [
@@ -190,12 +199,20 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
 };
 
 // ----------------------------------------------------
-// CONTROLLER: TIER-1 AUTHORITY SWITCHER
+// CONTROLLER: TIER-1 AUTHORITY SWITCHER (BANNER SYNC)
 // ----------------------------------------------------
 function switchAuthority(authKey) {
   currentAuthorityKey = authKey;
-  const allKeys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
+  const data = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
 
+  // 1. Dynamic Banner Title & Description Update
+  const titleEl = document.getElementById('activeAuthorityTitle');
+  const descEl = document.getElementById('activeAuthorityDesc');
+  if (data && titleEl) titleEl.innerText = data.title;
+  if (data && descEl) descEl.innerText = data.desc;
+
+  // 2. Active Tab Button Highlight
+  const allKeys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
   allKeys.forEach(k => {
     const btn = document.getElementById('auth-btn-' + k);
     if (btn) {
@@ -274,7 +291,7 @@ function sanitizeId(str) {
 }
 
 // ----------------------------------------------------
-// CARD GENERATOR (STRICT AVAILABILITY VALIDATION)
+// CARD GENERATOR (VIEW / DOWNLOAD BUTTONS & STRICT LOCK)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
@@ -316,7 +333,7 @@ function renderPaperCards() {
         
         ${hasOriginal ? `
           <button onclick="openPyqReader('${safeStream}', '${p.year}', '${safeTitle}', '${data.folder}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
-            <span>View Official Paper</span>
+            <span>👁️ View / Download Official Paper</span>
           </button>
         ` : `
           <button disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center space-x-1.5 flex-shrink-0 cursor-not-allowed border border-white/5">
@@ -331,7 +348,7 @@ function renderPaperCards() {
 }
 
 // ----------------------------------------------------
-// IN-APP READER (REAL SUPABASE PDF / ZERO MOCK QUESTIONS)
+// IN-APP EMBEDDED READER (REAL SUPABASE PDF ONLY)
 // ----------------------------------------------------
 function openPyqReader(title, year, body, folder, filename) {
   document.getElementById('readerPaperTitle').innerText = `${title} (${year})`;
@@ -345,7 +362,6 @@ function openPyqReader(title, year, body, folder, filename) {
 
   const qBody = document.getElementById('readerQuestionsBody');
   
-  // Real embedded PDF preview (Eliminates dummy mock questions)
   qBody.innerHTML = `
     <div class="rounded-xl border border-white/10 bg-black/40 overflow-hidden flex flex-col items-center justify-center min-h-[70vh] w-full">
       <iframe src="${targetUrl}#toolbar=1" class="w-full h-[70vh] border-none rounded-xl" title="Official Question Paper Preview">
