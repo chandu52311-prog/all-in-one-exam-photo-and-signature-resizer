@@ -1,7 +1,6 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Complete Dynamic Catalog & Two-Tier HUD Navigation Engine
-// Module: js/pyq-hub.js
+// Module: js/pyq-hub.js (Zero PWA Conflicts | 100% Real Supabase PDFs)
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
@@ -117,28 +116,35 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     desc: "State Gazetted, Executive Services, and Assistant Executive Engineers (AEE) Master Papers.",
     folder: "pyq",
     subStreams: {
-      "APPSC Group-1 Services": [
-        { year: "2024", session: "General Studies Paper-I & II Preliminary", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
-        { year: "2023", session: "Screening Objective Master Set", file: "APPSC/GENERAL/2023/APPSC_GENERAL_2023.pdf", available: false }
+      "TSPSC Group-1": [
+        { year: "2024", session: "Preliminary Master Booklet (Set 1)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 2)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_02.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 3)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_03.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 4)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_04.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 5)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_05.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 6)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_06.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 7)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_07.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 8)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_08.pdf", available: true },
+        { year: "2024", session: "Preliminary Master Booklet (Set 9)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_09.pdf", available: true }
       ],
-      "APPSC Group-2 Services": [
-        { year: "2024", session: "Screening General Studies & Mental Ability", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
+      "APPSC AEE": [
+        { year: "2024", session: "Assistant Executive Engineers (Set 1)", file: "APPSC/AEE/2024/APPSC_AEE_2024.pdf", available: true },
+        { year: "2024", session: "Assistant Executive Engineers (Set 2)", file: "APPSC/AEE/2024/APPSC_AEE_2024_02.pdf", available: true },
+        { year: "2024", session: "Assistant Executive Engineers (Set 3)", file: "APPSC/AEE/2024/APPSC_AEE_2024_03.pdf", available: true },
+        { year: "2024", session: "Assistant Executive Engineers (Set 4)", file: "APPSC/AEE/2024/APPSC_AEE_2024_04.pdf", available: true },
+        { year: "2024", session: "Assistant Executive Engineers (Set 5)", file: "APPSC/AEE/2024/APPSC_AEE_2024_05.pdf", available: true }
+      ],
+      "APPSC General Studies": [
+        { year: "2024", session: "General Studies & Mental Ability (Set 1)", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024.pdf", available: true },
+        { year: "2024", session: "General Studies Screening (Set 2)", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024_02.pdf", available: true },
+        { year: "2024", session: "General Studies Screening (Set 3)", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024_03.pdf", available: true },
         { year: "2021", session: "Executive Paper Official Screening", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true },
+        { year: "2021", session: "Executive Paper Screening (Set 2)", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021_02.pdf", available: true },
         { year: "2020", session: "State Screening Master Booklet", file: "APPSC/GENERAL/2020/APPSC_GENERAL_2020.pdf", available: true }
       ],
-      "APPSC AEE (Civil / Electrical)": [
-        { year: "2024", session: "Assistant Executive Engineers Paper-1 GS", file: "APPSC/AEE/2024/APPSC_AEE_2024.pdf", available: false },
-        { year: "2021", session: "Engineering Technical Subject Paper", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true }
-      ],
-      "TSPSC Group-1 Services": [
-        { year: "2024", session: "Preliminary Master Question Booklet (Set 1)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Question Booklet (Set 2)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_02.pdf", available: true }
-      ],
-      "TSPSC Group-2 & Group-3": [
-        { year: "2024", session: "Paper-I General Studies & General Abilities", file: "TSPSC/GROUP_2/2024/TSPSC_GROUP_2_2024.pdf", available: false }
-      ],
-      "TSPSC AEE (Engineering Cadres)": [
-        { year: "2024", session: "Assistant Executive Engineers General Studies", file: "TSPSC/AEE/2024/TSPSC_AEE_2024.pdf", available: false }
+      "APPSC Technical": [
+        { year: "2024", session: "ECE Engineering Technical Paper", file: "APPSC/ECE/2024/APPSC_ECE_2024.pdf", available: true },
+        { year: "2020", session: "CSE Engineering Technical Paper", file: "APPSC/CSE/2020/APPSC_CSE_2020.pdf", available: true }
       ]
     }
   },
@@ -333,7 +339,7 @@ function renderPaperCards() {
         
         ${hasOriginal ? `
           <button onclick="openPyqReader('${safeStream}', '${p.year}', '${safeTitle}', '${data.folder}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
-            <span>👁️ View / Download Official Paper</span>
+            <span>👁️ View / Download </span>
           </button>
         ` : `
           <button disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center space-x-1.5 flex-shrink-0 cursor-not-allowed border border-white/5">
@@ -374,7 +380,7 @@ function openPyqReader(title, year, body, folder, filename) {
   `;
 
   const dlBtn = document.getElementById('readerTopDownloadBtn');
-  dlBtn.innerText = 'Download Official Master Paper';
+  dlBtn.innerText = 'Download PDF';
   dlBtn.disabled = false;
   dlBtn.onclick = function() {
     triggerDirectDownload(targetUrl, filename);
