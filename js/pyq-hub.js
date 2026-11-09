@@ -1,6 +1,7 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Module: js/pyq-hub.js (Zero PWA Conflicts | 100% Real Supabase PDFs)
+// Generated from 367 Verified Supabase Master Papers
+// Module: js/pyq-hub.js
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
@@ -14,39 +15,62 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     folder: "pyq/GATE",
     subStreams: {
       "EE (Electrical)": [
-        { year: "2024", session: "IISc Bangalore Master", file: "GATE_EE_2024.pdf", available: true },
-        { year: "2023", session: "IIT Kanpur Master", file: "GATE_EE_2023.pdf", available: true },
-        { year: "2022", session: "IIT Kharagpur Master", file: "GATE_EE_2022.pdf", available: true },
-        { year: "2021", session: "IIT Bombay Master", file: "GATE_EE_2021.pdf", available: true },
-        { year: "2020", session: "IIT Delhi Master", file: "GATE_EE_2020.pdf", available: true }
+        { year: "2024", session: "Session-3 Master Paper", file: "GATE/EE/2024/GATE_EE_2024_S3.pdf", available: true },
+        { year: "2024", session: "Session-8 Master Paper", file: "GATE/EE/2024/GATE_EE_2024_S8.pdf", available: true },
+        { year: "2023", session: "IIT Kanpur Master", file: "GATE/EE/2023/GATE_EE_2023.pdf", available: true },
+        { year: "2022", session: "IIT Kharagpur Master", file: "GATE/EE/2022/GATE_EE_2022.pdf", available: true },
+        { year: "2021", session: "IIT Bombay Master", file: "GATE/EE/2021/GATE_EE_2021.pdf", available: true },
+        { year: "2020", session: "IIT Delhi Master", file: "GATE/EE/2020/GATE_EE_2020.pdf", available: true }
       ],
       "CSE & IT": [
-        { year: "2024", session: "IISc Bangalore Master", file: "GATE_CS_2024.pdf", available: true },
-        { year: "2023", session: "IIT Kanpur Master", file: "GATE_CS_2023.pdf", available: true },
-        { year: "2022", session: "IIT Kharagpur Master", file: "GATE_CS_2022.pdf", available: true },
-        { year: "2021", session: "IIT Bombay Master", file: "GATE_CS_2021.pdf", available: true },
-        { year: "2020", session: "IIT Delhi Master", file: "GATE_CS_2020.pdf", available: true }
+        { year: "2024", session: "Session-1 Master Paper", file: "GATE/CS/2024/GATE_CS_2024_S1.pdf", available: true },
+        { year: "2024", session: "Session-5 Master Paper", file: "GATE/CS/2024/GATE_CS_2024_S5.pdf", available: true },
+        { year: "2024", session: "Session-6 Master Paper", file: "GATE/CS/2024/GATE_CS_2024_S6.pdf", available: true },
+        { year: "2023", session: "IIT Kanpur Master", file: "GATE/CS/2023/GATE_CS_2023.pdf", available: true },
+        { year: "2022", session: "IIT Kharagpur Master", file: "GATE/CS/2022/GATE_CS_2022.pdf", available: true },
+        { year: "2021", session: "IIT Bombay Master", file: "GATE/CS/2021/GATE_CS_2021.pdf", available: true },
+        { year: "2020", session: "IIT Delhi Master", file: "GATE/CS/2020/GATE_CS_2020.pdf", available: true }
       ],
       "ECE (Electronics)": [
-        { year: "2024", session: "IISc Bangalore Master", file: "GATE_EC_2024.pdf", available: true },
-        { year: "2023", session: "IIT Kanpur Master", file: "GATE_EC_2023.pdf", available: true },
-        { year: "2022", session: "IIT Kharagpur Master", file: "GATE_EC_2022.pdf", available: true },
-        { year: "2021", session: "IIT Bombay Master", file: "GATE_EC_2021.pdf", available: true },
-        { year: "2020", session: "IIT Delhi Master", file: "GATE_EC_2020.pdf", available: true }
+        { year: "2024", session: "Session-3 Master Paper", file: "GATE/EC/2024/GATE_EC_2024_S3.pdf", available: true },
+        { year: "2024", session: "Session-7 Master Paper", file: "GATE/EC/2024/GATE_EC_2024_S7.pdf", available: true },
+        { year: "2023", session: "IIT Kanpur Master", file: "GATE/EC/2023/GATE_EC_2023.pdf", available: true },
+        { year: "2022", session: "IIT Kharagpur Master", file: "GATE/EC/2022/GATE_EC_2022.pdf", available: true },
+        { year: "2021", session: "IIT Bombay Master", file: "GATE/EC/2021/GATE_EC_2021.pdf", available: true },
+        { year: "2020", session: "IIT Delhi Master", file: "GATE/EC/2020/GATE_EC_2020.pdf", available: true }
       ],
       "ME (Mechanical)": [
-        { year: "2024", session: "Shift-1 Master", file: "GATE_ME_2024.pdf", available: true },
-        { year: "2023", session: "Shift-1 Master", file: "GATE_ME_2023.pdf", available: true },
-        { year: "2022", session: "Shift-1 Master", file: "GATE_ME_2022.pdf", available: true },
-        { year: "2021", session: "Shift-1 Master", file: "GATE_ME_2021.pdf", available: true },
-        { year: "2020", session: "Shift-1 Master", file: "GATE_ME_2020.pdf", available: true }
+        { year: "2024", session: "Session-1 Master Paper", file: "GATE/ME/2024/GATE_ME_2024_S1.pdf", available: true },
+        { year: "2024", session: "Session-2 Master Paper", file: "GATE/ME/2024/GATE_ME_2024_S2.pdf", available: true },
+        { year: "2023", session: "Shift-1 Master", file: "GATE/ME/2023/GATE_ME_2023.pdf", available: true },
+        { year: "2022", session: "Shift-1 Master", file: "GATE/ME/2022/GATE_ME_2022.pdf", available: true },
+        { year: "2021", session: "Shift-1 Master", file: "GATE/ME/2021/GATE_ME_2021.pdf", available: true },
+        { year: "2020", session: "Shift-1 Master", file: "GATE/ME/2020/GATE_ME_2020.pdf", available: true }
       ],
       "CE (Civil)": [
-        { year: "2024", session: "Shift-1 Master", file: "GATE_CE_2024.pdf", available: true },
-        { year: "2023", session: "Shift-1 Master", file: "GATE_CE_2023.pdf", available: true },
-        { year: "2022", session: "Shift-1 Master", file: "GATE_CE_2022.pdf", available: true },
-        { year: "2021", session: "Shift-1 Master", file: "GATE_CE_2021.pdf", available: true },
-        { year: "2020", session: "Shift-1 Master", file: "GATE_CE_2020.pdf", available: true }
+        { year: "2024", session: "Session-3 Master Paper", file: "GATE/CE/2024/GATE_CE_2024_S3.pdf", available: true },
+        { year: "2024", session: "Session-4 Master Paper", file: "GATE/CE/2024/GATE_CE_2024_S4.pdf", available: true },
+        { year: "2024", session: "Session-5 Master Paper", file: "GATE/CE/2024/GATE_CE_2024_S5.pdf", available: true },
+        { year: "2023", session: "Shift-1 Master", file: "GATE/CE/2023/GATE_CE_2023.pdf", available: true },
+        { year: "2022", session: "Shift-1 Master", file: "GATE/CE/2022/GATE_CE_2022.pdf", available: true },
+        { year: "2021", session: "Shift-1 Master", file: "GATE/CE/2021/GATE_CE_2021.pdf", available: true },
+        { year: "2020", session: "Shift-1 Master", file: "GATE/CE/2020/GATE_CE_2020.pdf", available: true }
+      ],
+      "IN (Instrumentation)": [
+        { year: "2024", session: "Session-4 Master Paper", file: "GATE/IN/2024/GATE_IN_2024_S4.pdf", available: true },
+        { year: "2024", session: "Session-5 Master Paper", file: "GATE/IN/2024/GATE_IN_2024_S5.pdf", available: true },
+        { year: "2023", session: "Official Master", file: "GATE/IN/2023/GATE_IN_2023.pdf", available: true },
+        { year: "2022", session: "Official Master", file: "GATE/IN/2022/GATE_IN_2022.pdf", available: true },
+        { year: "2021", session: "Official Master", file: "GATE/IN/2021/GATE_IN_2021.pdf", available: true },
+        { year: "2020", session: "Official Master", file: "GATE/IN/2020/GATE_IN_2020.pdf", available: true }
+      ],
+      "CH (Chemical)": [
+        { year: "2024", session: "Session-2 Master Paper", file: "GATE/CH/2024/GATE_CH_2024_S2.pdf", available: true },
+        { year: "2024", session: "Session-3 Master Paper", file: "GATE/CH/2024/GATE_CH_2024_S3.pdf", available: true },
+        { year: "2023", session: "Official Master", file: "GATE/CH/2023/GATE_CH_2023.pdf", available: true },
+        { year: "2022", session: "Official Master", file: "GATE/CH/2022/GATE_CH_2022.pdf", available: true },
+        { year: "2021", session: "Official Master", file: "GATE/CH/2021/GATE_CH_2021.pdf", available: true },
+        { year: "2020", session: "Official Master", file: "GATE/CH/2020/GATE_CH_2020.pdf", available: true }
       ]
     }
   },
@@ -56,35 +80,67 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     folder: "pyq/SSC",
     subStreams: {
       "CGL": [
-        { year: "2025", session: "CGL Tier-1 Shift Paper", file: "SSC_CGL_2025.pdf", available: true },
-        { year: "2024", session: "CGL Tier-1 Shift Paper", file: "SSC_CGL_2024.pdf", available: true },
-        { year: "2023", session: "CGL Tier-1 Shift Paper", file: "SSC_CGL_2023.pdf", available: true },
-        { year: "2022", session: "CGL Tier-1 Shift Paper", file: "SSC_CGL_2022.pdf", available: true },
-        { year: "2020", session: "CGL Tier-1 Shift Paper", file: "SSC_CGL_2020.pdf", available: true }
+        { year: "2025", session: "Tier-1 CBT Shift 1", file: "SSC/CGL/2025/SSC_CGL_2025.pdf", available: true },
+        { year: "2025", session: "Tier-1 CBT Shift 2", file: "SSC/CGL/2025/SSC_CGL_2025_02.pdf", available: true },
+        { year: "2025", session: "Tier-1 CBT Shift 3", file: "SSC/CGL/2025/SSC_CGL_2025_03.pdf", available: true },
+        { year: "2023", session: "Tier-1 Shift Master", file: "SSC/CGL/2023/SSC_CGL_2023.pdf", available: true },
+        { year: "2023", session: "Tier-1 Shift 2", file: "SSC/CGL/2023/SSC_CGL_2023_02.pdf", available: true },
+        { year: "2022", session: "Tier-1 Shift Master", file: "SSC/CGL/2022/SSC_CGL_2022.pdf", available: true },
+        { year: "2021", session: "Tier-1 Shift Master", file: "SSC/CGL/2021/SSC_CGL_2021.pdf", available: true },
+        { year: "2020", session: "Tier-1 Shift Master", file: "SSC/CGL/2020/SSC_CGL_2020.pdf", available: true }
       ],
       "CHSL (10+2)": [
-        { year: "2024", session: "CHSL Tier-1 Shift", file: "SSC_CHSL_2024.pdf", available: true },
-        { year: "2023", session: "CHSL Tier-1 Shift", file: "SSC_CHSL_2023.pdf", available: true },
-        { year: "2022", session: "CHSL Tier-1 Shift", file: "SSC_CHSL_2022.pdf", available: true },
-        { year: "2020", session: "CHSL Tier-1 Shift", file: "SSC_CHSL_2020.pdf", available: true }
+        { year: "2024", session: "Tier-1 Shift Master", file: "SSC/CHSL/2024/SSC_CHSL_2024.pdf", available: true },
+        { year: "2024", session: "Tier-1 Shift 2", file: "SSC/CHSL/2024/SSC_CHSL_2024_02.pdf", available: true },
+        { year: "2023", session: "Tier-1 Shift Master", file: "SSC/CHSL/2023/SSC_CHSL_2023.pdf", available: true },
+        { year: "2022", session: "Tier-1 Shift Master", file: "SSC/CHSL/2022/SSC_CHSL_2022.pdf", available: true },
+        { year: "2021", session: "Tier-1 Shift Master", file: "SSC/CHSL/2021/SSC_CHSL_2021.pdf", available: true },
+        { year: "2020", session: "Tier-1 Shift Master", file: "SSC/CHSL/2020/SSC_CHSL_2020.pdf", available: true }
       ],
-      "JE (Junior Engineer)": [
-        { year: "2025", session: "JE Electrical CBT", file: "SSC_JE_EE_2025.pdf", available: true },
-        { year: "2024", session: "JE Electrical CBT", file: "SSC_JE_EE_2024.pdf", available: true },
-        { year: "2023", session: "JE Electrical CBT", file: "SSC_JE_EE_2023.pdf", available: true },
-        { year: "2020", session: "JE Civil CBT", file: "SSC_JE_CE_2020.pdf", available: true }
+      "JE (Electrical & Civil)": [
+        { year: "2025", session: "JE Electrical CBT Shift 1", file: "SSC/JE_EE/2025/SSC_JE_EE_2025.pdf", available: true },
+        { year: "2024", session: "JE General CBT Paper", file: "SSC/JE/2024/SSC_JE_2024.pdf", available: true },
+        { year: "2024", session: "JE Electrical CBT", file: "SSC/JE_EE/2024/SSC_JE_EE_2024.pdf", available: true },
+        { year: "2023", session: "JE Civil CBT", file: "SSC/JE_CE/2023/SSC_JE_CE_2023.pdf", available: true },
+        { year: "2023", session: "JE Electrical CBT", file: "SSC/JE_EE/2023/SSC_JE_EE_2023.pdf", available: true },
+        { year: "2022", session: "JE Electrical CBT", file: "SSC/JE_EE/2022/SSC_JE_EE_2022.pdf", available: true },
+        { year: "2020", session: "JE Civil CBT", file: "SSC/JE_CE/2020/SSC_JE_CE_2020.pdf", available: true },
+        { year: "2020", session: "JE Electrical CBT", file: "SSC/JE_EE/2020/SSC_JE_EE_2020.pdf", available: true }
       ],
       "CPO SI": [
-        { year: "2025", session: "Paper-1 CBT Shift", file: "SSC_CPO_2025.pdf", available: true },
-        { year: "2024", session: "Paper-1 CBT Shift", file: "SSC_CPO_2024.pdf", available: true },
-        { year: "2021", session: "Paper-1 CBT Shift", file: "SSC_CPO_2021.pdf", available: true },
-        { year: "2020", session: "Paper-1 CBT Shift", file: "SSC_CPO_2020.pdf", available: true }
+        { year: "2025", session: "Paper-1 CBT Shift 1", file: "SSC/CPO/2025/SSC_CPO_2025.pdf", available: true },
+        { year: "2024", session: "Paper-1 CBT Master", file: "SSC/CPO/2024/SSC_CPO_2024.pdf", available: true },
+        { year: "2023", session: "Paper-1 CBT Master", file: "SSC/CPO/2023/SSC_CPO_2023.pdf", available: true },
+        { year: "2022", session: "Paper-1 CBT Master", file: "SSC/CPO/2022/SSC_CPO_2022.pdf", available: true },
+        { year: "2021", session: "Paper-1 CBT Master", file: "SSC/CPO/2021/SSC_CPO_2021.pdf", available: true },
+        { year: "2020", session: "Paper-1 CBT Master", file: "SSC/CPO/2020/SSC_CPO_2020.pdf", available: true }
       ],
       "MTS": [
-        { year: "2024", session: "MTS CBT Shift", file: "SSC_MTS_2024.pdf", available: true },
-        { year: "2023", session: "MTS CBT Shift", file: "SSC_MTS_2023.pdf", available: true },
-        { year: "2022", session: "MTS CBT Shift", file: "SSC_MTS_2022.pdf", available: true },
-        { year: "2020", session: "MTS CBT Shift", file: "SSC_MTS_2020.pdf", available: true }
+        { year: "2024", session: "MTS CBT Shift Master", file: "SSC/MTS/2024/SSC_MTS_2024.pdf", available: true },
+        { year: "2023", session: "MTS CBT Shift Master", file: "SSC/MTS/2023/SSC_MTS_2023.pdf", available: true },
+        { year: "2022", session: "MTS CBT Shift Master", file: "SSC/MTS/2022/SSC_MTS_2022.pdf", available: true },
+        { year: "2021", session: "MTS CBT Shift Master", file: "SSC/MTS/2021/SSC_MTS_2021.pdf", available: true },
+        { year: "2020", session: "MTS CBT Shift Master", file: "SSC/MTS/2020/SSC_MTS_2020.pdf", available: true }
+      ],
+      "GD Constable": [
+        { year: "2025", session: "GD Constable CBT", file: "SSC/GD/2025/SSC_GD_2025.pdf", available: true },
+        { year: "2024", session: "GD Constable Shift 1", file: "SSC/GD/2024/SSC_GD_2024.pdf", available: true },
+        { year: "2024", session: "GD Constable Shift 2", file: "SSC/GD/2024/SSC_GD_2024_02.pdf", available: true },
+        { year: "2022", session: "GD Constable Shift 1", file: "SSC/GD/2022/SSC_GD_2022.pdf", available: true }
+      ],
+      "Stenographer (C & D)": [
+        { year: "2025", session: "Steno CBT Paper", file: "SSC/STENO/2025/SSC_STENO_2025.pdf", available: true },
+        { year: "2024", session: "Steno CBT Shift 1", file: "SSC/STENO/2024/SSC_STENO_2024.pdf", available: true },
+        { year: "2023", session: "Steno CBT Shift 1", file: "SSC/STENO/2023/SSC_STENO_2023.pdf", available: true },
+        { year: "2022", session: "Steno CBT Shift 1", file: "SSC/STENO/2022/SSC_STENO_2022.pdf", available: true },
+        { year: "2021", session: "Steno CBT Shift 1", file: "SSC/STENO/2021/SSC_STENO_2021.pdf", available: true },
+        { year: "2020", session: "Steno CBT Shift 1", file: "SSC/STENO/2020/SSC_STENO_2020.pdf", available: true }
+      ],
+      "Selection Posts": [
+        { year: "2025", session: "Phase Selection CBT", file: "SSC/SELPOST/2025/SSC_SELPOST_2025.pdf", available: true },
+        { year: "2024", session: "Phase XII Selection CBT", file: "SSC/SELPOST/2024/SSC_SELPOST_2024.pdf", available: true },
+        { year: "2023", session: "Phase XI Selection CBT", file: "SSC/SELPOST/2023/SSC_SELPOST_2023.pdf", available: true },
+        { year: "2022", session: "Phase X Selection CBT", file: "SSC/SELPOST/2022/SSC_SELPOST_2022.pdf", available: true }
       ]
     }
   },
@@ -94,20 +150,36 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     folder: "pyq/RRB",
     subStreams: {
       "NTPC": [
-        { year: "2024", session: "NTPC Official Shift", file: "RRB_NTPC_2024.pdf", available: true },
-        { year: "2022", session: "NTPC Stage-2 Shift", file: "RRB_NTPC_2022.pdf", available: true },
-        { year: "2021", session: "NTPC Stage-1 Shift", file: "RRB_NTPC_2021.pdf", available: true }
+        { year: "2025", session: "Graduate CBT Shift 1", file: "RRB/NTPC/2025/RRB_NTPC_2025.pdf", available: true },
+        { year: "2024", session: "CBT Shift Master", file: "RRB/NTPC/2024/RRB_NTPC_2024.pdf", available: true },
+        { year: "2024", session: "CBT Shift 2", file: "RRB/NTPC/2024/RRB_NTPC_2024_02.pdf", available: true },
+        { year: "2022", session: "Stage-2 Level 6 Shift", file: "RRB/NTPC/2022/RRB_NTPC_2022.pdf", available: true },
+        { year: "2022", session: "Stage-2 Level 5 Shift", file: "RRB/NTPC/2022/RRB_NTPC_2022_02.pdf", available: true },
+        { year: "2021", session: "Stage-1 Phase-1 Shift", file: "RRB/NTPC/2021/RRB_NTPC_2021.pdf", available: true },
+        { year: "2020", session: "Stage-1 Shift Master", file: "RRB/NTPC/2020/RRB_NTPC_2020.pdf", available: true }
       ],
       "GROUP D": [
-        { year: "2024", session: "Group D Official Shift", file: "RRB_GROUP_D_2024.pdf", available: true },
-        { year: "2022", session: "Group D Official Shift", file: "RRB_GROUP_D_2022.pdf", available: true }
+        { year: "2024", session: "Level-1 CBT Shift 1", file: "RRB/GROUP_D/2024/RRB_GROUP_D_2024.pdf", available: true },
+        { year: "2024", session: "Level-1 CBT Shift 2", file: "RRB/GROUP_D/2024/RRB_GROUP_D_2024_02.pdf", available: true },
+        { year: "2022", session: "Phase-1 CBT Shift 1", file: "RRB/GROUP_D/2022/RRB_GROUP_D_2022.pdf", available: true },
+        { year: "2022", session: "Phase-1 CBT Shift 2", file: "RRB/GROUP_D/2022/RRB_GROUP_D_2022_02.pdf", available: true }
       ],
       "ALP & Tech": [
-        { year: "2024", session: "ALP Stage Shift-1", file: "RRB_ALP_2024.pdf", available: false },
-        { year: "2018", session: "ALP Part A & B Official", file: "RRB_ALP_2018.pdf", available: false }
+        { year: "2025", session: "CBT-1 Stage Shift 1", file: "RRB/ALP/2025/RRB_ALP_2025.pdf", available: true },
+        { year: "2025", session: "CBT-1 Stage Shift 2", file: "RRB/ALP/2025/RRB_ALP_2025_02.pdf", available: true },
+        { year: "2024", session: "CBT-1 Stage Shift 1", file: "RRB/ALP/2024/RRB_ALP_2024.pdf", available: true },
+        { year: "2024", session: "CBT-1 Stage Shift 2", file: "RRB/ALP/2024/RRB_ALP_2024_02.pdf", available: true },
+        { year: "2024", session: "CBT-1 Stage Shift 3", file: "RRB/ALP/2024/RRB_ALP_2024_03.pdf", available: true }
+      ],
+      "RRB JE": [
+        { year: "2022", session: "CBT Stage Master Paper", file: "RRB/JE/2022/RRB_JE_2022.pdf", available: true }
       ],
       "PARAMEDICAL": [
-        { year: "2025", session: "Official Paramedical Shift", file: "RRB_PARAMEDICAL_2025.pdf", available: true }
+        { year: "2025", session: "Staff Nurse / Paramedical Shift 1", file: "RRB/PARAMEDICAL/2025/RRB_PARAMEDICAL_2025.pdf", available: true },
+        { year: "2024", session: "Paramedical Examination", file: "RRB/PARAMEDICAL/2024/RRB_PARAMEDICAL_2024.pdf", available: true }
+      ],
+      "Ministerial & Isolated": [
+        { year: "2020", session: "CBT Shift Master", file: "RRB/MINISTERIAL/2020/RRB_MINISTERIAL_2020.pdf", available: true }
       ]
     }
   },
@@ -116,17 +188,6 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     desc: "State Gazetted, Executive Services, and Assistant Executive Engineers (AEE) Master Papers.",
     folder: "pyq",
     subStreams: {
-      "TSPSC Group-1": [
-        { year: "2024", session: "Preliminary Master Booklet (Set 1)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 2)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_02.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 3)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_03.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 4)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_04.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 5)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_05.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 6)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_06.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 7)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_07.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 8)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_08.pdf", available: true },
-        { year: "2024", session: "Preliminary Master Booklet (Set 9)", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024_09.pdf", available: true }
-      ],
       "APPSC AEE": [
         { year: "2024", session: "Assistant Executive Engineers (Set 1)", file: "APPSC/AEE/2024/APPSC_AEE_2024.pdf", available: true },
         { year: "2024", session: "Assistant Executive Engineers (Set 2)", file: "APPSC/AEE/2024/APPSC_AEE_2024_02.pdf", available: true },
@@ -139,51 +200,48 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
         { year: "2024", session: "General Studies Screening (Set 2)", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024_02.pdf", available: true },
         { year: "2024", session: "General Studies Screening (Set 3)", file: "APPSC/GENERAL/2024/APPSC_GENERAL_2024_03.pdf", available: true },
         { year: "2021", session: "Executive Paper Official Screening", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021.pdf", available: true },
-        { year: "2021", session: "Executive Paper Screening (Set 2)", file: "APPSC/GENERAL/2021/APPSC_GENERAL_2021_02.pdf", available: true },
         { year: "2020", session: "State Screening Master Booklet", file: "APPSC/GENERAL/2020/APPSC_GENERAL_2020.pdf", available: true }
       ],
-      "APPSC Technical": [
+      "APPSC Technical (Engineering)": [
         { year: "2024", session: "ECE Engineering Technical Paper", file: "APPSC/ECE/2024/APPSC_ECE_2024.pdf", available: true },
         { year: "2020", session: "CSE Engineering Technical Paper", file: "APPSC/CSE/2020/APPSC_CSE_2020.pdf", available: true }
-      ]
-    }
-  },
-  BTECH: {
-    title: "Undergraduate Engineering (B.Tech JNTU Regulations)",
-    desc: "Autonomous & University Semester Final Examination Question Papers (R19/R20/R23).",
-    folder: "pyq/BTECH",
-    subStreams: {
-      "EEE": [
-        { year: "2024", session: "Power Systems & Machines", file: "EEE/2024/BTECH_EEE_2024.pdf", available: true },
-        { year: "2023", session: "Electrical Circuits & Networks", file: "EEE/2023/BTECH_EEE_2023.pdf", available: true }
       ],
-      "ECE": [
-        { year: "2024", session: "Signals & Core Electronics", file: "ECE/2024/BTECH_ECE_2024.pdf", available: true }
-      ],
-      "CSE": [
-        { year: "2024", session: "Data Structures & DBMS", file: "CSE/2024/BTECH_CSE_2024.pdf", available: true }
-      ],
-      "CIVIL": [
-        { year: "2024", session: "Structural Analysis & Mechanics", file: "CIVIL/2024/BTECH_CIVIL_2024.pdf", available: true }
-      ],
-      "MECH": [
-        { year: "2024", session: "Thermal Engineering & Fluid Mechanics", file: "MECH/2024/BTECH_MECH_2024.pdf", available: false }
+      "TSPSC Group-1 Services": [
+        { year: "2024", session: "Preliminary Master Question Booklet", file: "TSPSC/GROUP_1/2024/TSPSC_GROUP_1_2024.pdf", available: true }
       ]
     }
   },
   UPSC: {
     title: "Union Public Service Commission (UPSC)",
-    desc: "Civil Services Preliminary and Central Engineering recruitment examination papers.",
+    desc: "Civil Services Preliminary GS-1 and CSAT Examination Master Question Papers.",
     folder: "pyq/UPSC",
     subStreams: {
       "Civil Services Prelims (GS-1)": [
-        { year: "2024", session: "GS Paper-I Series A", file: "UPSC_CSE_2024_GS1.pdf", available: true },
-        { year: "2023", session: "GS Paper-I Series A", file: "UPSC_CSE_2023_GS1.pdf", available: true },
-        { year: "2022", session: "GS Paper-I Series A", file: "UPSC_CSE_2022_GS1.pdf", available: true }
+        { year: "2024", session: "General Studies Paper-I Series A", file: "UPSC/GS1/2024/UPSC_GS1_2024.pdf", available: true },
+        { year: "2023", session: "General Studies Paper-I Series A", file: "UPSC/GS1/2023/UPSC_GS1_2023.pdf", available: true }
       ],
-      "CSAT (Paper-2)": [
-        { year: "2024", session: "CSAT Series A", file: "UPSC_CSAT_2024.pdf", available: true },
-        { year: "2023", session: "CSAT Series A", file: "UPSC_CSAT_2023.pdf", available: true }
+      "Civil Services CSAT (Paper-2)": [
+        { year: "2024", session: "CSAT Paper-II Series A", file: "UPSC/CSAT/2024/UPSC_CSAT_2024.pdf", available: true },
+        { year: "2023", session: "CSAT Paper-II Series A", file: "UPSC/CSAT/2023/UPSC_CSAT_2023.pdf", available: true }
+      ]
+    }
+  },
+  BTECH: {
+    title: "Undergraduate Engineering (B.Tech JNTU Regulations)",
+    desc: "Autonomous & University Semester Final Examination Question Papers.",
+    folder: "pyq/BTECH",
+    subStreams: {
+      "EEE": [
+        { year: "2024", session: "Power Systems & Machines", file: "BTECH/EEE/2024/BTECH_EEE_2024.pdf", available: false }
+      ],
+      "CSE": [
+        { year: "2024", session: "Data Structures & DBMS", file: "BTECH/CSE/2024/BTECH_CSE_2024.pdf", available: false }
+      ],
+      "ECE": [
+        { year: "2024", session: "Signals & Core Electronics", file: "BTECH/ECE/2024/BTECH_ECE_2024.pdf", available: false }
+      ],
+      "CIVIL": [
+        { year: "2024", session: "Structural Analysis & Mechanics", file: "BTECH/CIVIL/2024/BTECH_CIVIL_2024.pdf", available: false }
       ]
     }
   },
@@ -193,12 +251,10 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     folder: "pyq/ENTRANCE",
     subStreams: {
       "JEE Main": [
-        { year: "2024", session: "Session-1 Morning Shift (PCM)", file: "JEE_MAIN_2024_S1.pdf", available: false },
-        { year: "2023", session: "Session-1 Morning Shift (PCM)", file: "JEE_MAIN_2023_S1.pdf", available: false }
+        { year: "2024", session: "Session-1 Morning Shift (PCM)", file: "ENTRANCE/JEE/2024/JEE_MAIN_2024.pdf", available: false }
       ],
       "AP & TS EAMCET / EAPCET": [
-        { year: "2024", session: "Engineering Stream Morning Shift", file: "EAPCET_2024_S1.pdf", available: false },
-        { year: "2023", session: "Engineering Stream Morning Shift", file: "EAPCET_2023_S1.pdf", available: false }
+        { year: "2024", session: "Engineering Stream Morning Shift", file: "ENTRANCE/EAMCET/2024/EAPCET_2024.pdf", available: false }
       ]
     }
   }
@@ -211,13 +267,11 @@ function switchAuthority(authKey) {
   currentAuthorityKey = authKey;
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
 
-  // 1. Dynamic Banner Title & Description Update
   const titleEl = document.getElementById('activeAuthorityTitle');
   const descEl = document.getElementById('activeAuthorityDesc');
   if (data && titleEl) titleEl.innerText = data.title;
   if (data && descEl) descEl.innerText = data.desc;
 
-  // 2. Active Tab Button Highlight
   const allKeys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
   allKeys.forEach(k => {
     const btn = document.getElementById('auth-btn-' + k);
@@ -297,7 +351,7 @@ function sanitizeId(str) {
 }
 
 // ----------------------------------------------------
-// CARD GENERATOR (VIEW / DOWNLOAD BUTTONS & STRICT LOCK)
+// CARD GENERATOR (VIEW / DOWNLOAD & STRICT AVAILABILITY)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
@@ -338,8 +392,8 @@ function renderPaperCards() {
         </div>
         
         ${hasOriginal ? `
-          <button onclick="openPyqReader('${safeStream}', '${p.year}', '${safeTitle}', '${data.folder}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
-            <span>👁️ View / Download </span>
+          <button onclick="openPyqReader('${safeStream}', '${p.year}', '${safeTitle}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
+            <span>👁️ View / Download</span>
           </button>
         ` : `
           <button disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center space-x-1.5 flex-shrink-0 cursor-not-allowed border border-white/5">
@@ -356,18 +410,17 @@ function renderPaperCards() {
 // ----------------------------------------------------
 // IN-APP EMBEDDED READER (REAL SUPABASE PDF ONLY)
 // ----------------------------------------------------
-function openPyqReader(title, year, body, folder, filename) {
+function openPyqReader(title, year, body, filePath) {
   document.getElementById('readerPaperTitle').innerText = `${title} (${year})`;
   document.getElementById('readerPaperTag').innerText = body.toUpperCase();
   document.getElementById('readerMainSubject').innerText = title;
   document.getElementById('readerSessionInfo').innerText = `${body} • Official Session ${year}`;
 
-  const targetUrl = filename.startsWith('http') 
-    ? filename 
-    : (filename.includes('/') ? `${SUPABASE_STORAGE_BASE}/${filename}` : `${SUPABASE_STORAGE_BASE}/${folder}/${year}/${filename}`);
+  const targetUrl = filePath.startsWith('http') 
+    ? filePath 
+    : `${SUPABASE_STORAGE_BASE}/pyq/${filePath}`;
 
   const qBody = document.getElementById('readerQuestionsBody');
-  
   qBody.innerHTML = `
     <div class="rounded-xl border border-white/10 bg-black/40 overflow-hidden flex flex-col items-center justify-center min-h-[70vh] w-full">
       <iframe src="${targetUrl}#toolbar=1" class="w-full h-[70vh] border-none rounded-xl" title="Official Question Paper Preview">
@@ -383,7 +436,7 @@ function openPyqReader(title, year, body, folder, filename) {
   dlBtn.innerText = 'Download PDF';
   dlBtn.disabled = false;
   dlBtn.onclick = function() {
-    triggerDirectDownload(targetUrl, filename);
+    triggerDirectDownload(targetUrl, filePath);
   };
 
   document.getElementById('pyqReaderModal').classList.remove('hidden');
@@ -396,8 +449,8 @@ function closePyqReader() {
 }
 window.closePyqReader = closePyqReader;
 
-function triggerDirectDownload(url, filename) {
-  const safeName = filename.split('/').pop();
+function triggerDirectDownload(url, filePath) {
+  const safeName = filePath.split('/').pop();
   const a = document.createElement('a');
   a.href = url;
   a.download = `ExamResizer_${safeName}`;
