@@ -1,7 +1,7 @@
 """
 ExamResizer Pro - Live Government Job Harvester
 Module: auto_job_crawler.py
-Target: Ministry of I&B Employment News (Zero-Blocking Official All-Jobs Listing)
+Target: Ministry of I&B Employment News (Verified Direct Ingestion)
 """
 
 import os
@@ -79,17 +79,17 @@ def fetch_employment_news(session: cr.Session):
             return candidates
 
         soup = BeautifulSoup(r.text, "html.parser")
-        table = soup.find("table")
-        if not table:
-            logger.warning("No table found on Employment News page.")
-            return candidates
-
-        rows = table.find_all("tr")
         now_dt = datetime.now(IST).date()
 
-        for tr in rows[1:]:
-            cols = [td.get_text(" ", strip=True) for td in tr.find_all("td")]
-            if len(cols) < 5:
+        # Find all <tr> tags with 5+ <td> columns (bypasses any nested wrapper tables)
+        for tr in soup.find_all("tr"):
+            tds = tr.find_all("td")
+            if len(tds) < 5:
+                continue
+
+            cols = [td.get_text(" ", strip=True) for td in tds]
+            # Ignore headers if captured in td
+            if "Issued Date" in cols[0] or "Organization" in cols[1]:
                 continue
 
             issued_date_str = cols[0]
@@ -98,34 +98,41 @@ def fetch_employment_news(session: cr.Session):
             appointment_method = cols[3]
             closing_date_str = cols[4]
 
+            if not authority or not title:
+                continue
+
             # Parse date strictly
             dates = find_dates(closing_date_str)
             if not dates:
+                # If date format like DD/MM/YYYY or DD-MM-YYYY direct regex
                 continue
 
             closing_d = dates[0][2]
             if closing_d < now_dt:
-                continue  # Skip expired
+                continue  # Expired notification skip
 
             closing_dt = datetime.combine(closing_d, time(23, 59, 59, 999000), tzinfo=IST)
 
-            # Categorize
+            # Auto Category Mapping
             auth_low = authority.lower()
             cat = "CENTRAL"
             preset = "UPSC"
-            if "railway" in auth_low or "rrb" in auth_low:
+            if any(k in auth_low for k in ["railway", "rrb"]):
                 cat = "RAILWAYS"
                 preset = "RRB"
             elif "ssc" in auth_low:
                 cat = "CENTRAL"
                 preset = "SSC"
-            elif any(p in auth_low for p in ["power grid", "ntpc", "bhel", "ongc", "iocl", "sail", "gail"]):
+            elif any(k in auth_low for k in ["bank", "ibps", "sbi"]):
+                cat = "BANKING"
+                preset = "IBPS"
+            elif any(k in auth_low for k in ["power grid", "ntpc", "bhel", "ongc", "iocl", "sail", "gail", "drdo", "isro"]):
                 cat = "PSU"
                 preset = "PSU_HUB"
-            elif "andhra" in auth_low or "appsc" in auth_low:
+            elif any(k in auth_low for k in ["andhra", "appsc"]):
                 cat = "STATE_PSC"
                 preset = "APPSC"
-            elif "telangana" in auth_low or "tgpsc" in auth_low or "tspsc" in auth_low:
+            elif any(k in auth_low for k in ["telangana", "tgpsc", "tspsc"]):
                 cat = "STATE_PSC"
                 preset = "TGPSC"
 
@@ -170,14 +177,14 @@ def main():
 
     session = cr.Session(impersonate="chrome124")
 
-    # 1. Purge expired
+    # 1. Purge expired (HTTP 204)
     purge_expired(session)
 
-    # 2. Fetch official active government jobs
+    # 2. Fetch live authentic notices from Employment News
     jobs = fetch_employment_news(session)
     logger.info(f"Discovered {len(jobs)} active verified government notifications.")
 
-    # 3. Sync to Supabase
+    # 3. Upsert to Supabase
     sync_jobs(session, jobs)
     logger.info(f"=== FINISHED: Upserted {len(jobs)} records ===")
 
