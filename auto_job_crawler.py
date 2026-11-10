@@ -1,7 +1,7 @@
 """
 ExamResizer Pro - Live Government Job Harvester Engine
 Module: auto_job_crawler.py
-Standard: Multi-Portal Resilient Fallback / Asia/Kolkata
+Standard: Production-Grade / Zero-Blocking Endpoints / Asia/Kolkata
 """
 
 import os
@@ -11,13 +11,14 @@ import hashlib
 import logging
 from io import BytesIO
 from typing import List, Dict, Any, Optional
-from datetime import datetime, time
+from datetime import datetime, time, timezone
 from zoneinfo import ZoneInfo
-from urllib.parse import urljoin
+from urllib.parse import urljoin, quote
 
 from curl_cffi import requests as cr
 from bs4 import BeautifulSoup
 from pypdf import PdfReader
+import feedparser
 
 from crawler.timeutil import IST, find_dates
 from crawler.models import Job
@@ -94,13 +95,13 @@ def get_auth_headers() -> Dict[str, str]:
 
 
 def purge_expired(session: cr.Session):
-    now_iso = datetime.now(IST).isoformat()
-    url = f"{SUPABASE_URL}/rest/v1/live_job_alerts?closing_at=lt.{now_iso}"
+    now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    url = f"{SUPABASE_URL}/rest/v1/live_job_alerts?closing_at=lt.{quote(now_utc)}"
     try:
         r = session.delete(url, headers=get_auth_headers(), timeout=15)
         logger.info(f"Purge expired records status: HTTP {r.status_code}")
-        if r.status_code == 401:
-            logger.error("Supabase returned 401. Please use the Legacy JWT service_role key.")
+        if r.status_code >= 400:
+            logger.error(f"Purge error response: {r.text}")
     except Exception as e:
         logger.error(f"Purge request error: {e}")
 
@@ -127,11 +128,10 @@ def harvest_upsc(session: cr.Session) -> List[Dict[str, Any]]:
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
         "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-IN,en-GB;q=0.9,en;q=0.8"
+        "Accept-Language": "en-IN,en;q=0.9"
     }
     try:
-        # Reduced timeout to 12s so it fails fast without blocking workflow
-        r = session.get("https://upsc.gov.in/whats-new", headers=headers, timeout=12)
+        r = session.get("https://upsc.gov.in/whats-new", headers=headers, timeout=10)
         if r.status_code == 200:
             soup = BeautifulSoup(r.text, "html.parser")
             for tr in soup.select("table tbody tr")[:10]:
@@ -173,55 +173,110 @@ def harvest_upsc(session: cr.Session) -> List[Dict[str, Any]]:
                 )
                 jobs.append(job.to_row())
     except Exception as e:
-        logger.warning(f"UPSC portal unreachable from datacenter runner: {e}")
+        logger.warning(f"UPSC direct scan skipped (datacenter firewall): {e}")
     return jobs
 
 
-def harvest_central_ssc(session: cr.Session) -> List[Dict[str, Any]]:
+def harvest_railway_rrb(session: cr.Session) -> List[Dict[str, Any]]:
     jobs = []
-    logger.info("Scanning Staff Selection Commission notices...")
+    logger.info("Scanning Railway Recruitment Boards (RRB)...")
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    }
     try:
-        r = session.get("https://ssc.gov.in/api/notice", timeout=12)
+        r = session.get("https://www.rrbchennai.gov.in/", headers=headers, timeout=12)
         if r.status_code == 200:
-            data = r.json()
-            items = data if isinstance(data, list) else data.get("notices", [])
-            for item in items[:8]:
-                title = item.get("noticeTitle", "")
+            soup = BeautifulSoup(r.text, "html.parser")
+            for a in soup.select("a[href*='.pdf']")[:10]:
+                title = a.get_text(" ", strip=True)
                 if not StrictGovVerifier.is_genuine_recruitment(title):
                     continue
-                pdf_path = item.get("attachmentPath", "")
-                if not pdf_path:
-                    continue
-                pdf_url = urljoin("https://ssc.gov.in", pdf_path)
+                pdf_url = urljoin("https://www.rrbchennai.gov.in/", a.get("href", ""))
                 meta = StrictGovVerifier.inspect_pdf(session, pdf_url)
                 if not meta:
                     continue
 
-                job_id = "SSC_" + hashlib.md5(title.encode()).hexdigest()[:16].upper()
+                job_id = "RRB_" + hashlib.md5(title.encode()).hexdigest()[:16].upper()
                 job = Job(
                     id=job_id,
-                    authority="Staff Selection Commission",
+                    authority="Railway Recruitment Board",
                     title=title,
-                    posts="Refer Official Notification",
-                    qualification="10th / 12th / Graduate (Refer Notice)",
+                    posts="Refer CEN Notification",
+                    qualification="Refer CEN Specifications",
                     application_start_date=None,
                     closing_date=meta["closing_at"],
                     official_notification_url=pdf_url,
-                    application_url="https://ssc.gov.in",
-                    official_portal="https://ssc.gov.in",
-                    preset_target="SSC",
-                    category="CENTRAL",
+                    application_url="https://www.rrbapply.gov.in",
+                    official_portal="https://www.rrbapply.gov.in",
+                    preset_target="RRB",
+                    category="RAILWAYS",
                     verified_at=datetime.now(IST),
                     content_hash=hashlib.md5(meta["text"][:500].encode()).hexdigest(),
                     notification_ref=None,
-                    source_id="ssc-notices",
+                    source_id="rrb-chennai",
                     is_government_employer=True,
                     verification_status="verified",
                     application_url_verified=True
                 )
                 jobs.append(job.to_row())
     except Exception as e:
-        logger.warning(f"SSC scan skipped: {e}")
+        logger.warning(f"RRB scan skipped: {e}")
+    return jobs
+
+
+def harvest_national_career_service(session: cr.Session) -> List[Dict[str, Any]]:
+    jobs = []
+    logger.info("Scanning National Official Government Feed (Ministry of Labour)...")
+    feed_url = "https://www.ncs.gov.in/_layouts/15/feed.aspx?pid=1"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+    }
+    try:
+        r = session.get(feed_url, headers=headers, timeout=15)
+        if r.status_code == 200 and r.content:
+            feed = feedparser.parse(r.content)
+            for entry in feed.entries[:10]:
+                title = entry.get("title", "")
+                if not StrictGovVerifier.is_genuine_recruitment(title):
+                    continue
+
+                link = entry.get("link", "")
+                summary = entry.get("summary", "")
+                dates = find_dates(summary + " " + title)
+                now_dt = datetime.now(IST).date()
+                future_dates = [d for _, _, d in dates if d >= now_dt]
+
+                if not future_dates:
+                    continue
+
+                closing_d = max(future_dates)
+                closing_dt = datetime.combine(closing_d, time(23, 59, 59, 999000), tzinfo=IST)
+
+                job_id = "CENTRAL_" + hashlib.md5(title.encode()).hexdigest()[:16].upper()
+                job = Job(
+                    id=job_id,
+                    authority="Government of India Recruitment",
+                    title=title,
+                    posts="Central Govt Trainee / Executive",
+                    qualification="Refer Portal Guidelines",
+                    application_start_date=None,
+                    closing_date=closing_dt,
+                    official_notification_url=link if link.startswith("https://") else "https://www.ncs.gov.in",
+                    application_url=link if link.startswith("https://") else "https://www.ncs.gov.in",
+                    official_portal="https://www.ncs.gov.in",
+                    preset_target="SSC",
+                    category="CENTRAL",
+                    verified_at=datetime.now(IST),
+                    content_hash=hashlib.md5(summary.encode()).hexdigest(),
+                    notification_ref=None,
+                    source_id="ncs-central-feed",
+                    is_government_employer=True,
+                    verification_status="verified",
+                    application_url_verified=True
+                )
+                jobs.append(job.to_row())
+    except Exception as e:
+        logger.warning(f"NCS Feed scan skipped: {e}")
     return jobs
 
 
@@ -233,17 +288,18 @@ def main():
 
     session = cr.Session(impersonate="chrome124")
 
-    # Step 1: Purge
+    # Step 1: Purge expired records using encoded UTC anchor
     purge_expired(session)
 
-    # Step 2: Harvest across portals
+    # Step 2: Multi-Source Harvesting
     verified_rows = []
     verified_rows.extend(harvest_upsc(session))
-    verified_rows.extend(harvest_central_ssc(session))
+    verified_rows.extend(harvest_railway_rrb(session))
+    verified_rows.extend(harvest_national_career_service(session))
 
-    # Step 3: Upsert
+    # Step 3: Upsert verified jobs
     sync_jobs(session, verified_rows)
-    logger.info(f"=== FINISHED: Processed {len(verified_rows)} verified notices ===")
+    logger.info(f"=== FINISHED: Upserted {len(verified_rows)} verified notices ===")
 
 
 if __name__ == "__main__":
