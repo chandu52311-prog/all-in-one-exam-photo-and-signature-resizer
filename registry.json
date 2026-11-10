@@ -1,0 +1,18 @@
+{
+  "employers": [
+    {"id": "upsc", "authority": "Union Public Service Commission", "kind": "central_commission", "preset_target": "UPSC", "domains": ["upsc.gov.in", "upsconline.gov.in", "upsconline.nic.in"]},
+    {"id": "ssc", "authority": "Staff Selection Commission", "kind": "central_commission", "preset_target": "SSC", "domains": ["ssc.gov.in", "ssc.nic.in"]},
+    {"id": "rrb", "authority": "Railway Recruitment Board (RRB)", "kind": "railway", "preset_target": "RRB", "domains": ["rrbapply.gov.in", "rrbsecunderabad.nic.in", "rrbchennai.gov.in", "rrbbnc.gov.in"]},
+    {"id": "appsc", "authority": "Andhra Pradesh Public Service Commission", "kind": "state_psc", "preset_target": "STATE_PSC", "domains": ["psc.ap.gov.in"]},
+    {"id": "tgpsc", "authority": "Telangana State Public Service Commission", "kind": "state_psc", "preset_target": "STATE_PSC", "domains": ["tgpsc.gov.in", "tspsc.gov.in"]},
+    {"id": "powergrid", "authority": "Power Grid Corporation of India Limited", "kind": "central_psu", "preset_target": "PSU_HUB", "domains": ["powergrid.in"], "ownership_basis": "CPSE under Ministry of Power"},
+    {"id": "ntpc", "authority": "NTPC Limited", "kind": "central_psu", "preset_target": "PSU_HUB", "domains": ["ntpc.co.in"], "ownership_basis": "CPSE under Ministry of Power"}
+  ],
+  "sources": [
+    {"id": "upsc-whats-new", "employer": "upsc", "method": "html", "url": "https://upsc.gov.in/whats-new"},
+    {"id": "ssc-home", "employer": "ssc", "method": "html", "url": "https://ssc.gov.in/"},
+    {"id": "rrb-apply", "employer": "rrb", "method": "html", "url": "https://www.rrbapply.gov.in/"},
+    {"id": "appsc", "employer": "appsc", "method": "html", "url": "https://psc.ap.gov.in/"},
+    {"id": "tgpsc", "employer": "tgpsc", "method": "html", "url": "https://www.tgpsc.gov.in/"}
+  ]
+}
