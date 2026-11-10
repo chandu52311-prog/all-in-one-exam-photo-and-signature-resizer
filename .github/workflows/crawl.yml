@@ -22,3 +22,6 @@ jobs:
 
           echo "=== 4. PIB RSS FEED ==="
           curl -Iv --connect-timeout 8 --max-time 15 "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1" || true
+
+          echo "=== 5. INSPECT EMPLOYMENT NEWS HTML TABLE ==="
+          curl -sL "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All" | grep -i -C 3 "<table" | head -n 30 || true
