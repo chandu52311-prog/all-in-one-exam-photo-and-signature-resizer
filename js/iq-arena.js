@@ -1,6 +1,6 @@
 /**
- * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 2.3 (Zero-Bug Release)
- * Architecture: Clean Listeners Unbinding, Safe Non-Negative Integers, Dynamic Action Injection
+ * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 3.0 (Blazing Fast & Zero-Hang)
+ * Architecture: Deterministic Shuffled Pools (Zero Infinite Loops), Instant Event Execution
  */
 
 const LEVEL_RULES = [
@@ -59,7 +59,8 @@ window.arenaSession = {
   isLocked: false
 };
 
-function shufflePool(arr) {
+// High-speed array randomizer
+function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -68,116 +69,121 @@ function shufflePool(arr) {
   return a;
 }
 
+// 100% Deterministic Generator (Zero While Loops, Zero Freezing)
 function getLevelQuestions(gameId, levelNum) {
   const count = 10;
-  const pool = [];
+  const items = [];
 
+  // 1. TABLES SPEED DRILL (1-20)
   if (gameId === 'tables') {
-    const tableRanges = [
-      { min: 2, max: 10, mulMin: 2, mulMax: 10 },
-      { min: 6, max: 13, mulMin: 4, mulMax: 12 },
-      { min: 11, max: 16, mulMin: 6, mulMax: 14 },
-      { min: 14, max: 19, mulMin: 7, mulMax: 17 },
-      { min: 16, max: 20, mulMin: 11, mulMax: 19 }
+    const tableConfigs = [
+      { tMin: 2, tMax: 10, mMin: 2, mMax: 10 },
+      { tMin: 6, tMax: 13, mMin: 3, mMax: 12 },
+      { tMin: 11, tMax: 16, mMin: 4, mMax: 14 },
+      { tMin: 13, tMax: 19, mMin: 5, mMax: 16 },
+      { tMin: 15, tMax: 20, mMin: 6, mMax: 19 }
     ];
-    const r = tableRanges[Math.min(levelNum - 1, tableRanges.length - 1)];
-    while (pool.length < count) {
-      const t = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
-      const m = Math.floor(Math.random() * (r.mulMax - r.mulMin + 1)) + r.mulMin;
-      const exp = `${t} × ${m} = ?`;
-      if (!pool.some(item => item.display === exp)) {
-        pool.push({ display: exp, answer: String(t * m) });
+    const cfg = tableConfigs[Math.min(levelNum - 1, 4)];
+    for (let t = cfg.tMin; t <= cfg.tMax; t++) {
+      for (let m = cfg.mMin; m <= cfg.mMax; m++) {
+        items.push({ display: `${t} × ${m} = ?`, answer: String(t * m) });
       }
     }
-  } else if (gameId === 'squares') {
-    const ranges = [
-      { min: 2, max: 15 },
-      { min: 16, max: 25 },
-      { min: 26, max: 35 },
-      { min: 36, max: 45 },
-      { min: 41, max: 50 }
+  }
+
+  // 2. SQUARES CHALLENGE (1-50)
+  else if (gameId === 'squares') {
+    const squareConfigs = [
+      { min: 2, max: 20 },
+      { min: 11, max: 30 },
+      { min: 21, max: 40 },
+      { min: 31, max: 50 },
+      { min: 15, max: 50 }
     ];
-    const r = ranges[Math.min(levelNum - 1, ranges.length - 1)];
-    while (pool.length < count) {
-      const num = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
-      const exp = `${num}² = ?`;
-      if (!pool.some(item => item.display === exp)) {
-        pool.push({ display: exp, answer: String(num * num) });
+    const cfg = squareConfigs[Math.min(levelNum - 1, 4)];
+    for (let n = cfg.min; n <= cfg.max; n++) {
+      items.push({ display: `${n}² = ?`, answer: String(n * n) });
+    }
+  }
+
+  // 3. ROOTS EXTRACTION DRILL (Square & Cube Roots)
+  else if (gameId === 'roots') {
+    if (levelNum <= 2) {
+      for (let n = 2; n <= 25; n++) {
+        items.push({ display: `√${n * n} = ?`, answer: String(n) });
+      }
+    } else if (levelNum === 3) {
+      for (let n = 20; n <= 50; n++) {
+        items.push({ display: `√${n * n} = ?`, answer: String(n) });
+      }
+    } else if (levelNum === 4) {
+      for (let n = 2; n <= 20; n++) {
+        items.push({ display: `∛${n * n * n} = ?`, answer: String(n) });
+      }
+    } else {
+      for (let n = 25; n <= 50; n++) {
+        items.push({ display: `√${n * n} = ?`, answer: String(n) });
+      }
+      for (let n = 11; n <= 30; n++) {
+        items.push({ display: `∛${n * n * n} = ?`, answer: String(n) });
       }
     }
-  } else if (gameId === 'roots') {
-    while (pool.length < count) {
-      if (levelNum <= 2) {
-        const sq = Math.floor(Math.random() * 15) + 6;
-        pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
-      } else if (levelNum === 3) {
-        const sq = Math.floor(Math.random() * 25) + 26;
-        pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
-      } else if (levelNum === 4) {
-        const cb = Math.floor(Math.random() * 10) + 4;
-        pool.push({ display: `∛${cb * cb * cb} = ?`, answer: String(cb) });
-      } else {
-        if (Math.random() > 0.5) {
-          const sq = Math.floor(Math.random() * 15) + 36;
-          pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
-        } else {
-          const cb = Math.floor(Math.random() * 14) + 16;
-          pool.push({ display: `∛${cb * cb * cb} = ?`, answer: String(cb) });
-        }
-      }
-    }
-  } else if (gameId === 'cubes') {
-    const ranges = [
-      { min: 1, max: 7 },
-      { min: 8, max: 13 },
-      { min: 14, max: 19 },
-      { min: 20, max: 25 },
-      { min: 24, max: 30 }
+  }
+
+  // 4. CUBES POWER DRILL (1-30) - (FIXED BUG: Wide deterministic pool)
+  else if (gameId === 'cubes') {
+    const cubeConfigs = [
+      { min: 1, max: 15 },
+      { min: 6, max: 20 },
+      { min: 11, max: 25 },
+      { min: 15, max: 30 },
+      { min: 1, max: 30 }
     ];
-    const r = ranges[Math.min(levelNum - 1, ranges.length - 1)];
-    while (pool.length < count) {
-      const c = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
-      const exp = `${c}³ = ?`;
-      if (!pool.some(item => item.display === exp)) {
-        pool.push({ display: exp, answer: String(c * c * c) });
-      }
+    const cfg = cubeConfigs[Math.min(levelNum - 1, 4)];
+    for (let c = cfg.min; c <= cfg.max; c++) {
+      items.push({ display: `${c}³ = ?`, answer: String(c * c * c) });
     }
-  } else if (gameId === 'bodmas') {
-    while (pool.length < count) {
+  }
+
+  // 5. FAST BODMAS & SIMPLIFICATION (Strict Positive Answers)
+  else if (gameId === 'bodmas') {
+    for (let i = 0; i < 30; i++) {
       if (levelNum === 1) {
-        const a = Math.floor(Math.random() * 45) + 15;
-        const b = Math.floor(Math.random() * 45) + 15;
-        pool.push({ display: `${a} + ${b} = ?`, answer: String(a + b) });
+        const a = Math.floor(Math.random() * 50) + 10;
+        const b = Math.floor(Math.random() * 50) + 10;
+        items.push({ display: `${a} + ${b} = ?`, answer: String(a + b) });
       } else if (levelNum === 2) {
-        // Guaranteed strictly positive difference
         const n1 = Math.floor(Math.random() * 60) + 40;
         const n2 = Math.floor(Math.random() * 35) + 10;
-        const high = Math.max(n1, n2);
-        const low = Math.min(n1, n2);
-        pool.push({ display: `${high} - ${low} = ?`, answer: String(high - low) });
+        const big = Math.max(n1, n2);
+        const sm = Math.min(n1, n2);
+        items.push({ display: `${big} - ${sm} = ?`, answer: String(big - sm) });
       } else if (levelNum === 3) {
         const m1 = Math.floor(Math.random() * 12) + 4;
-        const m2 = Math.floor(Math.random() * 8) + 3;
-        pool.push({ display: `${m1} × ${m2} = ?`, answer: String(m1 * m2) });
+        const m2 = Math.floor(Math.random() * 9) + 3;
+        items.push({ display: `${m1} × ${m2} = ?`, answer: String(m1 * m2) });
       } else if (levelNum === 4) {
         const base = (Math.floor(Math.random() * 7) + 2) * 100;
-        const p = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
-        pool.push({ display: `${p}% of ${base} = ?`, answer: String((p * base) / 100) });
+        const p = [10, 20, 25, 50][i % 4];
+        items.push({ display: `${p}% of ${base} = ?`, answer: String((p * base) / 100) });
       } else {
-        // Boss Level: (A + B) - C strictly positive
-        const a = Math.floor(Math.random() * 30) + 20;
-        const b = Math.floor(Math.random() * 20) + 10;
+        const a = Math.floor(Math.random() * 30) + 25;
+        const b = Math.floor(Math.random() * 20) + 15;
         const c = Math.floor(Math.random() * 15) + 5;
-        pool.push({ display: `${a} + ${b} - ${c} = ?`, answer: String(a + b - c) });
+        items.push({ display: `${a} + ${b} - ${c} = ?`, answer: String(a + b - c) });
       }
     }
-  } else if (gameId === 'english') {
-    const shuffled = shufflePool(MASTER_ENGLISH_BANK);
+  }
+
+  // 6. RAPID ENGLISH VOCAB
+  else if (gameId === 'english') {
+    const shuffled = shuffleArray(MASTER_ENGLISH_BANK);
     const startIdx = ((levelNum - 1) * 6) % Math.max(1, MASTER_ENGLISH_BANK.length - 10);
     return shuffled.slice(startIdx, startIdx + count);
   }
 
-  return pool.slice(0, 10);
+  // Instant Fisher-Yates Shuffle & Cut exactly 10 Qs
+  return shuffleArray(items).slice(0, count);
 }
 
 window.returnToIQHub = function() {
