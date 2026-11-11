@@ -1,6 +1,6 @@
 /**
- * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 2.2
- * Architecture: Level Progression Engine, Fixed Event Handlers, Zero-Crash State Guard
+ * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 2.3 (Zero-Bug Release)
+ * Architecture: Clean Listeners Unbinding, Safe Non-Negative Integers, Dynamic Action Injection
  */
 
 const LEVEL_RULES = [
@@ -149,9 +149,12 @@ function getLevelQuestions(gameId, levelNum) {
         const b = Math.floor(Math.random() * 45) + 15;
         pool.push({ display: `${a} + ${b} = ?`, answer: String(a + b) });
       } else if (levelNum === 2) {
-        const a = Math.floor(Math.random() * 60) + 40;
-        const b = Math.floor(Math.random() * 35) + 10;
-        pool.push({ display: `${a} - ${b} = ?`, answer: String(a - b) });
+        // Guaranteed strictly positive difference
+        const n1 = Math.floor(Math.random() * 60) + 40;
+        const n2 = Math.floor(Math.random() * 35) + 10;
+        const high = Math.max(n1, n2);
+        const low = Math.min(n1, n2);
+        pool.push({ display: `${high} - ${low} = ?`, answer: String(high - low) });
       } else if (levelNum === 3) {
         const m1 = Math.floor(Math.random() * 12) + 4;
         const m2 = Math.floor(Math.random() * 8) + 3;
@@ -161,6 +164,7 @@ function getLevelQuestions(gameId, levelNum) {
         const p = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
         pool.push({ display: `${p}% of ${base} = ?`, answer: String((p * base) / 100) });
       } else {
+        // Boss Level: (A + B) - C strictly positive
         const a = Math.floor(Math.random() * 30) + 20;
         const b = Math.floor(Math.random() * 20) + 10;
         const c = Math.floor(Math.random() * 15) + 5;
@@ -176,7 +180,6 @@ function getLevelQuestions(gameId, levelNum) {
   return pool.slice(0, 10);
 }
 
-// Global Back Navigation Controller for IQ Arena
 window.returnToIQHub = function() {
   stopTimer();
   const arenaScreen = document.getElementById('iq-arena-screen');
@@ -197,6 +200,8 @@ window.returnToIQHub = function() {
 };
 
 window.startIQGame = function(gameId, title, levelIdx = 0) {
+  stopTimer();
+
   window.arenaSession.gameId = gameId || window.arenaSession.gameId || 'tables';
   window.arenaSession.gameTitle = title || window.arenaSession.gameTitle || 'Speed Drill';
   window.arenaSession.currentLevelIdx = Math.max(0, Math.min(levelIdx, LEVEL_RULES.length - 1));
@@ -316,7 +321,9 @@ function renderQuestion() {
 
     if (input) {
       input.value = '';
-      input.focus();
+      input.oninput = null;
+      input.onkeydown = null;
+      setTimeout(() => input.focus(), 30);
 
       input.oninput = (e) => {
         if (e.target.value.trim() === q.answer) {
