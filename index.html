@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>All Competitive Exams Photo & Signature Resizer (2026) - Central, State PSCs & PSUs</title>
-  <meta name="description" content="Free official educational utility to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, APPSC, TGPSC, APTRANSCO, NEET, JEE according to government specifications.">
+  <meta name="description" content="Free educational utility to resize, crop, and compress photo and signature for SSC, UPSC, IBPS, RRB, GATE, APPSC, TGPSC, APTRANSCO, NEET, JEE according to standard exam specifications.">
   
   <!-- Real Google Search Console Verification -->
   <meta name="google-site-verification" content="iId_f8e82ivBzeD_5ya7rZTJa2ama4Mkf80pJc08fws" />
@@ -18,16 +18,18 @@
   <meta property="og:image" content="https://www.examresizer.me/og-image.png">
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="apple-touch-icon" href="/favicon.png">
   <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#03060c">
 
-  <!-- Core CDNs -->
+  <!-- Core CDNs (Pinned Stable Versions) -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
   
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 
   <style>
@@ -54,6 +56,7 @@
     .gold-gradient-text { 
       background: linear-gradient(135deg, #fffbeb 0%, #fde047 25%, #f59e0b 60%, #b45309 100%); 
       -webkit-background-clip: text; 
+      background-clip: text;
       -webkit-text-fill-color: transparent; 
     }
 
@@ -79,7 +82,7 @@
       20%, 100% { transform: translateX(120%) rotate(25deg); }
     }
 
-    /* 🎮 HIGH-TECH GAMING BUTTONS ENGINE */
+    /* HIGH-TECH GAMING BUTTONS ENGINE */
     .exam-btn {
       position: relative;
       background: linear-gradient(180deg, rgba(30, 41, 59, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
@@ -221,7 +224,6 @@
       box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
     }
 
-    /* Ambient Center Watermark Engine */
     .cbt-canvas-watermark {
       position: absolute;
       inset: 0;
@@ -233,6 +235,15 @@
       opacity: 0.035;
       user-select: none;
     }
+
+    #arena-math-input {
+      scroll-margin-top: 130px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .shimmer-card::after { animation: none; }
+      * { transition-duration: 0.01ms !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen flex flex-col selection:bg-amber-500 selection:text-black">
@@ -240,7 +251,7 @@
   <!-- TOP GAMING HUD NAVIGATION -->
   <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchZone('resizer-zone')">
+      <div role="button" tabindex="0" class="flex items-center space-x-3 cursor-pointer" onclick="switchZone('resizer-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('resizer-zone');}">
         <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-[1.5px] gold-glow flex items-center justify-center transform hover:rotate-3 transition">
           <div class="w-full h-full bg-[#05070e] rounded-[10px] flex items-center justify-center border border-amber-500/30">
             <span class="font-black text-amber-400 text-lg tracking-wider" style="font-family: 'Orbitron', sans-serif;">ER</span>
@@ -250,7 +261,7 @@
           <h1 class="font-black text-lg tracking-wider text-white flex items-center">
             EXAM<span class="gold-gradient-text ml-1">RESIZER</span>
           </h1>
-          <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Official Pan-India Career Suite</p>
+          <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">Premier Pan-India Aspirant Suite</p>
         </div>
       </div>
 
@@ -260,11 +271,10 @@
         <button type="button" onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PYQ Hub</button>
         <button type="button" onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Mock CBT</button>
         <button type="button" onclick="switchZone('pdf-zone')" id="nav-btn-pdf" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PDF Tools</button>
-        <button type="button" onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Live Alerts</button>
+        <button type="button" onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Job Alerts</button>
       </nav>
 
       <div class="flex items-center space-x-2">
-        <!-- 📲 PWA INSTALL APP BUTTON -->
         <button type="button" id="pwa-install-btn" class="hidden text-xs luxury-action-btn px-3.5 py-2 rounded-xl gold-glow items-center space-x-1.5 cursor-pointer">
           <span>📲 Install App</span>
         </button>
@@ -279,14 +289,12 @@
   <!-- MAIN WRAPPER -->
   <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-6 space-y-6">
 
-    <!-- ======================================================== -->
-    <!-- 6 PREMIER PORTAL CARDS (BALANCED 3x2 / 1-COL MOBILE)     -->
-    <!-- ======================================================== -->
+    <!-- 6 PREMIER PORTAL CARDS (KEYBOARD ACCESSIBLE) -->
     <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       
       <!-- 1. PHOTO & SIGNATURE RESIZER PRO -->
-      <div onclick="switchZone('resizer-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📷</div>
+      <div role="button" tabindex="0" onclick="switchZone('resizer-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('resizer-zone');}" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📷</div>
         <div class="flex-grow">
           <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">AUTO SPEC ENGINE</span>
           <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-amber-400 transition">Exam Resizer Pro</h3>
@@ -296,8 +304,8 @@
       </div>
 
       <!-- 2. SPEED APTITUDE & IQ ARENA -->
-      <div onclick="switchZone('iq-zone')" class="glass-card border border-purple-500/30 shimmer-card hover:border-purple-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-purple-400/50 bg-gradient-to-br from-purple-500/20 via-black to-black flex items-center justify-center text-2xl text-purple-400 flex-shrink-0 shadow-lg p-3">🧠</div>
+      <div role="button" tabindex="0" onclick="switchZone('iq-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('iq-zone');}" class="glass-card border border-purple-500/30 shimmer-card hover:border-purple-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-purple-400/50 bg-gradient-to-br from-purple-500/20 via-black to-black flex items-center justify-center text-2xl text-purple-400 flex-shrink-0 shadow-lg p-3">🧠</div>
         <div class="flex-grow">
           <span class="inline-block bg-purple-500/20 text-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-purple-500/40 mb-1">5 PROGRESSIVE STAGES</span>
           <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-purple-400 transition">Speed Aptitude Arena</h3>
@@ -307,8 +315,8 @@
       </div>
 
       <!-- 3. PREVIOUS QUESTION PAPERS HUB -->
-      <div onclick="switchZone('pyq-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📚</div>
+      <div role="button" tabindex="0" onclick="switchZone('pyq-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('pyq-zone');}" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📚</div>
         <div class="flex-grow">
           <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">ARCHIVE (2020–2026)</span>
           <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-amber-400 transition">Question Papers Hub</h3>
@@ -317,34 +325,34 @@
         <span class="text-slate-500 group-hover:text-amber-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
-      <!-- 4. OFFICIAL CBT EXAMINATION TERMINAL -->
-      <div onclick="switchZone('mock-zone')" class="glass-card border border-blue-500/30 shimmer-card hover:border-blue-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg p-3">⏱️</div>
+      <!-- 4. CBT EXAMINATION TERMINAL -->
+      <div role="button" tabindex="0" onclick="switchZone('mock-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('mock-zone');}" class="glass-card border border-blue-500/30 shimmer-card hover:border-blue-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg p-3">⏱️</div>
         <div class="flex-grow">
-          <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">TCS-iON PATTERN</span>
+          <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">CBT INTERFACE</span>
           <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-blue-400 transition">CBT Exam Terminal</h3>
           <p class="text-[11px] text-slate-400 leading-snug mt-0.5">10 Sequential Levels • 35% Qualifying Pass Rule • Solutions</p>
         </div>
         <span class="text-slate-500 group-hover:text-blue-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
-      <!-- 5. PDF CERTIFICATE MEGA SUITE (Fixed Green Glow Typo) -->
-      <div onclick="switchZone('pdf-zone')" class="glass-card border border-emerald-500/30 shimmer-card hover:border-emerald-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 via-black to-black flex items-center justify-center text-2xl text-emerald-400 flex-shrink-0 shadow-lg p-3">📄</div>
+      <!-- 5. PDF CERTIFICATE MEGA SUITE -->
+      <div role="button" tabindex="0" onclick="switchZone('pdf-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('pdf-zone');}" class="glass-card border border-emerald-500/30 shimmer-card hover:border-emerald-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 via-black to-black flex items-center justify-center text-2xl text-emerald-400 flex-shrink-0 shadow-lg p-3">📄</div>
         <div class="flex-grow">
-          <span class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-emerald-500/40 mb-1">GOVT COMPLIANT</span>
+          <span class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-emerald-500/40 mb-1">STANDARD FORMATS</span>
           <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-emerald-400 transition">PDF Mega Suite</h3>
           <p class="text-[11px] text-slate-400 leading-snug mt-0.5">Compress Under 100/200 KB, Merge Documents & Image to A4 PDF</p>
         </div>
         <span class="text-slate-500 group-hover:text-emerald-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
-      <!-- 6. LIVE GOVT RECRUITMENT ALERTS -->
-      <div onclick="switchZone('jobs-zone')" class="glass-card border border-rose-500/30 shimmer-card hover:border-rose-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] flex items-center space-x-4 group">
-        <div class="w-13 h-13 rounded-2xl border border-rose-400/50 bg-gradient-to-br from-rose-500/20 via-black to-black flex items-center justify-center text-2xl text-rose-400 flex-shrink-0 shadow-lg p-3 animate-pulse">🔔</div>
+      <!-- 6. RECRUITMENT ALERTS -->
+      <div role="button" tabindex="0" onclick="switchZone('jobs-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('jobs-zone');}" class="glass-card border border-rose-500/30 shimmer-card hover:border-rose-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] flex items-center space-x-4 group">
+        <div class="w-14 h-14 rounded-2xl border border-rose-400/50 bg-gradient-to-br from-rose-500/20 via-black to-black flex items-center justify-center text-2xl text-rose-400 flex-shrink-0 shadow-lg p-3 animate-pulse">🔔</div>
         <div class="flex-grow">
-          <span class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-rose-500/40 mb-1">CLOSING IN 48H</span>
-          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-rose-400 transition">Live Govt Job Alerts</h3>
+          <span class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-rose-500/40 mb-1">DEADLINE TRACKER</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-rose-400 transition">Govt Job Alerts</h3>
           <p class="text-[11px] text-slate-400 leading-snug mt-0.5">SSC, Railways, APPSC, Central & State Recruitment Notifications</p>
         </div>
         <span class="text-slate-500 group-hover:text-rose-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
@@ -354,12 +362,12 @@
     <!-- SECTION 1: PHOTO & SIGNATURE RESIZER -->
     <section id="resizer-zone" class="block space-y-4">
       <div class="glass-card p-4 rounded-xl border border-white/10 text-xs leading-relaxed text-slate-300">
-        <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet official pixel dimensions, dpi specifications, and file size byte thresholds.
+        <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet standard pixel dimensions, dpi specifications, and file size byte thresholds.
       </div>
 
       <div class="glass-card gold-border p-5 rounded-2xl space-y-5">
         <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-white/10 pb-3">
-          <span>Target Examination Regulatory Authority</span>
+          <span>Target Examination Category</span>
           <span id="activeExamIndicator" class="px-3.5 py-1 rounded-md bg-amber-500/20 text-amber-400 font-black border border-amber-500/40 tracking-wider">SSC</span>
         </div>
 
@@ -426,8 +434,8 @@
         ⚡ FORMAT & COMPRESS IMAGE
       </button>
 
-      <div class="hidden flex-col items-center glass-card rounded-2xl p-5 border border-emerald-500/30" id="outputCard">
-        <div class="verified-pill" id="verifiedPill">✅ Compliant with Official Board Limits</div>
+      <div class="hidden flex flex-col items-center glass-card rounded-2xl p-5 border border-emerald-500/30" id="outputCard">
+        <div class="verified-pill" id="verifiedPill">✅ Matches Common Exam Format</div>
         <img id="outputImg" class="max-w-full max-h-[220px] rounded-xl border-2 border-emerald-500 object-contain shadow-2xl" alt="Formatted Output">
         <button type="button" class="w-full py-3.5 mt-4 rounded-xl bg-gradient-to-r from-emerald-400 to-emerald-600 text-black font-black text-sm hover:brightness-110 transition shadow-lg cursor-pointer" id="downloadBtn">
           📥 Download Exam-Ready File
@@ -435,20 +443,17 @@
       </div>
     </section>
 
-    <!-- ======================================================== -->
-    <!-- SECTION: SPEED APTITUDE & IQ ARENA (CANDY CRUSH ENGINE) -->
-    <!-- ======================================================== -->
+    <!-- SECTION: SPEED APTITUDE & IQ ARENA -->
     <section id="iq-zone" class="hidden space-y-4">
       <div class="glass-card rounded-2xl p-6 border border-purple-500/30 space-y-6">
         
-        <!-- Header: Returns to 6 Cards View -->
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
           <div>
             <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-bold uppercase tracking-wider mb-1">
               ⚡ 5 Progressive Stages • Speed Drills
             </div>
             <h2 class="font-black text-xl text-white">Speed Aptitude & Calculation Arena</h2>
-            <p class="text-xs text-slate-400">Tables, Squares, Roots, Cubes, BODMAS & Rapid English Drills</p>
+            <p class="text-xs text-slate-400">5 Progressive Stages • Dynamic Speed Timers • 10 Questions Per Sprint</p>
           </div>
           <button type="button" onclick="returnToIQHub()" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition self-start sm:self-auto flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
             ← Back to 6 Cards
@@ -459,8 +464,7 @@
         <div id="iq-hub-screen" class="space-y-4">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
             
-            <!-- Card 1: Tables -->
-            <div onclick="startIQGame('tables', 'Tables Speed Drill (1-20)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('tables', 'Tables Speed Drill (1-20)')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('tables', 'Tables Speed Drill (1-20)');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">🔢</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Up to 20</span>
@@ -473,8 +477,7 @@
               </div>
             </div>
 
-            <!-- Card 2: Squares -->
-            <div onclick="startIQGame('squares', 'Squares Arena (1-50)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('squares', 'Squares Arena (1-50)')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('squares', 'Squares Arena (1-50)');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">⚡</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">1 - 50</span>
@@ -487,8 +490,7 @@
               </div>
             </div>
 
-            <!-- Card 3: Roots -->
-            <div onclick="startIQGame('roots', 'Roots Extraction Drill')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('roots', 'Roots Extraction Drill')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('roots', 'Roots Extraction Drill');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">🎯</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">√ & ∛ Power</span>
@@ -501,8 +503,7 @@
               </div>
             </div>
 
-            <!-- Card 4: Cubes -->
-            <div onclick="startIQGame('cubes', 'Cubes Power Drill (1-30)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('cubes', 'Cubes Power Drill (1-30)')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('cubes', 'Cubes Power Drill (1-30)');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">🧊</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">1 - 30</span>
@@ -515,8 +516,7 @@
               </div>
             </div>
 
-            <!-- Card 5: BODMAS -->
-            <div onclick="startIQGame('bodmas', 'Fast BODMAS & Simplification')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('bodmas', 'Fast BODMAS & Simplification')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('bodmas', 'Fast BODMAS & Simplification');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">⚙️</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">Rapid Mental</span>
@@ -529,8 +529,7 @@
               </div>
             </div>
 
-            <!-- Card 6: English -->
-            <div onclick="startIQGame('english', 'Rapid English Vocab & Spellings')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+            <div role="button" tabindex="0" onclick="startIQGame('english', 'Rapid English Vocab & Spellings')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();startIQGame('english', 'Rapid English Vocab & Spellings');}" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
               <div class="flex justify-between items-center mb-2">
                 <span class="text-2xl">📖</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSC / Bank</span>
@@ -557,7 +556,6 @@
             </div>
           </div>
 
-          <!-- Stage Countdown Progress Bar -->
           <div class="w-full h-1.5 bg-black/60 rounded-full overflow-hidden">
             <div id="arena-timer-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 100%;"></div>
           </div>
@@ -576,6 +574,7 @@
                 id="arena-math-input" 
                 type="number" 
                 inputmode="numeric" 
+                aria-label="Enter numeric answer"
                 placeholder="Type or scroll..." 
                 autocomplete="off"
                 class="w-full text-center py-3.5 bg-black/70 border-2 border-white/20 rounded-xl text-2xl font-mono font-bold text-white focus:outline-none focus:border-amber-400 transition"
@@ -593,7 +592,7 @@
           <div id="arena-feedback-indicator" class="h-6 text-xs font-semibold text-center opacity-0 transition-opacity"></div>
         </div>
 
-        <!-- 3. SCORECARD: RESULTS INTERFACE (FIXED DYNAMIC ACTIONS) -->
+        <!-- 3. SCORECARD: RESULTS INTERFACE -->
         <div id="iq-scorecard-screen" class="hidden max-w-lg mx-auto glass-card p-6 sm:p-8 rounded-2xl border border-white/10 text-center space-y-5">
           <div>
             <span class="text-4xl">📊</span>
@@ -633,10 +632,10 @@
 
           <!-- Dynamic Action Dock -->
           <div id="scorecard-dynamic-actions" class="flex flex-col sm:flex-row gap-2.5 pt-2">
-            <button onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, window.arenaSession.currentLevelIdx)" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition">
+            <button type="button" onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, window.arenaSession.currentLevelIdx)" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition">
               Play Level Again
             </button>
-            <button onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
+            <button type="button" onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
               ← All 6 Game Cards
             </button>
           </div>
@@ -645,20 +644,19 @@
       </div>
     </section>
 
-    <!-- SECTION 2: OFFICIAL PYQ PAPERS HUB -->
+    <!-- SECTION 2: QUESTION PAPERS HUB -->
     <section id="pyq-zone" class="hidden space-y-5">
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         <div class="flex items-center justify-between pb-4 border-b border-white/10">
           <div>
-            <h2 class="font-black text-xl text-white">🏛️ Official Examination Question Paper Repository</h2>
-            <p class="text-xs text-slate-400">Authenticated Regulatory Master Papers & Official Keys (2020–2026 Chronological Archive)</p>
+            <h2 class="font-black text-xl text-white">🏛️ Examination Question Paper Repository</h2>
+            <p class="text-xs text-slate-400">Previous Exam Papers & Reference Answer Keys Archive (2020–2026)</p>
           </div>
           <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition">↑ Top of Hub</button>
         </div>
 
-        <!-- Tier 1: Main Authority Buttons -->
         <div>
-          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">Select Examination Authority / Sector</label>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">Select Examination Sector</label>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2" id="authorityTabsNav">
             <button type="button" onclick="switchAuthority('GATE')" id="auth-btn-GATE" class="exam-btn active p-2.5 text-xs text-center">GATE</button>
             <button type="button" onclick="switchAuthority('SSC')" id="auth-btn-SSC" class="exam-btn p-2.5 text-xs text-center">SSC</button>
@@ -670,7 +668,6 @@
           </div>
         </div>
 
-        <!-- Tier 2: Dynamic Sub-Buttons -->
         <div class="p-4 rounded-xl bg-[#05070e] border border-white/10 space-y-2.5">
           <label class="block text-[11px] font-extrabold text-amber-400 uppercase tracking-wider">Select Stream / Discipline / Post Cadre</label>
           <div class="flex flex-wrap gap-2 items-center" id="streamSubButtonsContainer"></div>
@@ -679,7 +676,7 @@
         <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h3 class="font-bold text-white text-base" id="activeAuthorityTitle">Graduate Aptitude Test in Engineering (GATE)</h3>
-            <p class="text-xs text-slate-300" id="activeAuthorityDesc">Official National Master Examination Papers by IISc & IIT Organizing Bodies.</p>
+            <p class="text-xs text-slate-300" id="activeAuthorityDesc">Curated Past Question Papers & Reference Answer Keys.</p>
           </div>
           <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
         </div>
@@ -687,31 +684,31 @@
         <div class="space-y-3" id="papersStackContainer"></div>
       </div>
 
-      <!-- IN-APP PROTECTED VIEWER MODAL -->
-      <div id="pyqReaderModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 select-none" oncontextmenu="return false;">
+      <!-- IN-APP VIEWER MODAL -->
+      <div id="pyqReaderModal" role="dialog" aria-modal="true" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6">
         <div class="glass-card w-full max-w-5xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
           <div class="p-3.5 md:p-4 border-b border-white/10 flex items-center justify-between bg-black/80">
             <div class="space-y-0.5">
-              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase border border-amber-500/30" id="readerPaperTag">OFFICIAL ARCHIVE</span>
-              <h3 class="font-bold text-sm md:text-base text-white line-clamp-1" id="readerPaperTitle">Master Question Paper</h3>
+              <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 text-[10px] font-extrabold uppercase border border-amber-500/30" id="readerPaperTag">ARCHIVE VAULT</span>
+              <h3 class="font-bold text-sm md:text-base text-white line-clamp-1" id="readerPaperTitle">Question Paper</h3>
             </div>
             <div class="flex items-center space-x-2">
               <button type="button" id="readerTopDownloadBtn" class="px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-lg cursor-pointer">
-                <span>📥 Download Official Master Paper</span>
+                <span>📥 Download Paper</span>
               </button>
-              <button type="button" onclick="closePyqReader()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition">✕</button>
+              <button type="button" aria-label="Close" onclick="closePyqReader()" class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 hover:text-white transition">✕</button>
             </div>
           </div>
           <div id="readerScrollArea" class="flex-grow overflow-y-auto p-4 md:p-6 space-y-4 text-slate-200 text-xs md:text-sm bg-[#070a12] relative">
             <div class="relative z-10 border border-white/10 rounded-xl p-4 bg-white/[0.02] text-center space-y-1">
-              <p class="text-[10px] tracking-widest text-slate-400 font-bold uppercase">Official Master Examination Record</p>
+              <p class="text-[10px] tracking-widest text-slate-400 font-bold uppercase">Examination Archive Record</p>
               <h2 class="text-base md:text-lg font-extrabold text-white" id="readerMainSubject">Examination Paper Title</h2>
-              <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Verified Regulatory Key Attached</p>
+              <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Reference Answer Keys Attached</p>
             </div>
             <div class="relative z-10 w-full" id="readerQuestionsBody"></div>
           </div>
           <div class="p-3 border-t border-white/10 bg-black/80 text-center text-[11px] text-slate-400 flex items-center justify-between px-6">
-            <span>Authorized Academic Reference | ExamResizer Pan-India Hub</span>
+            <span>Academic Reference Suite | ExamResizer Hub</span>
             <span class="text-amber-400 font-semibold">www.examresizer.me</span>
           </div>
         </div>
@@ -722,11 +719,10 @@
     <section id="mock-zone" class="hidden space-y-5">
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         
-        <!-- STUDENT PROFILE DOCK -->
+        <!-- STUDENT PROFILE DOCK (PURE NAME-ONLY - ZERO PHONE NUMBERS) -->
         <div class="glass-card border border-white/10 p-4 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-3">
           <div id="studentLoginBox" class="flex flex-wrap items-center gap-2 w-full sm:w-auto">
-            <input type="text" id="studentNameInput" placeholder="Enter Full Name" class="bg-black/60 border border-white/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400">
-            <input type="tel" id="studentPhoneInput" maxlength="10" placeholder="10-Digit Mobile No" class="bg-black/60 border border-white/20 rounded-xl px-3 py-2 text-xs text-white outline-none focus:border-amber-400">
+            <input type="text" id="studentNameInput" aria-label="Candidate Name or Nickname" placeholder="Enter Name or Nickname" class="bg-black/60 border border-white/20 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-amber-400 min-w-[220px]">
             <button type="button" onclick="loginStudent()" class="px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs shadow-md">
               Save / Load Progress
             </button>
@@ -739,11 +735,11 @@
                 <p class="text-xs font-bold text-white flex items-center">
                   Welcome back, <span id="displayStudentName" class="text-amber-400 ml-1">Candidate</span>!
                 </p>
-                <p class="text-[10px] text-slate-400" id="displayStudentPhone">📱 Mobile ID: Not Synced</p>
+                <p class="text-[10px] text-slate-400" id="displayStudentPhone">Local Browser Profile</p>
               </div>
             </div>
             <button type="button" onclick="logoutStudent()" class="text-[11px] text-slate-400 hover:text-rose-400 font-bold transition">
-              Switch User ➔
+              Change Name ➔
             </button>
           </div>
         </div>
@@ -753,9 +749,9 @@
           <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-white/10 gap-3">
             <div>
               <h2 class="font-black text-xl text-white flex items-center">
-                ⏱️ Official CBT Practice Assessment Hub
+                ⏱️ Practice Assessment Hub
               </h2>
-              <p class="text-xs text-slate-400">Past Master Examination Question Drills • 35% Qualifying Pass Gatekeeper</p>
+              <p class="text-xs text-slate-400">Practice Question Drills • 35% Qualifying Pass Threshold</p>
             </div>
             <button type="button" onclick="switchMockMode('EXAM')" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition self-start md:self-auto">
               ← Reset Selection
@@ -809,7 +805,7 @@
 
           <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
-              <h3 class="font-bold text-white text-base" id="activeMockDomainTitle">Andhra Pradesh PSC (Groups & AEE)</h3>
+              <h3 class="font-bold text-white text-base" id="activeMockDomainTitle">Graduate Aptitude Test in Engineering (GATE)</h3>
               <p class="text-xs text-slate-300">Passing Threshold: 35% required to sequentially unlock subsequent tests.</p>
             </div>
             <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-amber-400 font-bold text-xs" id="userTierStatus">
@@ -827,8 +823,8 @@
         <div id="mock-gatekeeper-screen" class="hidden space-y-5">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
             <div>
-              <h3 class="font-bold text-lg text-white" id="gatekeeperTestTitle">Official Practice Assessment 01</h3>
-              <p class="text-xs text-slate-400">Strict CBT Simulator • Negative Marking Applicable</p>
+              <h3 class="font-bold text-lg text-white" id="gatekeeperTestTitle">Practice Assessment 01</h3>
+              <p class="text-xs text-slate-400">CBT Simulator • Negative Marking Applicable</p>
             </div>
             <button type="button" onclick="returnToMockHub()" class="text-xs text-amber-400 hover:underline">← Change Test</button>
           </div>
@@ -838,7 +834,7 @@
             <p>1. <strong>Passing Criterion:</strong> Score at least <strong>35.00% Marks</strong> to unlock the next test.</p>
             <p>2. <strong>Scoring System:</strong> Correct +2.00 marks, Incorrect -0.50 negative marks.</p>
             <p>3. <strong>Timer Control:</strong> Session timer runs uninterrupted.</p>
-            <p>4. <strong>Certified Verification:</strong> Download watermarked analytical result card.</p>
+            <p>4. <strong>Result Analysis:</strong> Download your analytical result card with answer keys.</p>
           </div>
 
           <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
@@ -865,7 +861,7 @@
               </div>
               <div>
                 <h3 class="font-bold text-white text-base leading-tight" id="liveExamHeaderTitle">Level Assessment Terminal</h3>
-                <span class="text-[11px] text-slate-400" id="candidateNameBar">Candidate: Verified Aspirant</span>
+                <span class="text-[11px] text-slate-400" id="candidateNameBar">Candidate: Guest Aspirant</span>
               </div>
             </div>
 
@@ -952,13 +948,13 @@
     <!-- SECTION 4: PDF MEGA STUDIO -->
     <section id="pdf-zone" class="hidden space-y-4"></section>
 
-    <!-- SECTION 5: LIVE ALERTS -->
+    <!-- SECTION 5: RECRUITMENT ALERTS -->
     <section id="jobs-zone" class="hidden space-y-4">
       <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
-            <h2 class="font-bold text-xl text-white">🔔 Live Government Recruitment Alerts</h2>
-            <p class="text-xs text-slate-400">Official Portals & Fast Preset Format Bridges</p>
+            <h2 class="font-bold text-xl text-white">🔔 Latest Recruitment Updates</h2>
+            <p class="text-xs text-slate-400">Application Presets & Direct Portal Links</p>
           </div>
           <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-xs text-amber-400 hover:underline">↑ Top of Alerts</button>
         </div>
@@ -966,14 +962,75 @@
       </div>
     </section>
 
+    <!-- SEO & ADSENSE RICH EDUCATIONAL CONTENT BLOCK -->
+    <section class="glass-card rounded-2xl p-6 border border-white/10 space-y-4 text-xs text-slate-300">
+      <div class="border-b border-white/10 pb-3">
+        <h2 class="font-extrabold text-base text-white">📋 Competitive Examination Photo & Signature Specification Guide (2026)</h2>
+        <p class="text-[11px] text-slate-400 mt-0.5">Standard dimensional requirements and file size thresholds for major Indian recruitment portals.</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="border-b border-white/10 text-amber-400 uppercase text-[10px] tracking-wider">
+              <th class="py-2.5 px-3">Examination Authority</th>
+              <th class="py-2.5 px-3">Photo Dimensions</th>
+              <th class="py-2.5 px-3">Photo Size (KB)</th>
+              <th class="py-2.5 px-3">Signature Dimensions</th>
+              <th class="py-2.5 px-3">Signature Size (KB)</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-white/5 text-[11px]">
+            <tr>
+              <td class="py-2.5 px-3 font-bold text-white">SSC (CGL, CHSL, GD, MTS)</td>
+              <td class="py-2.5 px-3">3.5 cm × 4.5 cm</td>
+              <td class="py-2.5 px-3 text-emerald-400">20 KB – 50 KB</td>
+              <td class="py-2.5 px-3">4.0 cm × 2.0 cm</td>
+              <td class="py-2.5 px-3 text-emerald-400">10 KB – 20 KB</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-bold text-white">UPSC (CSE, NDA, CDS)</td>
+              <td class="py-2.5 px-3">350×350 to 1000×1000 px</td>
+              <td class="py-2.5 px-3 text-emerald-400">20 KB – 300 KB</td>
+              <td class="py-2.5 px-3">350×350 to 1000×1000 px</td>
+              <td class="py-2.5 px-3 text-emerald-400">20 KB – 300 KB</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-bold text-white">IBPS / SBI Banking</td>
+              <td class="py-2.5 px-3">200 × 230 px</td>
+              <td class="py-2.5 px-3 text-emerald-400">20 KB – 50 KB</td>
+              <td class="py-2.5 px-3">140 × 60 px</td>
+              <td class="py-2.5 px-3 text-emerald-400">10 KB – 20 KB</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-bold text-white">Railway RRB (NTPC, Group D)</td>
+              <td class="py-2.5 px-3">35 mm × 45 mm</td>
+              <td class="py-2.5 px-3 text-emerald-400">20 KB – 70 KB</td>
+              <td class="py-2.5 px-3">50 mm × 20 mm</td>
+              <td class="py-2.5 px-3 text-emerald-400">10 KB – 40 KB</td>
+            </tr>
+            <tr>
+              <td class="py-2.5 px-3 font-bold text-white">GATE (Engineering)</td>
+              <td class="py-2.5 px-3">480 × 640 px (3.5×4.5 cm)</td>
+              <td class="py-2.5 px-3 text-emerald-400">5 KB – 200 KB</td>
+              <td class="py-2.5 px-3">160 × 560 px</td>
+              <td class="py-2.5 px-3 text-emerald-400">5 KB – 150 KB</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="text-[10px] text-slate-400 italic pt-1">
+        Note: Specifications may vary per individual recruitment notification. Always verify exact requirements in the official exam brochure before final submission.
+      </p>
+    </section>
+
   </main>
 
   <!-- ADSENSE COMPLIANCE FOOTER -->
   <footer class="w-full text-center py-8 px-4 text-xs text-slate-500 border-t border-white/10 mt-10 space-y-3 bg-[#020408]">
     <div class="max-w-4xl mx-auto flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-[12px] text-slate-400 font-semibold">
-      <a href="javascript:void(0)" onclick="openModal('aboutModal')" class="hover:text-amber-400 transition">About Us</a>
+      <button type="button" onclick="openModal('aboutModal')" class="hover:text-amber-400 transition">About Us</button>
       <span>•</span>
-      <a href="javascript:void(0)" onclick="openModal('contactModal')" class="hover:text-amber-400 transition">Contact Us</a>
+      <button type="button" onclick="openModal('contactModal')" class="hover:text-amber-400 transition">Contact Us</button>
       <span>•</span>
       <a href="/privacy-policy.html" class="hover:text-amber-400 transition">Privacy Policy</a>
       <span>•</span>
@@ -981,45 +1038,45 @@
       <span>•</span>
       <a href="/disclaimer.html" class="hover:text-amber-400 transition">Disclaimer</a>
     </div>
-    <p class="text-[11px] text-slate-500">© 2026 Exam Resizer Pro. All examination logos and recruitment names are trademarks of their respective government authorities and organizing bodies.</p>
+    <p class="text-[11px] text-slate-500">© 2026 Exam Resizer Pro. Independent candidate utility. All examination acronyms belong to their respective regulatory conducting bodies.</p>
   </footer>
 
   <!-- ABOUT US MODAL -->
-  <div id="aboutModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="aboutModal" role="dialog" aria-modal="true" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-card max-w-lg w-full p-6 rounded-2xl border border-white/20 space-y-4 text-left">
       <div class="flex items-center justify-between border-b border-white/10 pb-2">
         <h3 class="font-bold text-white text-base">About ExamResizer.me</h3>
-        <button onclick="closeModal('aboutModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
+        <button type="button" aria-label="Close" onclick="closeModal('aboutModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">
-        <strong>ExamResizer.me</strong> is a free educational utility built to assist students and candidates across India with competitive examinations. Our tools automate complex photo & signature resizing to match exact pixel/KB requirements, provide chronological PYQs, and simulate genuine CBT environments entirely within your browser with 100% privacy and zero server uploads.
+        <strong>ExamResizer.me</strong> is a free independent educational utility built to assist students across India with competitive examinations. Photos and signatures are processed locally in your browser and are not uploaded to our servers. We also provide chronological PYQs and simulated CBT practice environments.
       </p>
       <div class="text-right">
-        <button onclick="closeModal('aboutModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
+        <button type="button" onclick="closeModal('aboutModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
       </div>
     </div>
   </div>
 
   <!-- CONTACT US MODAL -->
-  <div id="contactModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="contactModal" role="dialog" aria-modal="true" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-card max-w-lg w-full p-6 rounded-2xl border border-white/20 space-y-4 text-left">
       <div class="flex items-center justify-between border-b border-white/10 pb-2">
         <h3 class="font-bold text-white text-base">Contact Editorial & Support</h3>
-        <button onclick="closeModal('contactModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
+        <button type="button" aria-label="Close" onclick="closeModal('contactModal')" class="text-slate-400 hover:text-white font-bold">✕</button>
       </div>
       <p class="text-xs text-slate-300 leading-relaxed">
         For technical assistance, copyright claims, or suggestions regarding question paper archives and format updates, please write directly to our editorial team:
       </p>
       <div class="p-3 bg-white/5 rounded-xl border border-white/10 text-xs text-amber-400 font-mono">
-        Official Support: support@examresizer.me
+        Editorial Support: support@examresizer.me
       </div>
       <div class="text-right">
-        <button onclick="closeModal('contactModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
+        <button type="button" onclick="closeModal('contactModal')" class="px-4 py-2 luxury-action-btn text-black font-extrabold text-xs rounded-xl">Close</button>
       </div>
     </div>
   </div>
 
-  <!-- LIGHTWEIGHT MODAL & KEYBOARD ACCESSIBILITY SCRIPT -->
+  <!-- LIGHTWEIGHT MODAL ACCESSIBILITY SCRIPT -->
   <script>
     function openModal(id) { 
       const el = document.getElementById(id);
@@ -1038,15 +1095,13 @@
     });
   </script>
 
-  <!-- ======================================================== -->
-  <!-- ⚡ CORE JAVASCRIPT LOGIC ENGINES (DEDICATED MODULAR JS)  -->
-  <!-- ======================================================== -->
-  <script src="js/resizer.js"></script>
-  <script src="js/iq-arena.js"></script>
-  <script src="js/pyq-hub.js"></script>
-  <script src="js/mock-test.js"></script>
-  <script src="js/pdf-suite.js"></script>
-  <script src="js/job-alerts.js"></script>
-  <script src="js/app.js"></script>
+  <!-- CORE JAVASCRIPT LOGIC ENGINES -->
+  <script src="/js/resizer.js"></script>
+  <script src="/js/iq-arena.js"></script>
+  <script src="/js/pyq-hub.js"></script>
+  <script src="/js/mock-test.js"></script>
+  <script src="/js/pdf-suite.js"></script>
+  <script src="/js/job-alerts.js"></script>
+  <script src="/js/app.js"></script>
 </body>
 </html>
