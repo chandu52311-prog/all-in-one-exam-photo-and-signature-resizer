@@ -19,7 +19,7 @@
   <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="/favicon.png">
 
- <!-- Core CDNs -->
+  <!-- Core CDNs -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -182,7 +182,7 @@
       background: linear-gradient(180deg, #fef08a 0%, #f59e0b 100%) !important; 
       color: #05070e !important; 
       font-weight: 900; 
-      border: 1px solid #fffbeb !important;
+      border: 1px solid #fffbeb !important; 
       box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.6); 
     }
 
@@ -198,7 +198,7 @@
       justify-content: center; 
       cursor: pointer; 
       overflow: hidden; 
-      transition: all 0.3s ease;
+      transition: all 0.3s ease; 
       box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.5);
     }
     .upload-frame:hover { 
@@ -254,11 +254,12 @@
       </div>
 
       <nav class="hidden md:flex items-center space-x-1.5 text-xs">
-        <button type="button" onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3.5 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition">Resizer Pro</button>
-        <button type="button" onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PYQ Hub</button>
-        <button type="button" onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Mock CBT</button>
-        <button type="button" onclick="switchZone('pdf-zone')" id="nav-btn-pdf" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PDF Tools</button>
-        <button type="button" onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3.5 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Live Alerts</button>
+        <button type="button" onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition">Resizer Pro</button>
+        <button type="button" onclick="switchZone('iq-zone')" id="nav-btn-iq" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">🧠 IQ Arena</button>
+        <button type="button" onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PYQ Hub</button>
+        <button type="button" onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Mock CBT</button>
+        <button type="button" onclick="switchZone('pdf-zone')" id="nav-btn-pdf" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PDF Tools</button>
+        <button type="button" onclick="switchZone('jobs-zone')" id="nav-btn-jobs" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Live Alerts</button>
       </nav>
 
       <button type="button" onclick="switchZone('mock-zone')" class="text-xs luxury-action-btn px-4 py-2 rounded-xl gold-glow flex items-center space-x-1.5 cursor-pointer">
@@ -270,44 +271,73 @@
   <!-- MAIN WRAPPER -->
   <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-6 space-y-6">
 
-    <!-- 4 PREMIER PORTAL CARDS -->
-    <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div onclick="switchZone('pyq-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
-        <div class="w-14 h-14 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg">📚</div>
+    <!-- ======================================================== -->
+    <!-- 6 PREMIER PORTAL CARDS (COMPLETE 3x2 / 2x3 BALANCED GRID)-->
+    <!-- ======================================================== -->
+    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      
+      <!-- 1. PHOTO & SIGNATURE RESIZER PRO -->
+      <div onclick="switchZone('resizer-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
+        <div class="w-13 h-13 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📷</div>
         <div class="flex-grow">
-          <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">ARCHIVE (2020–2026)</span>
-          <h3 class="font-extrabold text-white text-base group-hover:text-amber-400 transition">Previous Question Papers Hub</h3>
-          <p class="text-xs text-slate-400 leading-snug mt-0.5">GATE, SSC, RRB, UPSC, State PSCs, NEET & JEE Master Papers with Keys</p>
+          <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">AUTO SPEC ENGINE</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-amber-400 transition">Exam Resizer Pro</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">SSC, UPSC, RRB, GATE & State PSCs Photo & Signature Formatter</p>
         </div>
         <span class="text-slate-500 group-hover:text-amber-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
-      <div onclick="switchZone('mock-zone')" class="glass-card border border-blue-500/30 shimmer-card hover:border-blue-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] flex items-center space-x-4 group">
-        <div class="w-14 h-14 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg">⏱️</div>
+      <!-- 2. SPEED APTITUDE & IQ ARENA -->
+      <div onclick="switchZone('iq-zone')" class="glass-card border border-purple-500/30 shimmer-card hover:border-purple-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(168,85,247,0.3)] flex items-center space-x-4 group">
+        <div class="w-13 h-13 rounded-2xl border border-purple-400/50 bg-gradient-to-br from-purple-500/20 via-black to-black flex items-center justify-center text-2xl text-purple-400 flex-shrink-0 shadow-lg p-3">🧠</div>
         <div class="flex-grow">
-          <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">TCS-iON PATTERN</span>
-          <h3 class="font-extrabold text-white text-base group-hover:text-blue-400 transition">Official CBT Examination Terminal</h3>
-          <p class="text-xs text-slate-400 leading-snug mt-0.5">10 Sequential Levels • 35% Qualifying Pass Rule • Complete Solutions</p>
+          <span class="inline-block bg-purple-500/20 text-purple-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-purple-500/40 mb-1">10 MIN • 50 DRILLS</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-purple-400 transition">Speed Aptitude Arena</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">Tables, Squares, Roots, Cubes, BODMAS & Rapid English Drills</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-purple-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+
+      <!-- 3. PREVIOUS QUESTION PAPERS HUB -->
+      <div onclick="switchZone('pyq-zone')" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
+        <div class="w-13 h-13 rounded-2xl border border-amber-400/50 bg-gradient-to-br from-amber-500/20 via-black to-black flex items-center justify-center text-2xl text-amber-400 flex-shrink-0 shadow-lg p-3">📚</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-amber-500/20 text-amber-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-amber-500/40 mb-1">ARCHIVE (2020–2026)</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-amber-400 transition">Question Papers Hub</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">GATE, SSC, RRB, UPSC, State PSCs, NEET & JEE Master Papers</p>
+        </div>
+        <span class="text-slate-500 group-hover:text-amber-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
+      </div>
+
+      <!-- 4. OFFICIAL CBT EXAMINATION TERMINAL -->
+      <div onclick="switchZone('mock-zone')" class="glass-card border border-blue-500/30 shimmer-card hover:border-blue-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(59,130,246,0.3)] flex items-center space-x-4 group">
+        <div class="w-13 h-13 rounded-2xl border border-blue-400/50 bg-gradient-to-br from-blue-500/20 via-black to-black flex items-center justify-center text-2xl text-blue-400 flex-shrink-0 shadow-lg p-3">⏱️</div>
+        <div class="flex-grow">
+          <span class="inline-block bg-blue-500/20 text-blue-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-blue-500/40 mb-1">TCS-iON PATTERN</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-blue-400 transition">CBT Exam Terminal</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">10 Sequential Levels • 35% Qualifying Pass Rule • Solutions</p>
         </div>
         <span class="text-slate-500 group-hover:text-blue-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
+      <!-- 5. PDF CERTIFICATE MEGA SUITE -->
       <div onclick="switchZone('pdf-zone')" class="glass-card border border-emerald-500/30 shimmer-card hover:border-emerald-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(16,185,129,0.3)] flex items-center space-x-4 group">
-        <div class="w-14 h-14 rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 via-black to-black flex items-center justify-center text-2xl text-emerald-400 flex-shrink-0 shadow-lg">📄</div>
+        <div class="w-13 h-13 rounded-2xl border border-emerald-400/50 bg-gradient-to-br from-emerald-500/20 via-black to-black flex items-center justify-center text-2xl text-emerald-400 flex-shrink-0 shadow-lg p-3">📄</div>
         <div class="flex-grow">
-          <span class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-emerald-500/40 mb-1">GOVERNMENT COMPLIANT</span>
-          <h3 class="font-extrabold text-white text-base group-hover:text-emerald-400 transition">PDF Certificate Mega Suite</h3>
-          <p class="text-xs text-slate-400 leading-snug mt-0.5">Compress Under 100/200 KB, Merge Documents & Image to A4 PDF</p>
+          <span class="inline-block bg-emerald-500/20 text-emerald-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-emerald-500/40 mb-1">GOVT COMPLIANT</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-emerald-400 transition">PDF Mega Suite</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">Compress Under 100/200 KB, Merge Documents & Image to A4 PDF</p>
         </div>
         <span class="text-slate-500 group-hover:text-emerald-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
 
+      <!-- 6. LIVE GOVT RECRUITMENT ALERTS -->
       <div onclick="switchZone('jobs-zone')" class="glass-card border border-rose-500/30 shimmer-card hover:border-rose-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 hover:shadow-[0_0_25px_rgba(244,63,94,0.3)] flex items-center space-x-4 group">
-        <div class="w-14 h-14 rounded-2xl border border-rose-400/50 bg-gradient-to-br from-rose-500/20 via-black to-black flex items-center justify-center text-2xl text-rose-400 flex-shrink-0 shadow-lg animate-pulse">🔔</div>
+        <div class="w-13 h-13 rounded-2xl border border-rose-400/50 bg-gradient-to-br from-rose-500/20 via-black to-black flex items-center justify-center text-2xl text-rose-400 flex-shrink-0 shadow-lg p-3 animate-pulse">🔔</div>
         <div class="flex-grow">
-          <span class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-black px-2.5 py-0.5 rounded-md tracking-wider uppercase border border-rose-500/40 mb-1">CLOSING IN 48H</span>
-          <h3 class="font-extrabold text-white text-base group-hover:text-rose-400 transition">Live Govt Recruitment Alerts</h3>
-          <p class="text-xs text-slate-400 leading-snug mt-0.5">SSC, Railways, APPSC, Central & State Recruitment Notifications</p>
+          <span class="inline-block bg-rose-500/20 text-rose-300 text-[10px] font-black px-2 py-0.5 rounded-md tracking-wider uppercase border border-rose-500/40 mb-1">CLOSING IN 48H</span>
+          <h3 class="font-extrabold text-white text-sm sm:text-base group-hover:text-rose-400 transition">Live Govt Job Alerts</h3>
+          <p class="text-[11px] text-slate-400 leading-snug mt-0.5">SSC, Railways, APPSC, Central & State Recruitment Notifications</p>
         </div>
         <span class="text-slate-500 group-hover:text-rose-400 font-black text-lg transition group-hover:translate-x-1">➔</span>
       </div>
@@ -397,6 +427,215 @@
       </div>
     </section>
 
+    <!-- ======================================================== -->
+    <!-- SECTION: SPEED APTITUDE & IQ ARENA (NEW EMBEDDED ZONE)  -->
+    <!-- ======================================================== -->
+    <section id="iq-zone" class="hidden space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-purple-500/30 space-y-6">
+        
+        <!-- Header -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
+          <div>
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-300 text-[11px] font-bold uppercase tracking-wider mb-1">
+              ⚡ High-Speed Mind Drills
+            </div>
+            <h2 class="font-black text-xl text-white">Speed Aptitude & Calculation Arena</h2>
+            <p class="text-xs text-slate-400">10 Minutes • 50 Unique Questions • Built for SSC, RRB, Banking, CSAT & State PSCs</p>
+          </div>
+          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-amber-400 hover:text-amber-300 font-bold transition self-start sm:self-auto">
+            ← Return to Resizer
+          </button>
+        </div>
+
+        <!-- 1. HUB: 6 GAME SELECTION CARDS -->
+        <div id="iq-hub-screen" class="space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5">
+            
+            <!-- Card 1: Tables -->
+            <div onclick="startIQGame('tables', 'Tables Speed Drill (1-20)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">🔢</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Up to 20</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Tables Speed Drill</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Multiplication tables up to 20 without pen or paper.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+            <!-- Card 2: Squares -->
+            <div onclick="startIQGame('squares', 'Squares Arena (1-50)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">⚡</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">1 - 50</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Squares Challenge</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Direct squares recall up to 50 for rapid calculation.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+            <!-- Card 3: Roots -->
+            <div onclick="startIQGame('roots', 'Roots Extraction Drill')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">🎯</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">√ & ∛ Power</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Roots Extraction</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Square roots up to 2500 and Cube roots up to 30.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+            <!-- Card 4: Cubes -->
+            <div onclick="startIQGame('cubes', 'Cubes Power Drill (1-30)')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">🧊</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-400 border border-purple-500/20">1 - 30</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Cubes Power Drill</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Direct cubes calculation drill for Banking and SSC.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+            <!-- Card 5: BODMAS -->
+            <div onclick="startIQGame('bodmas', 'Fast BODMAS & Simplification')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">⚙️</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20">Rapid Mental</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Fast BODMAS</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Mental additions, multiplications, and percentages.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+            <!-- Card 6: English -->
+            <div onclick="startIQGame('english', 'Rapid English Vocab & Spellings')" class="glass-card border border-white/10 hover:border-amber-400/60 p-5 rounded-xl cursor-pointer transition transform hover:-translate-y-1 group">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-2xl">📖</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">SSC / Bank</span>
+              </div>
+              <h3 class="text-sm font-bold text-white group-hover:text-amber-300 transition">Rapid English</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Synonyms, Antonyms, and high-frequency Spellings.</p>
+              <div class="mt-3 pt-2 border-t border-white/5 flex items-center justify-between text-[11px] text-slate-500">
+                <span>50 Unique Qs</span>
+                <span class="text-amber-400 font-bold group-hover:translate-x-1 transition-transform">Start →</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- 2. ARENA: LIVE PLAY INTERFACE -->
+        <div id="iq-arena-screen" class="hidden max-w-xl mx-auto glass-card p-6 sm:p-8 rounded-2xl border border-white/10 space-y-6">
+          <div class="flex items-center justify-between pb-3 border-b border-white/10">
+            <button type="button" onclick="returnToIQHub()" class="text-xs font-semibold text-slate-400 hover:text-white transition">
+              ← Change Drill
+            </button>
+            <div class="text-right">
+              <span id="arena-timer-text" class="text-emerald-400 font-mono font-extrabold text-xl">10:00</span>
+            </div>
+          </div>
+
+          <!-- Timer Progress Bar -->
+          <div class="w-full h-1.5 bg-black/60 rounded-full overflow-hidden">
+            <div id="arena-timer-bar" class="h-full bg-emerald-500 transition-all duration-300" style="width: 100%;"></div>
+          </div>
+
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-400">
+            <span id="arena-game-title" class="text-amber-400 uppercase tracking-wide"></span>
+            <span id="arena-progress-text">Question 1 / 50</span>
+            <span id="arena-streak-badge" class="text-amber-300 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/20">🔥 Streak: 0</span>
+          </div>
+
+          <!-- Math Numeric Input -->
+          <div id="arena-math-interface" class="flex flex-col items-center py-4">
+            <div id="arena-math-question" class="text-3xl sm:text-4xl font-extrabold text-white tracking-wider my-4 text-center"></div>
+            <div class="w-full max-w-xs">
+              <input 
+                id="arena-math-input" 
+                type="number" 
+                inputmode="numeric" 
+                placeholder="Type answer..." 
+                autocomplete="off"
+                class="w-full text-center py-3.5 bg-black/70 border-2 border-white/20 rounded-xl text-2xl font-mono font-bold text-white focus:outline-none focus:border-amber-400 transition"
+              />
+              <p class="text-[11px] text-slate-500 text-center mt-2">Auto-submits on correct number or press Enter</p>
+            </div>
+          </div>
+
+          <!-- English 4 Option Buttons -->
+          <div id="arena-english-interface" class="hidden flex flex-col py-2">
+            <div id="arena-english-question" class="text-lg sm:text-xl font-bold text-white text-center my-3"></div>
+            <div id="arena-english-options" class="flex flex-col gap-2.5 mt-2"></div>
+          </div>
+
+          <div id="arena-feedback-indicator" class="h-6 text-xs font-semibold text-center opacity-0 transition-opacity"></div>
+        </div>
+
+        <!-- 3. SCORECARD: RESULTS INTERFACE -->
+        <div id="iq-scorecard-screen" class="hidden max-w-lg mx-auto glass-card p-6 sm:p-8 rounded-2xl border border-white/10 text-center space-y-5">
+          <div>
+            <span class="text-4xl">📊</span>
+          </div>
+          <h3 class="text-2xl font-extrabold text-white">Diagnostic Scorecard</h3>
+          <p id="score-game-name" class="text-xs text-amber-400 font-semibold uppercase tracking-wider"></p>
+
+          <div>
+            <span id="score-rank-badge" class="inline-block px-4 py-1.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold"></span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3 text-left">
+            <div class="p-3 rounded-xl bg-black/60 border border-white/10">
+              <span class="text-[11px] text-slate-400 block">Attempted</span>
+              <span id="score-attempted" class="text-base font-bold text-white font-mono">0 / 50</span>
+            </div>
+            <div class="p-3 rounded-xl bg-black/60 border border-white/10">
+              <span class="text-[11px] text-slate-400 block">Accuracy</span>
+              <span id="score-accuracy" class="text-base font-bold text-emerald-400 font-mono">0%</span>
+            </div>
+            <div class="p-3 rounded-xl bg-black/60 border border-white/10">
+              <span class="text-[11px] text-slate-400 block">Correct / Wrong</span>
+              <span class="text-base font-bold font-mono">
+                <span id="score-correct" class="text-emerald-400">0</span> / <span id="score-wrong" class="text-rose-400">0</span>
+              </span>
+            </div>
+            <div class="p-3 rounded-xl bg-black/60 border border-white/10">
+              <span class="text-[11px] text-slate-400 block">Avg Speed</span>
+              <span id="score-speed" class="text-base font-bold text-amber-300 font-mono">0.0s / Q</span>
+            </div>
+          </div>
+
+          <div class="p-3 rounded-xl bg-black/40 border border-white/5 flex justify-between items-center text-xs">
+            <span class="text-slate-400">Peak Unbroken Streak:</span>
+            <span id="score-streak" class="text-amber-400 font-bold font-mono">0 Streak</span>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <button onclick="startIQGame(gameState.activeGameId, gameState.activeGameTitle)" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition">
+              Play Again (Beat Record)
+            </button>
+            <button onclick="returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
+              Choose Another Drill
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- SECTION 2: OFFICIAL PYQ PAPERS HUB -->
     <section id="pyq-zone" class="hidden space-y-5">
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
@@ -422,15 +661,12 @@
           </div>
         </div>
 
-        <!-- Tier 2: Dynamic Sub-Buttons (Engineering Branches / Exam Cadres) -->
+        <!-- Tier 2: Dynamic Sub-Buttons -->
         <div class="p-4 rounded-xl bg-[#05070e] border border-white/10 space-y-2.5">
           <label class="block text-[11px] font-extrabold text-amber-400 uppercase tracking-wider">Select Stream / Discipline / Post Cadre</label>
-          <div class="flex flex-wrap gap-2 items-center" id="streamSubButtonsContainer">
-            <!-- Populated dynamically via JS -->
-          </div>
+          <div class="flex flex-wrap gap-2 items-center" id="streamSubButtonsContainer"></div>
         </div>
 
-        <!-- Active Authority Summary Banner -->
         <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div>
             <h3 class="font-bold text-white text-base" id="activeAuthorityTitle">Graduate Aptitude Test in Engineering (GATE)</h3>
@@ -439,11 +675,10 @@
           <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
         </div>
 
-        <!-- Paper List Display Container -->
         <div class="space-y-3" id="papersStackContainer"></div>
       </div>
 
-      <!-- IN-APP PROTECTED VIEWER MODAL (REAL PDF ONLY - ZERO MOCK TEXT) -->
+      <!-- IN-APP PROTECTED VIEWER MODAL -->
       <div id="pyqReaderModal" class="hidden fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 md:p-6 select-none" oncontextmenu="return false;">
         <div class="glass-card w-full max-w-5xl h-[94vh] rounded-2xl border border-white/20 overflow-hidden flex flex-col shadow-2xl bg-[#090d16]">
           <div class="p-3.5 md:p-4 border-b border-white/10 flex items-center justify-between bg-black/80">
@@ -474,9 +709,7 @@
       </div>
     </section>
 
-    <!-- ======================================================== -->
-    <!-- SECTION 3: CBT MOCK TEST ENGINE (UPDATED FOR PYQ STAGES) -->
-    <!-- ======================================================== -->
+    <!-- SECTION 3: CBT MOCK TEST ENGINE -->
     <section id="mock-zone" class="hidden space-y-5">
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         
@@ -492,9 +725,7 @@
 
           <div id="studentProfileBox" class="hidden flex items-center justify-between w-full">
             <div class="flex items-center space-x-2.5">
-              <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">
-                👤
-              </div>
+              <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400 font-bold text-xs">👤</div>
               <div>
                 <p class="text-xs font-bold text-white flex items-center">
                   Welcome back, <span id="displayStudentName" class="text-amber-400 ml-1">Candidate</span>!
@@ -508,7 +739,7 @@
           </div>
         </div>
 
-        <!-- MODULE 1: EXAM SELECTOR & 10-STAGE PROGRESSION DOCK -->
+        <!-- MODULE 1: EXAM SELECTOR -->
         <div id="mock-hub-dashboard" class="space-y-6">
           <div class="flex flex-col md:flex-row md:items-center justify-between pb-4 border-b border-white/10 gap-3">
             <div>
@@ -522,7 +753,6 @@
             </button>
           </div>
 
-          <!-- MOCK MODE SELECTOR (FULL-LENGTH VS SUBJECT DRILLS) -->
           <div class="flex items-center gap-2 p-1.5 bg-[#05070e] rounded-xl border border-white/10 w-full sm:w-fit">
             <button type="button" onclick="switchMockMode('EXAM')" id="mode-btn-EXAM" class="flex-1 sm:flex-none px-4 py-2 rounded-lg text-xs font-black transition bg-amber-500/20 text-amber-300 border border-amber-500/40">
               🏛️ Full-Length Exam Mocks (100 Qs • 120m)
@@ -532,7 +762,6 @@
             </button>
           </div>
 
-          <!-- Exam Selection Tabs (Full-Length Mode) -->
           <div id="examDomainNavBlock" class="space-y-3">
             <div>
               <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
@@ -548,18 +777,14 @@
               </div>
             </div>
 
-            <!-- BRANCH SUB-SELECTION (DYNAMIC HUD PILLS) -->
             <div id="mockBranchNavContainer" class="p-3 bg-[#05070e] rounded-xl border border-white/10">
               <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest block mb-2">
                 Select Branch / Discipline Cadre
               </span>
-              <div id="branchSubButtonsRow" class="flex flex-wrap gap-2">
-                <!-- Dynamically Populated by js/mock-test.js -->
-              </div>
+              <div id="branchSubButtonsRow" class="flex flex-wrap gap-2"></div>
             </div>
           </div>
 
-          <!-- Subject Selection Tabs (Subject Mastery Mode) -->
           <div id="subjectDomainNavBlock" class="hidden">
             <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2.5">
               Select High-Yield Focus Subject (20 Sequential Tests Each)
@@ -573,7 +798,6 @@
             </div>
           </div>
 
-          <!-- Dynamic Active Stream Bar -->
           <div class="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 flex flex-col md:flex-row md:items-center justify-between gap-3">
             <div>
               <h3 class="font-bold text-white text-base" id="activeMockDomainTitle">Andhra Pradesh PSC (Groups & AEE)</h3>
@@ -584,31 +808,28 @@
             </span>
           </div>
 
-          <!-- 10 Mock Tests Series Grid + 11th Coming Soon -->
           <div>
             <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Sequential Test Progression Matrix</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5" id="mockTestsGridContainer"></div>
           </div>
         </div>
 
-        <!-- MODULE 2: GATEKEEPER & CANDIDATE GUIDELINES SCREEN -->
+        <!-- MODULE 2: GATEKEEPER SCREEN -->
         <div id="mock-gatekeeper-screen" class="hidden space-y-5">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
             <div>
               <h3 class="font-bold text-lg text-white" id="gatekeeperTestTitle">Official Practice Assessment 01</h3>
               <p class="text-xs text-slate-400">Strict CBT Simulator • Negative Marking Applicable</p>
             </div>
-            <button type="button" onclick="returnToMockHub()" class="text-xs text-amber-400 hover:underline">
-              ← Change Test
-            </button>
+            <button type="button" onclick="returnToMockHub()" class="text-xs text-amber-400 hover:underline">← Change Test</button>
           </div>
 
           <div class="bg-black/50 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2.5 leading-relaxed">
             <h4 class="font-bold text-white uppercase tracking-wider">Candidate Guidelines & Examination Rules:</h4>
-            <p>1. <strong>Passing Criterion:</strong> You must score at least <strong>35.00% Marks</strong> to unlock the next practice test in this series.</p>
-            <p>2. <strong>Scoring System:</strong> Each correct response awards <strong>+2.00 marks</strong>. Each incorrect choice carries a penalty of <strong>-0.50 negative marks</strong>.</p>
-            <p>3. <strong>Timer Control:</strong> Session timer runs uninterrupted. Answers are auto-submitted when the clock reaches zero.</p>
-            <p>4. <strong>Certified Verification:</strong> Post completion, you can download a complete Watermarked Analytical Result Card including mathematical solutions.</p>
+            <p>1. <strong>Passing Criterion:</strong> Score at least <strong>35.00% Marks</strong> to unlock the next test.</p>
+            <p>2. <strong>Scoring System:</strong> Correct +2.00 marks, Incorrect -0.50 negative marks.</p>
+            <p>3. <strong>Timer Control:</strong> Session timer runs uninterrupted.</p>
+            <p>4. <strong>Certified Verification:</strong> Download watermarked analytical result card.</p>
           </div>
 
           <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
@@ -619,16 +840,14 @@
           </div>
 
           <div class="flex justify-between items-center pt-2">
-            <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-xs font-bold hover:bg-white/10">
-              Cancel
-            </button>
+            <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-400 text-xs font-bold hover:bg-white/10">Cancel</button>
             <button type="button" id="startCbtBtn" onclick="startCbtSession()" disabled class="px-7 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed transition">
               I AM READY TO BEGIN
             </button>
           </div>
         </div>
 
-        <!-- MODULE 3: LIVE TCS-iON CBT TERMINAL -->
+        <!-- MODULE 3: LIVE CBT SCREEN -->
         <div id="mock-live-screen" class="hidden space-y-4">
           <div class="flex items-center justify-between pb-3 border-b border-white/10">
             <div class="flex items-center space-x-3">
@@ -656,8 +875,6 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div class="md:col-span-3 space-y-4">
               <div class="relative p-6 rounded-xl bg-white/[0.02] border border-white/10 space-y-4 min-h-[380px] flex flex-col justify-between overflow-hidden">
-                
-                <!-- Watermark -->
                 <div class="cbt-canvas-watermark">
                   <span class="text-5xl md:text-6xl font-black rotate-[-25deg] tracking-widest text-white">EXAMRESIZER.ME</span>
                 </div>
@@ -718,14 +935,13 @@
           </div>
         </div>
 
-        <!-- MODULE 4: ANALYTICAL SCORECARD & STEP-BY-STEP SOLUTIONS -->
+        <!-- MODULE 4: SCORECARD -->
         <div id="mock-result-screen" class="hidden space-y-5"></div>
-
       </div>
     </section>
 
-   <!-- SECTION 4: PDF MEGA STUDIO (CONTROLLED BY JS/PDF-SUITE.JS) -->
-<section id="pdf-zone" class="hidden space-y-4"></section>
+    <!-- SECTION 4: PDF MEGA STUDIO -->
+    <section id="pdf-zone" class="hidden space-y-4"></section>
 
     <!-- SECTION 5: LIVE ALERTS -->
     <section id="jobs-zone" class="hidden space-y-4">
@@ -817,6 +1033,7 @@
   <!-- ⚡ CORE JAVASCRIPT LOGIC ENGINES (DEDICATED MODULAR JS)  -->
   <!-- ======================================================== -->
   <script src="js/resizer.js"></script>
+  <script src="js/iq-arena.js"></script>
   <script src="js/pyq-hub.js"></script>
   <script src="js/mock-test.js"></script>
   <script src="js/pdf-suite.js"></script>
