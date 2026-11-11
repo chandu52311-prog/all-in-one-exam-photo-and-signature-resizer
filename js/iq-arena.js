@@ -1,461 +1,434 @@
 /**
- * Aptitude & Speed Calculation Arena Engine (Zero Dependencies)
- * Handles 6 games, 10-minute timer, 50 unique questions, input validation, and scoring.
+ * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 2.1 (Complete 6 Games)
+ * Architecture: Candy Crush Multi-Level Progression + Speed Scroll Dial + Zero-Hang Safety
  */
 
-const IQ_CONFIG = {
-  TOTAL_QUESTIONS: 50,
-  TOTAL_SECONDS: 600, // 10 Minutes
-};
-
-// Master English Question Bank (50+ Curated Exam Standard Items)
-const ENGLISH_BANK = [
-  { type: 'synonym', q: 'Synonym of "ABUNDANT"', opts: ['Scarce', 'Plentiful', 'Meager', 'Rare'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "CANDID"', opts: ['Secretive', 'Dishonest', 'Frank', 'Deceptive'], a: 2 },
-  { type: 'synonym', q: 'Synonym of "DILIGENT"', opts: ['Lazy', 'Hardworking', 'Careless', 'Inert'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "METICULOUS"', opts: ['Precise', 'Rough', 'Careless', 'Hasty'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "PRAGMATIC"', opts: ['Idealistic', 'Practical', 'Theoretical', 'Irrational'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "OBSOLETE"', opts: ['Contemporary', 'Extinct', 'Antique', 'Ancient'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "TRANSIENT"', opts: ['Temporary', 'Fleeting', 'Permanent', 'Brief'], a: 2 },
-  { type: 'antonym', q: 'Antonym of "HOSTILE"', opts: ['Friendly', 'Aggressive', 'Antagonistic', 'Adverse'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "FRUGAL"', opts: ['Economical', 'Extravagant', 'Thrifty', 'Stingy'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "AMBIGUOUS"', opts: ['Vague', 'Obscure', 'Clear', 'Doubtful'], a: 2 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Accomodate', 'Accommodate', 'Acommodate', 'Accomadate'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Occurence', 'Occurrence', 'Ocurrence', 'Occurance'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Mischievous', 'Mischevious', 'Mischivous', 'Mischevous'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Embarass', 'Embarras', 'Embarrass', 'Embaras'], a: 2 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Maintenance', 'Maintainance', 'Maintenence', 'Mantenance'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Privilege', 'Privelege', 'Priviledge', 'Privledge'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Hierarchy', 'Heirarchy', 'Hierarcy', 'Heirarcy'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Questionaire', 'Questionnaire', 'Questionair', 'Questionnare'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "LUCID"', opts: ['Confusing', 'Clear', 'Dark', 'Vague'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "ZEALOUS"', opts: ['Apathetic', 'Passionate', 'Cold', 'Indifferent'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "OPTIMISTIC"', opts: ['Hopeful', 'Confident', 'Pessimistic', 'Cheerful'], a: 2 },
-  { type: 'antonym', q: 'Antonym of "DORMANT"', opts: ['Inactive', 'Sleeping', 'Active', 'Latent'], a: 2 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Definately', 'Definitely', 'Definitly', 'Definetely'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Separate', 'Seperate', 'Seprate', 'Sepparate'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "BENEVOLENT"', opts: ['Cruel', 'Kind', 'Selfish', 'Hostile'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "TENACIOUS"', opts: ['Weak', 'Persistent', 'Hesitant', 'Fragile'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "AFFLUENT"', opts: ['Rich', 'Poor', 'Wealthy', 'Prosperous'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "CHAOTIC"', opts: ['Disordered', 'Orderly', 'Messy', 'Turbulent'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Consensus', 'Concensus', 'Consencus', 'Conscensus'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Colleague', 'Coleague', 'Collegue', 'Colleage'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "VERBOSE"', opts: ['Concise', 'Wordy', 'Brief', 'Silent'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "ADVERSITY"', opts: ['Hardship', 'Fortune', 'Prosperity', 'Success'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "RIGID"', opts: ['Flexible', 'Hard', 'Stiff', 'Strict'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "SCARCITY"', opts: ['Poverty', 'Abundance', 'Deficit', 'Shortage'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Bizarre', 'Bizzare', 'Bizar', 'Bizare'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Cemetery', 'Cemetary', 'Cemetory', 'Cematary'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "COMPASSION"', opts: ['Cruelty', 'Empathy', 'Indifference', 'Dislike'], a: 1 },
-  { type: 'synonym', q: 'Synonym of "ELOQUENT"', opts: ['Articulate', 'Hesitant', 'Shy', 'Mute'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "PERILOUS"', opts: ['Dangerous', 'Safe', 'Risky', 'Hazardous'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "PLACID"', opts: ['Calm', 'Agitated', 'Quiet', 'Peaceful'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Independent', 'Independant', 'Indipendent', 'Independunt'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Guaranteed', 'Garanted', 'Gauranteed', 'Guarenteed'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "METEORIC"', opts: ['Rapid', 'Slow', 'Gradual', 'Insignificant'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "VIGILANT"', opts: ['Alert', 'Careless', 'Neglectful', 'Asleep'], a: 0 },
-  { type: 'antonym', q: 'Antonym of "CONCUR"', opts: ['Agree', 'Disagree', 'Approve', 'Accept'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "VALIANT"', opts: ['Brave', 'Cowardly', 'Heroic', 'Fearless'], a: 1 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Bureaucracy', 'Burocracy', 'Beurocracy', 'Bureaucracy'], a: 0 },
-  { type: 'spelling', q: 'Choose the correctly spelled word:', opts: ['Lieutenant', 'Leutenant', 'Lietenant', 'Lieutenent'], a: 0 },
-  { type: 'synonym', q: 'Synonym of "RESILIENT"', opts: ['Fragile', 'Tough', 'Delicate', 'Brittle'], a: 1 },
-  { type: 'antonym', q: 'Antonym of "AUTHENTIC"', opts: ['Genuine', 'Fake', 'Real', 'Valid'], a: 1 }
+const LEVEL_RULES = [
+  { level: 1, name: "Cadet Warmup", questions: 10, timeLimit: 60, passScore: 8 },
+  { level: 2, name: "Speed Aspirant", questions: 10, timeLimit: 50, passScore: 8 },
+  { level: 3, name: "Officer Sprint", questions: 10, timeLimit: 40, passScore: 9 },
+  { level: 4, name: "Commander Drill", questions: 10, timeLimit: 35, passScore: 9 },
+  { level: 5, name: "God Mode (Boss)", questions: 10, timeLimit: 25, passScore: 10 }
 ];
 
-let gameState = {
-  activeGameId: null,
-  activeGameTitle: '',
+// Rich English Question Bank (50 Curated Exam Items)
+const MASTER_ENGLISH_BANK = [
+  { q: 'Synonym of "CANDID"', o: ['Secretive', 'Frank', 'Biased', 'False'], a: 1 },
+  { q: 'Antonym of "TRANSIENT"', o: ['Fleeting', 'Brief', 'Permanent', 'Short'], a: 2 },
+  { q: 'Correct Spelling:', o: ['Accomodate', 'Accommodate', 'Acommodate', 'Accomadate'], a: 1 },
+  { q: 'Synonym of "DILIGENT"', o: ['Lazy', 'Careless', 'Hardworking', 'Slow'], a: 2 },
+  { q: 'Antonym of "OBSOLETE"', o: ['Contemporary', 'Antique', 'Old', 'Historic'], a: 0 },
+  { q: 'Correct Spelling:', o: ['Maintenance', 'Maintainance', 'Maintenence', 'Mantenance'], a: 0 },
+  { q: 'Synonym of "PRAGMATIC"', o: ['Ideal', 'Practical', 'Imaginary', 'Wild'], a: 1 },
+  { q: 'Antonym of "FRUGAL"', o: ['Thrifty', 'Extravagant', 'Cheap', 'Saving'], a: 1 },
+  { q: 'Correct Spelling:', o: ['Occurrence', 'Occurence', 'Ocurrence', 'Occurrance'], a: 0 },
+  { q: 'Synonym of "LUCID"', o: ['Cloudy', 'Clear', 'Dark', 'Confusing'], a: 1 },
+  { q: 'Synonym of "ABUNDANT"', o: ['Scarce', 'Plentiful', 'Meager', 'Rare'], a: 1 },
+  { q: 'Antonym of "HOSTILE"', o: ['Friendly', 'Aggressive', 'Cold', 'Bitter'], a: 0 },
+  { q: 'Correct Spelling:', o: ['Privilege', 'Privelege', 'Priviledge', 'Privledge'], a: 0 },
+  { q: 'Synonym of "METICULOUS"', o: ['Careless', 'Detailed', 'Rough', 'Quick'], a: 1 },
+  { q: 'Antonym of "AMBIGUOUS"', o: ['Obscure', 'Vague', 'Definite', 'Hidden'], a: 2 },
+  { q: 'Correct Spelling:', o: ['Questionnaire', 'Questionaire', 'Questionair', 'Questionnare'], a: 0 },
+  { q: 'Synonym of "ZEALOUS"', o: ['Apathetic', 'Passionate', 'Lazy', 'Dull'], a: 1 },
+  { q: 'Antonym of "OPTIMISTIC"', o: ['Hopeful', 'Confident', 'Pessimistic', 'Cheerful'], a: 2 },
+  { q: 'Correct Spelling:', o: ['Definitely', 'Definately', 'Definitly', 'Definetly'], a: 0 },
+  { q: 'Synonym of "BENEVOLENT"', o: ['Kind', 'Cruel', 'Greedy', 'Harsh'], a: 0 },
+  { q: 'Antonym of "AFFLUENT"', o: ['Wealthy', 'Poor', 'Rich', 'Prosperous'], a: 1 },
+  { q: 'Correct Spelling:', o: ['Hierarchy', 'Heirarchy', 'Hierarcy', 'Heirarcy'], a: 0 },
+  { q: 'Synonym of "TENACIOUS"', o: ['Persistent', 'Weak', 'Yielding', 'Soft'], a: 0 },
+  { q: 'Antonym of "RIGID"', o: ['Hard', 'Flexible', 'Firm', 'Stiff'], a: 1 },
+  { q: 'Correct Spelling:', o: ['Separate', 'Seperate', 'Seprate', 'Sepparate'], a: 0 },
+  { q: 'Synonym of "VERBOSE"', o: ['Wordy', 'Brief', 'Short', 'Silent'], a: 0 },
+  { q: 'Antonym of "SCARCITY"', o: ['Deficit', 'Plenitude', 'Poverty', 'Lack'], a: 1 },
+  { q: 'Correct Spelling:', o: ['Bureaucracy', 'Burocracy', 'Beurocracy', 'Bureaucrasy'], a: 0 },
+  { q: 'Synonym of "ADVERSITY"', o: ['Hardship', 'Prosperity', 'Joy', 'Luck'], a: 0 },
+  { q: 'Antonym of "PLACID"', o: ['Quiet', 'Agitated', 'Calm', 'Peaceful'], a: 1 }
+];
+
+let arenaSession = {
+  gameId: null,
+  gameTitle: '',
+  currentLevelIdx: 0,
+  levelQuestions: [],
+  qIndex: 0,
+  timerSeconds: 0,
   timerInterval: null,
-  secondsRemaining: IQ_CONFIG.TOTAL_SECONDS,
-  questions: [],
-  currentIndex: 0,
-  correctCount: 0,
-  wrongCount: 0,
-  currentStreak: 0,
+  correct: 0,
+  wrong: 0,
+  streak: 0,
   bestStreak: 0,
-  startTime: null,
-  totalAnswerTime: 0,
   isLocked: false
 };
 
-// Shuffler utility
-function shuffleArray(arr) {
-  const array = [...arr];
-  for (let i = array.length - 1; i > 0; i--) {
+function shufflePool(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [a[i], a[j]] = [a[j], a[i]];
   }
-  return array;
+  return a;
 }
 
-// Question Generators for Math Games
-const GENERATORS = {
-  tables: () => {
-    const pool = [];
-    for (let t = 2; t <= 20; t++) {
-      for (let m = 2; m <= 19; m++) {
-        pool.push({
-          display: `${t} × ${m} = ?`,
-          answer: String(t * m),
-          unit: ''
-        });
+// 6 Complete Progressive Games Generator
+function getLevelQuestions(gameId, levelNum) {
+  const count = 10;
+  const pool = [];
+
+  // GAME 1: TABLES SPEED DRILL (1 TO 20)
+  if (gameId === 'tables') {
+    const tableRanges = [
+      { min: 2, max: 10, mulMin: 2, mulMax: 10 },  // Lv 1
+      { min: 6, max: 13, mulMin: 4, mulMax: 12 },  // Lv 2
+      { min: 11, max: 16, mulMin: 6, mulMax: 14 }, // Lv 3
+      { min: 14, max: 19, mulMin: 7, mulMax: 17 }, // Lv 4
+      { min: 16, max: 20, mulMin: 11, mulMax: 19 } // Lv 5 Boss
+    ];
+    const r = tableRanges[levelNum - 1];
+    while (pool.length < count) {
+      const t = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      const m = Math.floor(Math.random() * (r.mulMax - r.mulMin + 1)) + r.mulMin;
+      const exp = `${t} × ${m} = ?`;
+      if (!pool.some(item => item.display === exp)) {
+        pool.push({ display: exp, answer: String(t * m) });
       }
     }
-    return shuffleArray(pool).slice(0, IQ_CONFIG.TOTAL_QUESTIONS);
-  },
+  }
 
-  squares: () => {
-    const pool = [];
-    for (let i = 11; i <= 50; i++) {
-      pool.push({
-        display: `${i}² = ?`,
-        answer: String(i * i),
-        unit: ''
-      });
+  // GAME 2: SQUARES CHALLENGE (1 TO 50)
+  else if (gameId === 'squares') {
+    const ranges = [
+      { min: 2, max: 15 },   // Lv 1
+      { min: 16, max: 25 },  // Lv 2
+      { min: 26, max: 35 },  // Lv 3
+      { min: 36, max: 45 },  // Lv 4
+      { min: 41, max: 50 }   // Lv 5 Boss
+    ];
+    const r = ranges[levelNum - 1];
+    while (pool.length < count) {
+      const num = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      const exp = `${num}² = ?`;
+      if (!pool.some(item => item.display === exp)) {
+        pool.push({ display: exp, answer: String(num * num) });
+      }
     }
-    for (let i = 2; i <= 10; i++) {
-      pool.push({
-        display: `${i}² = ?`,
-        answer: String(i * i),
-        unit: ''
-      });
-    }
-    return shuffleArray(pool).slice(0, IQ_CONFIG.TOTAL_QUESTIONS);
-  },
+  }
 
-  roots: () => {
-    const pool = [];
-    // Square roots up to 50 (2500)
-    for (let i = 11; i <= 50; i++) {
-      pool.push({
-        display: `√${i * i} = ?`,
-        answer: String(i),
-        unit: 'Square Root'
-      });
-    }
-    // Cube roots up to 30
-    for (let i = 2; i <= 30; i++) {
-      pool.push({
-        display: `∛${i * i * i} = ?`,
-        answer: String(i),
-        unit: 'Cube Root'
-      });
-    }
-    return shuffleArray(pool).slice(0, IQ_CONFIG.TOTAL_QUESTIONS);
-  },
-
-  cubes: () => {
-    const pool = [];
-    for (let i = 1; i <= 30; i++) {
-      pool.push({
-        display: `${i}³ = ?`,
-        answer: String(i * i * i),
-        unit: ''
-      });
-    }
-    // Extend combinations with duplicate power variations
-    while (pool.length < IQ_CONFIG.TOTAL_QUESTIONS) {
-      const idx = Math.floor(Math.random() * 30) + 1;
-      pool.push({
-        display: `${idx}³ = ?`,
-        answer: String(idx * idx * idx),
-        unit: ''
-      });
-    }
-    return shuffleArray(pool).slice(0, IQ_CONFIG.TOTAL_QUESTIONS);
-  },
-
-  bodmas: () => {
-    const ops = ['+', '-', '×', '%'];
-    const pool = [];
-    const signatures = new Set();
-
-    while (pool.length < IQ_CONFIG.TOTAL_QUESTIONS) {
-      const type = ops[Math.floor(Math.random() * ops.length)];
-      let expr = '';
-      let ans = 0;
-
-      if (type === '+') {
-        const a = Math.floor(Math.random() * 80) + 15;
-        const b = Math.floor(Math.random() * 80) + 15;
-        expr = `${a} + ${b}`;
-        ans = a + b;
-      } else if (type === '-') {
-        const a = Math.floor(Math.random() * 120) + 50;
-        const b = Math.floor(Math.random() * 49) + 10;
-        expr = `${a} - ${b}`;
-        ans = a - b;
-      } else if (type === '×') {
-        const a = Math.floor(Math.random() * 18) + 3;
-        const b = Math.floor(Math.random() * 12) + 3;
-        expr = `${a} × ${b}`;
-        ans = a * b;
+  // GAME 3: ROOTS EXTRACTION DRILL (SQUARE & CUBE ROOTS)
+  else if (gameId === 'roots') {
+    while (pool.length < count) {
+      if (levelNum <= 2) {
+        // Simple Squares Roots (up to 25)
+        const sq = Math.floor(Math.random() * 15) + 6;
+        pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
+      } else if (levelNum === 3) {
+        // Tougher Square Roots (up to 50)
+        const sq = Math.floor(Math.random() * 25) + 26;
+        pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
+      } else if (levelNum === 4) {
+        // Cube Roots (up to 15)
+        const cb = Math.floor(Math.random() * 10) + 4;
+        pool.push({ display: `∛${cb * cb * cb} = ?`, answer: String(cb) });
       } else {
-        const base = (Math.floor(Math.random() * 9) + 1) * 100;
-        const pct = [10, 15, 20, 25, 50][Math.floor(Math.random() * 5)];
-        expr = `${pct}% of ${base}`;
-        ans = (pct * base) / 100;
-      }
-
-      if (!signatures.has(expr)) {
-        signatures.add(expr);
-        pool.push({
-          display: `${expr} = ?`,
-          answer: String(ans),
-          unit: 'Simplification'
-        });
+        // Boss: Mixed High Roots (√ up to 2500, ∛ up to 30)
+        if (Math.random() > 0.5) {
+          const sq = Math.floor(Math.random() * 15) + 36;
+          pool.push({ display: `√${sq * sq} = ?`, answer: String(sq) });
+        } else {
+          const cb = Math.floor(Math.random() * 14) + 16;
+          pool.push({ display: `∛${cb * cb * cb} = ?`, answer: String(cb) });
+        }
       }
     }
-    return pool;
-  },
+  }
 
-  english: () => {
-    return shuffleArray(ENGLISH_BANK).slice(0, IQ_CONFIG.TOTAL_QUESTIONS);
+  // GAME 4: CUBES POWER DRILL (1 TO 30)
+  else if (gameId === 'cubes') {
+    const ranges = [
+      { min: 1, max: 7 },    // Lv 1
+      { min: 8, max: 13 },   // Lv 2
+      { min: 14, max: 19 },  // Lv 3
+      { min: 20, max: 25 },  // Lv 4
+      { min: 24, max: 30 }   // Lv 5 Boss
+    ];
+    const r = ranges[levelNum - 1];
+    while (pool.length < count) {
+      const c = Math.floor(Math.random() * (r.max - r.min + 1)) + r.min;
+      const exp = `${c}³ = ?`;
+      if (!pool.some(item => item.display === exp)) {
+        pool.push({ display: exp, answer: String(c * c * c) });
+      }
+    }
+  }
+
+  // GAME 5: FAST BODMAS & SIMPLIFICATION (Percentages Included)
+  else if (gameId === 'bodmas') {
+    while (pool.length < count) {
+      if (levelNum === 1) {
+        // Fast Addition
+        const a = Math.floor(Math.random() * 45) + 15;
+        const b = Math.floor(Math.random() * 45) + 15;
+        pool.push({ display: `${a} + ${b} = ?`, answer: String(a + b) });
+      } else if (levelNum === 2) {
+        // Fast Subtraction
+        const a = Math.floor(Math.random() * 60) + 40;
+        const b = Math.floor(Math.random() * 35) + 10;
+        pool.push({ display: `${a} - ${b} = ?`, answer: String(a - b) });
+      } else if (levelNum === 3) {
+        // Multiplication & Division combo
+        const m1 = Math.floor(Math.random() * 12) + 4;
+        const m2 = Math.floor(Math.random() * 8) + 3;
+        pool.push({ display: `${m1} × ${m2} = ?`, answer: String(m1 * m2) });
+      } else if (levelNum === 4) {
+        // Percentage Tricks
+        const base = (Math.floor(Math.random() * 7) + 2) * 100;
+        const p = [10, 20, 25, 50][Math.floor(Math.random() * 4)];
+        pool.push({ display: `${p}% of ${base} = ?`, answer: String((p * base) / 100) });
+      } else {
+        // Boss 3-Step Rapid Simplification
+        const a = Math.floor(Math.random() * 30) + 20;
+        const b = Math.floor(Math.random() * 20) + 10;
+        const c = Math.floor(Math.random() * 15) + 5;
+        pool.push({ display: `${a} + ${b} - ${c} = ?`, answer: String(a + b - c) });
+      }
+    }
+  }
+
+  // GAME 6: RAPID ENGLISH VOCAB & SPELLINGS
+  else if (gameId === 'english') {
+    const shuffled = shufflePool(MASTER_ENGLISH_BANK);
+    const startIdx = ((levelNum - 1) * 6) % (MASTER_ENGLISH_BANK.length - 10);
+    return shuffled.slice(startIdx, startIdx + count);
+  }
+
+  return pool.slice(0, 10);
+}
+
+// Navigation Fix (Keeps user inside 6 cards view)
+window.returnToIQHub = function() {
+  stopTimer();
+  const arenaScreen = document.getElementById('iq-arena-screen');
+  const scorecardScreen = document.getElementById('iq-scorecard-screen');
+  const hubScreen = document.getElementById('iq-hub-screen');
+
+  if (arenaScreen) arenaScreen.classList.add('hidden');
+  if (scorecardScreen) scorecardScreen.classList.add('hidden');
+  if (hubScreen) hubScreen.classList.remove('hidden');
+
+  const iqZone = document.getElementById('iq-zone');
+  if (iqZone) {
+    iqZone.classList.remove('hidden');
+    iqZone.classList.add('block');
   }
 };
 
-// UI Toggles
-function showIQHub() {
-  document.getElementById('iq-main-modal').classList.remove('hidden');
-  document.getElementById('iq-hub-screen').classList.remove('hidden');
-  document.getElementById('iq-arena-screen').classList.add('hidden');
-  document.getElementById('iq-scorecard-screen').classList.add('hidden');
-  stopIQTimer();
-}
+// Start Selected Game Level
+window.startIQGame = function(gameId, title, levelIdx = 0) {
+  arenaSession.gameId = gameId;
+  arenaSession.gameTitle = title;
+  arenaSession.currentLevelIdx = levelIdx;
+  arenaSession.correct = 0;
+  arenaSession.wrong = 0;
+  arenaSession.qIndex = 0;
+  arenaSession.streak = 0;
+  arenaSession.isLocked = false;
 
-function hideIQHub() {
-  document.getElementById('iq-main-modal').classList.add('hidden');
-  stopIQTimer();
-}
-
-function startIQGame(gameId, title) {
-  gameState.activeGameId = gameId;
-  gameState.activeGameTitle = title;
-  gameState.secondsRemaining = IQ_CONFIG.TOTAL_SECONDS;
-  gameState.currentIndex = 0;
-  gameState.correctCount = 0;
-  gameState.wrongCount = 0;
-  gameState.currentStreak = 0;
-  gameState.bestStreak = 0;
-  gameState.totalAnswerTime = 0;
-  gameState.isLocked = false;
-  gameState.startTime = Date.now();
-
-  // Load Unique Questions
-  gameState.questions = GENERATORS[gameId]();
+  const currentRule = LEVEL_RULES[levelIdx];
+  arenaSession.timerSeconds = currentRule.timeLimit;
+  arenaSession.levelQuestions = getLevelQuestions(gameId, levelIdx + 1);
 
   document.getElementById('iq-hub-screen').classList.add('hidden');
   document.getElementById('iq-scorecard-screen').classList.add('hidden');
   document.getElementById('iq-arena-screen').classList.remove('hidden');
-  document.getElementById('arena-game-title').innerText = title;
 
-  startIQTimer();
-  renderCurrentQuestion();
-}
+  document.getElementById('arena-game-title').innerText = `${title} • Lv.${currentRule.level} (${currentRule.name})`;
 
-function startIQTimer() {
-  stopIQTimer();
-  updateTimerDisplay();
+  startTimer();
+  renderQuestion();
+  setupScrollWheel();
+};
 
-  gameState.timerInterval = setInterval(() => {
-    gameState.secondsRemaining--;
-    updateTimerDisplay();
-
-    if (gameState.secondsRemaining <= 0) {
-      stopIQTimer();
-      endIQGame();
+function startTimer() {
+  stopTimer();
+  updateTimerUI();
+  arenaSession.timerInterval = setInterval(() => {
+    arenaSession.timerSeconds--;
+    updateTimerUI();
+    if (arenaSession.timerSeconds <= 0) {
+      stopTimer();
+      finishLevel(false);
     }
   }, 1000);
 }
 
-function stopIQTimer() {
-  if (gameState.timerInterval) {
-    clearInterval(gameState.timerInterval);
-    gameState.timerInterval = null;
+function stopTimer() {
+  if (arenaSession.timerInterval) {
+    clearInterval(arenaSession.timerInterval);
+    arenaSession.timerInterval = null;
   }
 }
 
-function updateTimerDisplay() {
-  const m = Math.floor(gameState.secondsRemaining / 60);
-  const s = gameState.secondsRemaining % 60;
-  const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  const el = document.getElementById('arena-timer-text');
-  const bar = document.getElementById('arena-timer-bar');
+function updateTimerUI() {
+  const currentRule = LEVEL_RULES[arenaSession.currentLevelIdx];
+  const sec = arenaSession.timerSeconds;
+  const timerText = document.getElementById('arena-timer-text');
+  const timerBar = document.getElementById('arena-timer-bar');
 
-  el.innerText = str;
-  const pct = (gameState.secondsRemaining / IQ_CONFIG.TOTAL_SECONDS) * 100;
-  bar.style.width = `${pct}%`;
+  timerText.innerText = `${String(sec).padStart(2, '0')}s`;
+  const pct = (sec / currentRule.timeLimit) * 100;
+  timerBar.style.width = `${pct}%`;
 
-  if (gameState.secondsRemaining < 30) {
-    el.className = 'text-rose-400 font-mono font-extrabold text-xl animate-pulse';
-    bar.className = 'h-full bg-rose-500 transition-all duration-300';
-  } else if (gameState.secondsRemaining < 120) {
-    el.className = 'text-amber-400 font-mono font-extrabold text-xl';
-    bar.className = 'h-full bg-amber-500 transition-all duration-300';
+  if (sec <= 8) {
+    timerText.className = 'text-rose-500 font-mono font-black text-2xl animate-ping';
+    timerBar.className = 'h-full bg-rose-500 transition-all duration-200';
+  } else if (sec <= 18) {
+    timerText.className = 'text-amber-400 font-mono font-black text-2xl';
+    timerBar.className = 'h-full bg-amber-500 transition-all duration-200';
   } else {
-    el.className = 'text-emerald-400 font-mono font-extrabold text-xl';
-    bar.className = 'h-full bg-emerald-500 transition-all duration-300';
+    timerText.className = 'text-emerald-400 font-mono font-black text-2xl';
+    timerBar.className = 'h-full bg-emerald-500 transition-all duration-200';
   }
 }
 
-function renderCurrentQuestion() {
-  if (gameState.currentIndex >= gameState.questions.length) {
-    endIQGame();
+function renderQuestion() {
+  if (arenaSession.qIndex >= arenaSession.levelQuestions.length) {
+    finishLevel(true);
     return;
   }
 
-  const q = gameState.questions[gameState.currentIndex];
-  document.getElementById('arena-progress-text').innerText = `Question ${gameState.currentIndex + 1} / ${IQ_CONFIG.TOTAL_QUESTIONS}`;
-  document.getElementById('arena-streak-badge').innerText = `🔥 Streak: ${gameState.currentStreak}`;
+  const q = arenaSession.levelQuestions[arenaSession.qIndex];
+  document.getElementById('arena-progress-text').innerText = `Q ${arenaSession.qIndex + 1} / 10`;
+  document.getElementById('arena-streak-badge').innerText = `🔥 Streak: ${arenaSession.streak}`;
 
   const mathBox = document.getElementById('arena-math-interface');
-  const englishBox = document.getElementById('arena-english-interface');
+  const engBox = document.getElementById('arena-english-interface');
   const input = document.getElementById('arena-math-input');
-  const feedback = document.getElementById('arena-feedback-indicator');
-  feedback.className = 'h-6 text-xs font-semibold text-center mt-2 opacity-0 transition-opacity';
 
-  if (gameState.activeGameId === 'english') {
+  if (arenaSession.gameId === 'english') {
     mathBox.classList.add('hidden');
-    englishBox.classList.remove('hidden');
-
+    engBox.classList.remove('hidden');
     document.getElementById('arena-english-question').innerText = q.q;
-    const optContainer = document.getElementById('arena-english-options');
-    optContainer.innerHTML = '';
+    const optBox = document.getElementById('arena-english-options');
+    optBox.innerHTML = '';
 
-    q.opts.forEach((opt, idx) => {
+    q.o.forEach((opt, idx) => {
       const btn = document.createElement('button');
-      btn.className = 'w-full py-3.5 px-4 rounded-xl bg-slate-900 border border-slate-800 text-slate-100 font-medium text-sm sm:text-base hover:border-amber-400/60 active:scale-95 transition-all text-left flex items-center justify-between';
-      btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500 uppercase font-mono">Tap</span>`;
-      btn.onclick = () => submitEnglishAnswer(idx, q.a, btn);
-      optContainer.appendChild(btn);
+      btn.className = 'w-full py-3 px-4 rounded-xl bg-black/60 border border-white/10 text-white font-bold text-sm hover:border-amber-400 active:scale-95 transition text-left flex justify-between';
+      btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500">Tap</span>`;
+      btn.onclick = () => submitAnswer(idx === q.a);
+      optBox.appendChild(btn);
     });
   } else {
-    englishBox.classList.add('hidden');
+    engBox.classList.add('hidden');
     mathBox.classList.remove('hidden');
-
     document.getElementById('arena-math-question').innerText = q.display;
     input.value = '';
-    input.disabled = false;
-    setTimeout(() => input.focus(), 50);
+    input.focus();
 
-    // Dynamic instant auto-match listener
     input.oninput = (e) => {
-      const val = e.target.value.trim();
-      if (val === q.answer) {
-        handleAnswerVerdict(true, input);
+      if (e.target.value.trim() === q.answer) {
+        submitAnswer(true);
       }
     };
-
     input.onkeydown = (e) => {
       if (e.key === 'Enter') {
-        const val = input.value.trim();
-        handleAnswerVerdict(val === q.answer, input);
+        submitAnswer(input.value.trim() === q.answer);
       }
     };
   }
 }
 
-function handleAnswerVerdict(isCorrect, element) {
-  if (gameState.isLocked) return;
-  gameState.isLocked = true;
+// Speed Scroll Wheel Spinner
+function setupScrollWheel() {
+  const input = document.getElementById('arena-math-input');
+  if (!input) return;
 
-  const feedback = document.getElementById('arena-feedback-indicator');
+  input.onwheel = (e) => {
+    e.preventDefault();
+    if (arenaSession.isLocked || arenaSession.gameId === 'english') return;
+
+    let currentVal = parseInt(input.value || '0', 10);
+    if (isNaN(currentVal)) currentVal = 0;
+
+    const step = e.shiftKey ? 10 : (e.deltaY < 0 ? 1 : -1);
+    currentVal = Math.max(0, currentVal + (e.deltaY < 0 ? Math.abs(step) : -Math.abs(step)));
+    input.value = currentVal;
+
+    const currentQ = arenaSession.levelQuestions[arenaSession.qIndex];
+    if (currentQ && String(currentVal) === currentQ.answer) {
+      submitAnswer(true);
+    }
+  };
+}
+
+function submitAnswer(isCorrect) {
+  if (arenaSession.isLocked) return;
+  arenaSession.isLocked = true;
+
+  const fb = document.getElementById('arena-feedback-indicator');
+  const input = document.getElementById('arena-math-input');
 
   if (isCorrect) {
-    gameState.correctCount++;
-    gameState.currentStreak++;
-    if (gameState.currentStreak > gameState.bestStreak) {
-      gameState.bestStreak = gameState.currentStreak;
-    }
-    feedback.innerText = 'Correct Answer! +1';
-    feedback.className = 'h-6 text-xs font-semibold text-center mt-2 text-emerald-400 opacity-100';
-
-    if (element) {
-      element.classList.add('border-emerald-500', 'ring-2', 'ring-emerald-500/30');
-    }
+    arenaSession.correct++;
+    arenaSession.streak++;
+    if (arenaSession.streak > arenaSession.bestStreak) arenaSession.bestStreak = arenaSession.streak;
+    fb.innerText = '🎯 Perfect! Fast Hit.';
+    fb.className = 'h-6 text-xs font-bold text-emerald-400 opacity-100 transition-opacity';
+    if (input) input.classList.add('border-emerald-500', 'bg-emerald-500/10');
   } else {
-    gameState.wrongCount++;
-    gameState.currentStreak = 0;
-    feedback.innerText = `Incorrect! Target: ${gameState.questions[gameState.currentIndex].answer}`;
-    feedback.className = 'h-6 text-xs font-semibold text-center mt-2 text-rose-400 opacity-100';
-
-    if (element) {
-      element.classList.add('border-rose-500', 'ring-2', 'ring-rose-500/30');
-    }
+    arenaSession.wrong++;
+    arenaSession.streak = 0;
+    fb.innerText = '❌ Missed! Time is ticking!';
+    fb.className = 'h-6 text-xs font-bold text-rose-400 opacity-100 transition-opacity';
+    if (input) input.classList.add('border-rose-500', 'bg-rose-500/10');
   }
 
   setTimeout(() => {
-    if (element) {
-      element.classList.remove('border-emerald-500', 'border-rose-500', 'ring-2', 'ring-emerald-500/30', 'ring-rose-500/30');
-    }
-    gameState.currentIndex++;
-    gameState.isLocked = false;
-    renderCurrentQuestion();
-  }, isCorrect ? 250 : 650);
+    if (input) input.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-500/10', 'bg-rose-500/10');
+    fb.className = 'h-6 text-xs font-bold opacity-0 transition-opacity';
+    arenaSession.qIndex++;
+    arenaSession.isLocked = false;
+    renderQuestion();
+  }, isCorrect ? 200 : 500);
 }
 
-function submitEnglishAnswer(selectedIdx, correctIdx, btn) {
-  if (gameState.isLocked) return;
-  gameState.isLocked = true;
-
-  const buttons = document.querySelectorAll('#arena-english-options button');
-  buttons.forEach((b, i) => {
-    b.disabled = true;
-    if (i === correctIdx) {
-      b.classList.remove('bg-slate-900', 'border-slate-800');
-      b.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
-    }
-  });
-
-  const isCorrect = (selectedIdx === correctIdx);
-  if (isCorrect) {
-    gameState.correctCount++;
-    gameState.currentStreak++;
-    if (gameState.currentStreak > gameState.bestStreak) {
-      gameState.bestStreak = gameState.currentStreak;
-    }
-  } else {
-    gameState.wrongCount++;
-    gameState.currentStreak = 0;
-    btn.classList.remove('bg-slate-900', 'border-slate-800');
-    btn.classList.add('bg-rose-500/20', 'border-rose-500', 'text-rose-300');
-  }
-
-  setTimeout(() => {
-    gameState.currentIndex++;
-    gameState.isLocked = false;
-    renderCurrentQuestion();
-  }, isCorrect ? 400 : 800);
-}
-
-function endIQGame() {
-  stopIQTimer();
+function finishLevel(completedQuestions) {
+  stopTimer();
   document.getElementById('iq-arena-screen').classList.add('hidden');
   document.getElementById('iq-scorecard-screen').classList.remove('hidden');
 
-  const attempted = gameState.correctCount + gameState.wrongCount;
-  const timeSpent = IQ_CONFIG.TOTAL_SECONDS - gameState.secondsRemaining;
-  const avgSpeed = attempted > 0 ? (timeSpent / attempted).toFixed(1) : '0.0';
-  const accuracy = attempted > 0 ? ((gameState.correctCount / attempted) * 100).toFixed(1) : '0.0';
+  const rule = LEVEL_RULES[arenaSession.currentLevelIdx];
+  const isPassed = completedQuestions && arenaSession.correct >= rule.passScore;
+  const isFinalLevel = arenaSession.currentLevelIdx === LEVEL_RULES.length - 1;
 
-  document.getElementById('score-game-name').innerText = gameState.activeGameTitle;
-  document.getElementById('score-attempted').innerText = `${attempted} / ${IQ_CONFIG.TOTAL_QUESTIONS}`;
-  document.getElementById('score-correct').innerText = gameState.correctCount;
-  document.getElementById('score-wrong').innerText = gameState.wrongCount;
-  document.getElementById('score-accuracy').innerText = `${accuracy}%`;
-  document.getElementById('score-speed').innerText = `${avgSpeed}s / Q`;
-  document.getElementById('score-streak').innerText = `${gameState.bestStreak} Streak`;
+  document.getElementById('score-game-name').innerText = `${arenaSession.gameTitle} • Level ${rule.level}`;
+  document.getElementById('score-attempted').innerText = `${arenaSession.correct + arenaSession.wrong} / 10`;
+  document.getElementById('score-correct').innerText = arenaSession.correct;
+  document.getElementById('score-wrong').innerText = arenaSession.wrong;
 
-  // Performance Badge Calculator
-  const badgeEl = document.getElementById('score-rank-badge');
-  if (parseFloat(avgSpeed) <= 5.0 && parseFloat(accuracy) >= 90.0) {
-    badgeEl.innerText = '🏆 Master Rank (God Speed)';
-    badgeEl.className = 'inline-block px-4 py-1.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/40 text-xs font-bold tracking-wide';
-  } else if (parseFloat(avgSpeed) <= 9.0 && parseFloat(accuracy) >= 75.0) {
-    badgeEl.innerText = '⚡ Officer Rank (Competitive)';
-    badgeEl.className = 'inline-block px-4 py-1.5 rounded-full bg-emerald-400/20 text-emerald-300 border border-emerald-400/40 text-xs font-bold tracking-wide';
+  const acc = (arenaSession.correct / 10) * 100;
+  document.getElementById('score-accuracy').innerText = `${acc.toFixed(0)}%`;
+  document.getElementById('score-speed').innerText = `${((rule.timeLimit - arenaSession.timerSeconds) / Math.max(1, arenaSession.correct + arenaSession.wrong)).toFixed(1)}s / Q`;
+  document.getElementById('score-streak').innerText = `${arenaSession.bestStreak} Hit Streak`;
+
+  const badge = document.getElementById('score-rank-badge');
+  const actionBtn = document.getElementById('score-next-level-btn');
+
+  if (isPassed) {
+    if (isFinalLevel) {
+      badge.innerText = '👑 CANDY-CRUSH APEX MASTER: ALL LEVELS CONQUERED!';
+      badge.className = 'inline-block px-4 py-1.5 rounded-full bg-amber-400 text-black font-black text-xs shadow-lg animate-bounce';
+      actionBtn.innerText = 'Replay Boss Level 5';
+      actionBtn.onclick = () => window.startIQGame(arenaSession.gameId, arenaSession.gameTitle, 4);
+    } else {
+      badge.innerText = `🎉 LEVEL ${rule.level} CLEARED! UNLOCKED LEVEL ${rule.level + 1}`;
+      badge.className = 'inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black';
+      actionBtn.innerText = `Advance to Level ${rule.level + 1} ➔`;
+      actionBtn.onclick = () => window.startIQGame(arenaSession.gameId, arenaSession.gameTitle, arenaSession.currentLevelIdx + 1);
+    }
   } else {
-    badgeEl.innerText = '🎯 Daily Practice Needed';
-    badgeEl.className = 'inline-block px-4 py-1.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700 text-xs font-bold tracking-wide';
+    badge.innerText = `💀 FAILED (Required: ${rule.passScore}/10 Correct). RETRY WITH RAGE!`;
+    badge.className = 'inline-block px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-black animate-pulse';
+    actionBtn.innerText = `Retry Level ${rule.level} 🔁`;
+    actionBtn.onclick = () => window.startIQGame(arenaSession.gameId, arenaSession.gameTitle, arenaSession.currentLevelIdx);
   }
 }
