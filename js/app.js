@@ -6,11 +6,12 @@
 
 let deferredInstallPrompt = null;
 
-// Global Zone Navigation Switcher
-function switchZone(targetZoneId) {
-  const zoneIds = ['resizer-zone', 'pyq-zone', 'mock-zone', 'pdf-zone', 'jobs-zone'];
+// Global Zone Navigation Switcher (Synchronized with IQ Arena)
+window.switchZone = function(targetZoneId) {
+  const zoneIds = ['resizer-zone', 'iq-zone', 'pyq-zone', 'mock-zone', 'pdf-zone', 'jobs-zone'];
   const navMap = {
     'resizer-zone': 'nav-btn-resizer',
+    'iq-zone': 'nav-btn-iq',
     'pyq-zone': 'nav-btn-pyq',
     'mock-zone': 'nav-btn-mock',
     'pdf-zone': 'nav-btn-pdf',
@@ -36,12 +37,17 @@ function switchZone(targetZoneId) {
     const btn = document.getElementById(navMap[zoneId]);
     if (btn) {
       if (zoneId === targetZoneId) {
-        btn.className = 'px-3 py-1.5 rounded-lg text-gold-400 bg-gold-500/10 border border-gold-500/30 flex items-center space-x-1.5 transition font-semibold';
+        btn.className = 'px-3 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition flex items-center space-x-1.5';
       } else {
-        btn.className = 'px-3 py-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5 font-medium';
+        btn.className = 'px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5 font-bold';
       }
     }
   });
+
+  // Reset IQ Arena to its Selection Hub screen whenever switched to iq-zone
+  if (targetZoneId === 'iq-zone' && typeof returnToIQHub === 'function') {
+    returnToIQHub();
+  }
 
   // Smooth scroll to top of workspace
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -50,7 +56,7 @@ function switchZone(targetZoneId) {
   if (window.lucide) {
     lucide.createIcons();
   }
-}
+};
 
 // Progressive Web App (PWA) Lifecycle Management
 window.addEventListener('beforeinstallprompt', (e) => {
