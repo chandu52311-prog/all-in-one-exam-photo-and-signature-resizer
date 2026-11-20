@@ -107,7 +107,7 @@ function getCuratedExamNoticeBoard() {
     ['UPSC', 'Civil services and central recruitment examinations', 'https://upsc.gov.in/', 'https://upsc.gov.in/'],
     ['IBPS / SBI', 'Banking recruitment calendar and institute notices', 'https://www.ibps.in/', 'https://sbi.co.in/web/careers'],
     ['NTA', 'National entrance and admission examination notices', 'https://nta.ac.in/', 'https://nta.ac.in/Examination'],
-    ['GATE', 'GATE application, admit card and institute information', 'https://gate2026.iitr.ac.in/', 'https://gate2026.iitr.ac.in/'],
+    ['GATE', 'GATE application, admit card and institute information', 'https://gate.iitr.ac.in/', 'https://gate.iitr.ac.in/'],
     ['APPSC / TGPSC', 'Andhra Pradesh and Telangana public service notices', 'https://psc.ap.gov.in/', 'https://www.tgpsc.gov.in/']
   ];
 
@@ -134,6 +134,54 @@ function getCuratedExamNoticeBoard() {
   `;
 }
 window.getCuratedExamNoticeBoard = getCuratedExamNoticeBoard;
+
+function getCategoryFallback(categoryKey) {
+  const fallbacks = {
+    CENTRAL: {
+      title: 'No active UPSC or SSC registration found',
+      description: 'No open UPSC/SSC record is currently available in the active registry.',
+      portal: 'https://ssc.nic.in/',
+      alternate: 'https://upsc.gov.in/',
+      checks: 'Verify the SSC or UPSC notice number, post, category, application window, fee deadline, corrigendum and closing time.'
+    },
+    RAILWAYS: {
+      title: 'No active RRB or railway registration found',
+      description: 'No open railway recruitment record is currently available in the active registry.',
+      portal: 'https://www.indianrailways.gov.in/',
+      alternate: 'https://www.rrbapply.gov.in/',
+      checks: 'Verify the RRB zone, CEN number, post, qualification, RRB-specific payment window and official closing time.'
+    },
+    STATE_PSC: {
+      title: 'No active State Commission registration found',
+      description: 'No open APPSC, TGPSC or other State PSC record is currently available.',
+      portal: 'https://psc.ap.gov.in/',
+      alternate: 'https://www.tgpsc.gov.in/',
+      checks: 'Verify the commission, notification number, post, local status, age cut-off, fee and correction window.'
+    },
+    STATE_GOVT: {
+      title: 'No active State Government registration found',
+      description: 'No open State Government department record is currently available in the active registry.',
+      portal: 'https://www.india.gov.in/topics/labour-employment',
+      alternate: 'https://www.mygov.in/',
+      checks: 'Verify the department website, gazette or recruitment notice, post code, eligibility and official closing deadline.'
+    },
+    PSU: {
+      title: 'No active PSU or utility registration found',
+      description: 'No open power utility or PSU record is currently available in the active registry.',
+      portal: 'https://www.psuconnect.in/',
+      alternate: 'https://www.india.gov.in/topics/industries',
+      checks: 'Verify the company or utility recruitment page, notification number, qualification, fee and official application deadline.'
+    }
+  };
+  return fallbacks[categoryKey] || {
+    title: 'No active registrations found',
+    description: 'No open verified record is currently available in this live category.',
+    portal: 'https://www.india.gov.in/topics/labour-employment',
+    alternate: '',
+    checks: 'Verify the notification number, authority, eligibility, category, fee, corrigendum and closing time on the official website.'
+  };
+}
+window.getCategoryFallback = getCategoryFallback;
 
 const JobAlertsRegistry = {
   activeFilter: 'ALL',
@@ -337,7 +385,8 @@ const JobAlertsRegistry = {
       this.liveNotifications = allRecords.filter(item => {
         if (!item || !item.id || seenIds.has(item.id)) return false;
         seenIds.add(item.id);
-        return true;
+        const nowMs = Date.now();
+        return this.isJobActive(item, nowMs);
       });
 
       this.loadError = false;
@@ -364,7 +413,9 @@ const JobAlertsRegistry = {
   },
 
   setFilter(categoryKey) {
-    if (this.activeFilter === categoryKey) return;
+    if (!['ALL', 'CENTRAL', 'RAILWAYS', 'STATE_PSC', 'STATE_GOVT', 'PSU'].includes(categoryKey)) {
+      return;
+    }
     this.activeFilter = categoryKey;
 
     document.querySelectorAll('[id^="filter-btn-"]').forEach(btn => {
@@ -377,6 +428,36 @@ const JobAlertsRegistry = {
     }
 
     this.fetchLiveAlerts(false);
+  },
+
+  matchesActiveFilter(item) {
+    if (this.activeFilter === 'ALL') return true;
+    if (!item) return false;
+
+    const category = String(item.category || '').trim().toUpperCase();
+    const authority = String(item.authority || '').toUpperCase();
+    const title = String(item.title || '').toUpperCase();
+    const combined = `${authority} ${title}`;
+
+    if (this.activeFilter === 'CENTRAL') {
+      if (category === 'CENTRAL') {
+        return /\bSSC\b|UPSC/.test(combined);
+      }
+      return /\bSSC\b|UPSC/.test(combined);
+    }
+    if (this.activeFilter === 'RAILWAYS') {
+      return category === 'RAILWAYS' || /\bRRB\b|RAILWAY/.test(combined);
+    }
+    if (this.activeFilter === 'STATE_PSC') {
+      return category === 'STATE_PSC' || /APPSC|TGPSC|TSPSC|STATE PSC|PUBLIC SERVICE COMMISSION/.test(combined);
+    }
+    if (this.activeFilter === 'STATE_GOVT') {
+      return category === 'STATE_GOVT';
+    }
+    if (this.activeFilter === 'PSU') {
+      return category === 'PSU' || /PSU|POWERGRID|PGCIL|TRANSCO|GENCO|NTPC|BHEL|ONGC|IOCL|GAIL|NHPC|SAIL/.test(combined);
+    }
+    return false;
   },
 
   // Strict Fail-Closed Active Application Evaluation
@@ -405,6 +486,7 @@ const JobAlertsRegistry = {
       : '';
 
     const nowMs = Date.now();
+    this.liveNotifications = this.liveNotifications.filter(item => this.isJobActive(item, nowMs));
 
     // Defense-in-depth: Verified government status & document allowlist
     const validLiveItems = this.liveNotifications.filter(item => 
@@ -413,7 +495,8 @@ const JobAlertsRegistry = {
       item.is_government_employer === true &&
       Boolean(item.verified_at) &&
       this.isJobActive(item, nowMs) &&
-      Boolean(safeOfficialNoticeUrl(item.official_notification_url))
+      Boolean(safeOfficialNoticeUrl(item.official_notification_url)) &&
+      this.matchesActiveFilter(item)
     );
 
     let html = '';
@@ -421,13 +504,13 @@ const JobAlertsRegistry = {
     if (this.isLoading) {
       html += `
         <div class="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-slate-300 text-xs">
-          Live registry is refreshing; the official notice board below remains available.
+          Checking the live official-registry records. The notice board remains available for verification.
         </div>
       `;
     } else if (this.loadError && !this.isStaleData) {
       html += `
         <div class="p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-xs">
-          Live registry could not refresh. Use the official portal checklist and verify the current notice before applying.
+          Live records are refreshing separately. Verify all dates and links through the official portal before applying.
         </div>
       `;
     }
@@ -451,10 +534,21 @@ const JobAlertsRegistry = {
     }
 
     if (validLiveItems.length === 0) {
+      const fallback = getCategoryFallback(this.activeFilter);
       list.innerHTML = html + staticBoard + `
-        <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/5 space-y-1">
-          <p class="font-bold text-slate-200">Live category results are not available right now.</p>
-          <span class="text-[11px] text-slate-500 block">The curated portal board above remains available for current notice verification.</span>
+        <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] space-y-3">
+          <div>
+            <h3 class="text-sm font-black text-amber-300">${esc(fallback.title)}</h3>
+            <p class="text-xs text-slate-300 mt-1">${esc(fallback.description)}</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-3 text-[11px] text-slate-400">
+            <p><strong class="text-white">Official verification:</strong> ${esc(fallback.checks)}</p>
+            <p><strong class="text-white">Check official source:</strong> Visit the category portal and confirm that an application is open. Expired closing dates are automatically excluded.</p>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <a href="${esc(fallback.portal)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 font-extrabold text-xs">Open official portal</a>
+            ${fallback.alternate ? `<a href="${esc(fallback.alternate)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-bold text-xs">Open alternate official portal</a>` : ''}
+          </div>
         </div>
       `;
       if (window.lucide) lucide.createIcons();
@@ -491,9 +585,15 @@ const JobAlertsRegistry = {
 
       const preset = this.KNOWN_PRESETS.includes(item.preset_target) ? item.preset_target : '';
       const startFormatted = fmtIST(item.application_start_date, true);
-      const startInfo = startFormatted 
-        ? `<p class="text-[10px] text-slate-400">Application Window Opened: ${esc(startFormatted)}</p>` 
-        : '';
+      const closingFormatted = fmtIST(rawEnd, false);
+      const categoryLabel = esc(item.category || 'GENERAL');
+      const department = esc(item.authority || item.official_portal || 'Conducting authority');
+      const startInfo = startFormatted
+        ? `<span>Registration starts: ${esc(startFormatted)}</span>`
+        : '<span>Registration start: Refer to official notice</span>';
+      const closeInfo = closingFormatted
+        ? `<span>Registration closes: ${esc(closingFormatted)}</span>`
+        : '<span>Registration closing time: Refer to official notice</span>';
 
       html += `
         <div class="glass-card p-4 rounded-xl border border-white/10 hover:border-rose-500/30 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -502,20 +602,24 @@ const JobAlertsRegistry = {
               <span class="px-2 py-0.5 rounded border text-[10px] uppercase ${badgeClass}">
                 ${safeBadgeHtml}
               </span>
-              <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">
-                ${esc(item.authority)}
-              </span>
+              <span class="px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[10px] font-extrabold text-slate-300 uppercase tracking-wider">${categoryLabel}</span>
             </div>
             <h3 class="font-bold text-white text-sm md:text-base leading-snug">
               ${esc(item.title)}
             </h3>
+            <p class="text-[11px] font-semibold text-amber-300">
+              Conducting body / department: ${department}
+            </p>
             <p class="text-xs text-slate-300 font-medium">
               ${esc(item.posts)}
             </p>
             <p class="text-[11px] text-slate-400">
               Eligibility: ${esc(item.qualification)}
             </p>
-            ${startInfo}
+            <div class="grid sm:grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
+              ${startInfo}
+              ${closeInfo}
+            </div>
           </div>
 
           <div class="flex items-center flex-wrap gap-2 flex-shrink-0">
