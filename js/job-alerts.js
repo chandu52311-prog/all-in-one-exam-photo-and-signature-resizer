@@ -100,6 +100,41 @@ const fmtIST = (iso, isStart = false) => {
   }
 };
 
+function getCuratedExamNoticeBoard() {
+  const cards = [
+    ['SSC', 'Notifications, admit cards, answer keys and posts', 'https://ssc.gov.in/', 'https://ssc.gov.in/'],
+    ['RRB', 'Regional railway recruitment notices and CEN updates', 'https://www.rrbcdg.gov.in/', 'https://www.indianrailways.gov.in/'],
+    ['UPSC', 'Civil services and central recruitment examinations', 'https://upsc.gov.in/', 'https://upsc.gov.in/'],
+    ['IBPS / SBI', 'Banking recruitment calendar and institute notices', 'https://www.ibps.in/', 'https://sbi.co.in/web/careers'],
+    ['NTA', 'National entrance and admission examination notices', 'https://nta.ac.in/', 'https://nta.ac.in/Examination'],
+    ['GATE', 'GATE application, admit card and institute information', 'https://gate2026.iitr.ac.in/', 'https://gate2026.iitr.ac.in/'],
+    ['APPSC / TGPSC', 'Andhra Pradesh and Telangana public service notices', 'https://psc.ap.gov.in/', 'https://www.tgpsc.gov.in/']
+  ];
+
+  return `
+    <article class="p-4 rounded-xl border border-amber-500/25 bg-amber-500/[0.04] space-y-3">
+      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+        <div>
+          <h3 class="text-sm font-black text-amber-300">Current official notice &amp; exam portal board</h3>
+          <p class="text-[11px] text-slate-400">Use these portals to verify dates, eligibility, fees, corrigenda and active applications.</p>
+        </div>
+        <span class="text-[10px] text-emerald-300 font-bold border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-lg">Official sources</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
+        ${cards.map(([name, description, url, labelUrl]) => `
+          <div class="p-3 rounded-xl border border-white/10 bg-black/25">
+            <h4 class="text-xs font-bold text-white">${name}</h4>
+            <p class="text-[11px] text-slate-400 mt-1">${description}</p>
+            <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-[11px] text-amber-300 underline font-bold">Open official portal</a>
+          </div>
+        `).join('')}
+      </div>
+      <p class="text-[11px] text-slate-400"><strong class="text-white">Verification checklist:</strong> Confirm notification number, post, category, cut-off date, application window, fee, exam stage, corrigendum and closing time before applying. A board link is a starting point, not a guarantee that a recruitment is currently open.</p>
+    </article>
+  `;
+}
+window.getCuratedExamNoticeBoard = getCuratedExamNoticeBoard;
+
 const JobAlertsRegistry = {
   activeFilter: 'ALL',
   liveNotifications: [],
@@ -365,24 +400,9 @@ const JobAlertsRegistry = {
     const list = document.getElementById('alerts-listing-container');
     if (!list) return;
 
-    if (this.isLoading) {
-      list.innerHTML = `
-        <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/5">
-          <span class="inline-block animate-spin mr-2">⏳</span> Loading verified active recruitments...
-        </div>
-      `;
-      return;
-    }
-
-    if (this.loadError && !this.isStaleData) {
-      list.innerHTML = `
-        <div class="p-8 text-center text-xs text-amber-300 glass-card rounded-xl border border-amber-500/30 space-y-2">
-          <p class="font-bold">Live database alerts temporarily unreachable.</p>
-          <span class="text-[11px] text-slate-400">Verifying secure endpoints. Please try again shortly.</span>
-        </div>
-      `;
-      return;
-    }
+    const staticBoard = typeof getCuratedExamNoticeBoard === 'function'
+      ? getCuratedExamNoticeBoard()
+      : '';
 
     const nowMs = Date.now();
 
@@ -398,11 +418,25 @@ const JobAlertsRegistry = {
 
     let html = '';
 
+    if (this.isLoading) {
+      html += `
+        <div class="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-slate-300 text-xs">
+          Live registry is refreshing; the official notice board below remains available.
+        </div>
+      `;
+    } else if (this.loadError && !this.isStaleData) {
+      html += `
+        <div class="p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-xs">
+          Live registry could not refresh. Use the official portal checklist and verify the current notice before applying.
+        </div>
+      `;
+    }
+
     if (this.isStaleData) {
       html += `
         <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center space-x-2">
           <i data-lucide="wifi-off" class="w-4 h-4 flex-shrink-0"></i>
-          <span>Network sync unavailable. Displaying cached verified notices.</span>
+          <span>Live notice refresh is delayed. Verify the official portal before taking action.</span>
         </div>
       `;
     }
@@ -417,10 +451,10 @@ const JobAlertsRegistry = {
     }
 
     if (validLiveItems.length === 0) {
-      list.innerHTML = html + `
+      list.innerHTML = html + staticBoard + `
         <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/5 space-y-1">
-          <p class="font-bold text-slate-200">No active government job applications currently open in this category.</p>
-          <span class="text-[11px] text-slate-500 block">Only officially verified, currently-open applications are listed. Zero sample data.</span>
+          <p class="font-bold text-slate-200">Live category results are not available right now.</p>
+          <span class="text-[11px] text-slate-500 block">The curated portal board above remains available for current notice verification.</span>
         </div>
       `;
       if (window.lucide) lucide.createIcons();
@@ -508,7 +542,7 @@ const JobAlertsRegistry = {
       `;
     });
 
-    list.innerHTML = html;
+    list.innerHTML = html + staticBoard;
     if (window.lucide) lucide.createIcons();
   },
 
