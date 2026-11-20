@@ -133,6 +133,8 @@ const JobAlertsRegistry = {
   renderSkeleton() {
     const root = document.getElementById('jobs-zone');
     if (!root) return;
+    const staticGuide = document.getElementById('jobAlertsGuide');
+    const guideHtml = staticGuide ? staticGuide.outerHTML : '';
 
     const btn = (key, label, on) => `
       <button type="button" data-filter="${key}" id="filter-btn-${key}" 
@@ -161,17 +163,6 @@ const JobAlertsRegistry = {
           </button>
         </div>
 
-        <article class="p-4 rounded-xl border border-rose-500/20 bg-rose-500/[0.04] space-y-3 text-xs leading-relaxed text-slate-300">
-          <h2 class="text-base font-black text-rose-300">How to read recruitment alerts and avoid deadline mistakes</h2>
-          <ol class="grid md:grid-cols-3 gap-3 list-decimal list-inside">
-            <li><strong class="text-white">Open the gazette notice:</strong> use the official PDF link, confirm the notification number, post name, category, vacancy table, and application instructions.</li>
-            <li><strong class="text-white">Check eligibility:</strong> verify age limits with the prescribed cut-off date, education, category, local status, exam level, and reservation conditions directly in the notice.</li>
-            <li><strong class="text-white">Record deadlines:</strong> save the application start, closing, fee, correction-window, and exam dates. Closing times are time-zone sensitive; submit well before the final hour.</li>
-          </ol>
-          <p><strong class="text-rose-300">Safe status when live data is unreachable:</strong> The alerts engine may show only cached verified notices or an unreachable warning. Do not infer that an application is open or closed from cache alone. Visit the conducting body's official website or published gazette, and keep payment and application reference records.</p>
-          <p class="text-slate-400"><strong>Safety tip:</strong> Never pay through a link from an unverified forwarded message. Confirm HTTPS, the government domain or official portal, and the exact post before sharing personal documents.</p>
-        </article>
-
         <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs select-none">
           ${btn('ALL', 'All Active Alerts', true)}
           ${btn('CENTRAL', 'Central Govt (UPSC/SSC)', false)}
@@ -186,6 +177,7 @@ const JobAlertsRegistry = {
             <span class="inline-block animate-spin mr-2">⏳</span> Connecting to verified government registry...
           </div>
         </div>
+        ${guideHtml}
       </div>
     `;
 

@@ -353,15 +353,12 @@ function renderPyqSectorGuide() {
   const guideEl = document.getElementById('pyqSectorGuide');
   if (!guideEl) return;
   const guide = getPyqSectorGuide(currentAuthorityKey);
-  guideEl.innerHTML = `
-    <h3 class="text-base font-black text-amber-400">${guide.title}</h3>
-    <p><strong class="text-white">Exam pattern overview:</strong> ${guide.pattern}</p>
-    <div class="grid md:grid-cols-3 gap-3">
-      <p><strong class="text-white">Preparation strategy:</strong> ${guide.strategy}</p>
-      <p><strong class="text-white">Answer key/archive usage:</strong> ${guide.answer}</p>
-      <p><strong class="text-white">Subject notes:</strong> ${guide.subjects}</p>
-    </div>
-  `;
+  const titleEl = document.getElementById('pyqSectorGuideTitle');
+  const overviewEl = document.getElementById('pyqSectorGuideOverview');
+  if (titleEl) titleEl.textContent = guide.title;
+  if (overviewEl) {
+    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${guide.pattern}`;
+  }
 }
 
 // ----------------------------------------------------
@@ -492,18 +489,7 @@ function openPyqReader(title, year, body, filePath) {
     : `${SUPABASE_STORAGE_BASE}/pyq/${filePath}`;
 
   const qBody = document.getElementById('readerQuestionsBody');
-  const guide = getPyqSectorGuide(currentAuthorityKey);
   qBody.innerHTML = `
-    <article class="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-4 space-y-3">
-      <h3 class="text-base font-black text-amber-400">${guide.title}</h3>
-      <p><strong class="text-white">This selected paper:</strong> Treat ${title} (${year}) as a record of that year's syllabus, difficulty, and question style. ${guide.pattern}</p>
-      <div class="grid md:grid-cols-3 gap-3">
-        <p><strong class="text-white">Preparation strategy:</strong> ${guide.strategy}</p>
-        <p><strong class="text-white">Answer key usage:</strong> ${guide.answer}</p>
-        <p><strong class="text-white">Subject notes:</strong> ${guide.subjects}</p>
-      </div>
-      <p class="text-slate-400">Before relying on a downloaded paper or uploaded answer, verify the year, session, set, and official key on the conducting body's portal. This viewer is an academic reference, not an official claim of the final result.</p>
-    </article>
     <div class="rounded-xl border border-white/10 bg-black/40 overflow-hidden flex flex-col items-center justify-center min-h-[70vh] w-full">
       <iframe src="${targetUrl}#toolbar=1" class="w-full h-[70vh] border-none rounded-xl" title="Official Question Paper Preview">
         <p class="p-6 text-center text-slate-400 text-sm">

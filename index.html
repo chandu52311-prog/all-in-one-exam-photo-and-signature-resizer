@@ -365,24 +365,6 @@
         <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet standard pixel dimensions, dpi specifications, and file size byte thresholds.
       </div>
 
-      <article class="glass-card gold-border p-5 rounded-2xl space-y-4 text-xs leading-relaxed text-slate-300">
-        <div>
-          <h2 class="text-base font-black text-amber-400">How to resize photos and signatures</h2>
-          <p class="mt-1 text-slate-400">Choose an examination, select Photo or Signature, upload a clear original, check the displayed specification, and download the formatted file.</p>
-        </div>
-        <ol class="grid md:grid-cols-2 gap-2 list-decimal list-inside">
-          <li><strong class="text-white">Check the notice:</strong> confirm the active cycle's dimensions, format, and minimum/maximum KB limit.</li>
-          <li><strong class="text-white">Upload a clear image:</strong> use a recent, well-lit portrait or signature with simple contrast and no text overlays.</li>
-          <li><strong class="text-white">Confirm the target:</strong> SSC, UPSC, RRB, GATE, APPSC/TGPSC, IBPS/SBI, NTA, and PSU/TRANSCO presets are available.</li>
-          <li><strong class="text-white">Verify the result:</strong> preview the output, read the verification note, and test the downloaded file before application submission.</li>
-        </ol>
-        <div class="grid md:grid-cols-2 gap-3 pt-1">
-          <p><strong class="text-amber-300">KB and dimensions:</strong> The on-screen target is a working preset. Online forms vary by post and year; final validity always comes from that examination's official instructions. Do not enlarge a tiny photo, crop an old image, or add artificial borders unless the notice permits it.</p>
-          <p><strong class="text-amber-300">Privacy:</strong> Photo and signature editing is performed locally in this browser. The uploaded image is not sent to an ExamResizer server. Closing or refreshing the page removes the current in-memory workspace.</p>
-        </div>
-        <p class="text-slate-400"><strong class="text-white">FAQ tip:</strong> If the file is too small or large, select another target preset and regenerate rather than repeatedly renaming a file. JPG/JPEG is usually accepted, while PNG should be used only when the notice allows it.</p>
-      </article>
-
       <div class="glass-card gold-border p-5 rounded-2xl space-y-5">
         <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-white/10 pb-3">
           <span>Target Examination Category</span>
@@ -459,21 +441,47 @@
           📥 Download Exam-Ready File
         </button>
       </div>
+
+      <article class="glass-card gold-border p-5 rounded-2xl space-y-4 text-xs leading-relaxed text-slate-300">
+        <h2 class="text-base font-black text-amber-400">How to prepare a compliant photo or signature</h2>
+        <p>Use this resizer after reading the current official notice. A preset helps organise the source image, but the final application portal controls dimensions, background, compression, and accepted file type. Keep the original photograph or signature until the application is fully submitted and saved.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-black text-white mb-2">Step-by-step instructions</h3>
+            <ol class="space-y-1.5 list-decimal list-inside">
+              <li>Select SSC, UPSC, RRB, GATE, NTA, APPSC/TGPSC, IBPS/SBI, or the matching PSU category from the toolbar.</li>
+              <li>Choose Photograph or Signature and upload a recent, well-lit source image. Avoid screenshots, heavy filters, or compressed social-media copies.</li>
+              <li>Read the active dimension, DPI, format, and KB range. When a state or PSU category is selected, also confirm its state or organisation dropdown.</li>
+              <li>Generate the formatted output, preview it at full zoom, and open the downloaded file locally before filling the form.</li>
+              <li>Use the final portal preview to confirm that the face, signature, background, and file name are clearly visible.</li>
+            </ol>
+          </div>
+          <div>
+            <h3 class="font-black text-white mb-2">Photo and signature format checks</h3>
+            <p><strong class="text-amber-300">Exam notice:</strong> SSC and RRB posts may distinguish recent passport photographs from signatures and left-thumb impressions. UPSC, GATE, APPSC, TGPSC, PSU, and banking applications can use post-specific rules.</p>
+            <p class="mt-1.5"><strong class="text-amber-300">Dimensions and KB:</strong> A pixel or centimetre measurement describes the rendered image; KB describes the file size after encoding. Neither should be changed by renaming the file.</p>
+            <p class="mt-1.5"><strong class="text-amber-300">Quality:</strong> Use a front-facing, evenly exposed photograph for applications and a bold signature on the permitted plain background. Do not enlarge a poor-quality thumbnail.</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-3 gap-3">
+          <p><strong class="text-white">Common error:</strong> Using an old photograph or a signature written by another person can invalidate identity checks even if the size is correct.</p>
+          <p><strong class="text-white">Fix:</strong> Follow the notice for recency, dress, background, ink, and signature method. Recreate the required scan from a clean original.</p>
+          <p><strong class="text-white">Format error:</strong> Renaming a PNG or oversized JPEG does not change dimensions or size. Generate the JPEG again with the selected target.</p>
+        </div>
+        <h3 class="font-black text-white">Common fixing workflow</h3>
+        <p>If the portal reports an unsupported dimension, compare its required width and height with the downloaded file properties. If the size is above the limit, regenerate using the active compression path rather than repeatedly reducing resolution in an image editor. If the size is below the minimum, use a better original and regenerate instead of padding the file. If the image is blurred, restore it only with a sharper source; resizing cannot invent missing detail.</p>
+        <h3 class="font-black text-white">Privacy and best practices</h3>
+        <p>Photo and signature processing is designed to remain in browser memory. The image is not sent to an ExamResizer upload endpoint through this tool. After finishing, close the downloaded preview and clear uploads on a shared computer or mobile browser. Keep the original in a private folder, not in public galleries or forwarded message threads. Never share OTPs or login credentials used for application submission.</p>
+        <div class="grid md:grid-cols-2 gap-3 pt-1">
+          <p><strong class="text-amber-300">FAQ:</strong> Why was a file rejected even though it looked correct? The portal may enforce another post-specific range, background, DPI, or JPEG encoding rule. Always follow the live notice, not only this preset.</p>
+          <p><strong class="text-amber-300">FAQ:</strong> Can one output fit every SSC, UPSC, RRB, GATE, state PSC, banking, or PSU form? No. Choose the applicable category and verify it again for each application.</p>
+        </div>
+      </article>
     </section>
 
     
     <!-- SECTION: SPEED APTITUDE & IQ ARENA -->
     <section id="iq-zone" class="hidden space-y-4">
-      <article class="glass-card p-5 rounded-2xl border border-purple-500/30 space-y-3 text-xs leading-relaxed text-slate-300">
-        <h2 class="text-base font-black text-purple-300">How to use the Speed Aptitude & Calculation Arena</h2>
-        <p>Choose Tables, Squares, Roots, Cubes, BODMAS, or Rapid English. Each game contains five progressive stages and ten questions per sprint. The timer counts down without pausing, while consecutive correct answers build a streak.</p>
-        <div class="grid md:grid-cols-3 gap-3">
-          <p><strong class="text-white">Step 1:</strong> Start at Level 1, read the question, and answer with the numeric box or English option buttons.</p>
-          <p><strong class="text-white">Step 2:</strong> Correct answers advance automatically or on Enter; incorrect attempts end the streak and show the result.</p>
-          <p><strong class="text-white">Step 3:</strong> Clear the required score to unlock the next level. Repeat a level to improve accuracy and average seconds per question.</p>
-        </div>
-        <p class="text-slate-400"><strong class="text-purple-300">Mental math tip:</strong> Practise tables and squares for recall, use approximation only after understanding the exact method, and solve BODMAS from brackets through addition/subtraction. Keep English choices in the exam language only if a drill offers that setting.</p>
-      </article>
       <div class="glass-card rounded-2xl p-6 border border-purple-500/30 space-y-6">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
@@ -670,6 +678,44 @@
           </div>
         </div>
 
+        <article class="glass-card p-5 rounded-2xl border border-purple-500/30 space-y-4 text-xs leading-relaxed text-slate-300">
+          <h2 class="text-base font-black text-purple-300">How to progress through the Speed Aptitude Arena</h2>
+          <p>Choose Tables, Squares, Roots, Cubes, BODMAS, or Rapid English from the selection hub. Each drill has five progressive stages and ten questions per timed sprint. Speed has value when accuracy is stable: a fast result filled with avoidable calculation or reading errors does not indicate exam readiness.</p>
+          <div class="grid md:grid-cols-3 gap-3">
+            <div>
+              <h3 class="font-bold text-white mb-1">Stage mechanics</h3>
+              <p>Start with Level 1. Complete the ten-question attempt or let the timer end, then read the scorecard for attempted questions, correct and wrong answers, accuracy, average speed, and peak streak. A clearing score unlocks the next stage.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-white mb-1">Timer and streak</h3>
+              <p>The countdown continues for the selected sprint and does not advance as a result of changing tools. Consecutive correct answers increase the streak and the scorecard records the peak streak. An incorrect answer breaks the streak.</p>
+            </div>
+            <div>
+              <h3 class="font-bold text-white mb-1">Question controls</h3>
+              <p>Numeric drills accept typed values and commonly validate when Enter is pressed or the correct value is matched. English drills use four visible choices. Keyboard and pointer input are alternatives for the same answer action.</p>
+            </div>
+          </div>
+          <h3 class="font-black text-white">How to practise each calculation area</h3>
+          <div class="grid md:grid-cols-2 gap-3">
+            <p><strong class="text-white">Tables and cubes:</strong> Recall 1–20 multiplication patterns and 1–30 cubes. Write the difficult values once by hand, then attempt a timed recall before the next sprint. Repeated table weakness is better corrected by spaced recall than by random answers.</p>
+            <p><strong class="text-white">Squares and roots:</strong> Memorise common square values and recognise nearby perfect squares. For a square root, narrow the answer with the closest perfect root; verify the final digit and value rather than guessing.</p>
+            <p><strong class="text-white">BODMAS:</strong> Resolve brackets first, then powers or roots, division and multiplication, and finally addition and subtraction. Multiplication and division share a left-to-right order within an expression.</p>
+            <p><strong class="text-white">Rapid English:</strong> Separate meanings, synonyms, antonyms, spelling, and confusing word pairs. After a miss, read the full word and one sample meaning rather than memorising only the letter option.</p>
+          </div>
+          <h3 class="font-black text-white">Common errors and fixes</h3>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Rushing:</strong> Guessing under timer pressure breaks accuracy and streak. Pause for one second to verify signs, decimal points, and place value.</p>
+            <p><strong class="text-white">Repeating:</strong> Retaking immediately can reuse short-term memory. Review weak facts, wait, then retry the level for a more meaningful score.</p>
+            <p><strong class="text-white">Mixing methods:</strong> Do not estimate a BODMAS question and submit the estimate as an exact answer. Use approximation only to check whether an exact result is plausible.</p>
+          </div>
+          <h3 class="font-black text-white">Preparation workflow and FAQs</h3>
+          <p>For a 20-minute study block, use one warm-up level, record every missed question, revise the underlying rule, and finish with a retry. A useful progression is accuracy first, then consistency, and only then a lower average time. Keep a short error log by topic and return to high-frequency mistakes weekly.</p>
+          <div class="grid md:grid-cols-2 gap-3">
+            <p><strong class="text-purple-300">FAQ:</strong> Why did the level not advance? Check the required pass score and accuracy shown by the scorecard. A high attempted count does not necessarily replace the required correct-answer threshold.</p>
+            <p><strong class="text-purple-300">FAQ:</strong> What if the timer expires? Stop adding attempts and use the displayed result to classify weak topics. Replay after a short revision rather than repeating without review.</p>
+          </div>
+        </article>
+
       </div>
     </section>
 
@@ -710,17 +756,38 @@
           <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
         </div>
 
-        <article id="pyqSectorGuide" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] space-y-3 text-xs leading-relaxed text-slate-300">
-          <h3 class="text-base font-black text-amber-400">GATE paper guide: pattern, strategy, and review</h3>
-          <p>Use an official paper to understand the section mix, command words, calculator rules, and time pressure shown for that year. GATE engineering papers commonly combine General Aptitude with discipline questions, but always verify the current syllabus and exam-day rules.</p>
-          <div class="grid md:grid-cols-3 gap-3">
-            <p><strong class="text-white">Preparation strategy:</strong> Solve under timed conditions, mark weak concepts, then revise formula sheets and repeated topics before a second timed attempt.</p>
-            <p><strong class="text-white">Answer key usage:</strong> Compare only the final response with an authentic key or official response sheet. Investigate skipped and incorrect items, not just the score.</p>
-            <p><strong class="text-white">Subject notes:</strong> Maintain one page of formulas, standard units, assumptions, and recurring question types for each engineering subject.</p>
-          </div>
-        </article>
-
         <div class="space-y-3" id="papersStackContainer"></div>
+
+        <article id="pyqSectorGuide" class="p-5 rounded-xl border border-white/10 bg-white/[0.02] space-y-4 text-xs leading-relaxed text-slate-300">
+          <h2 id="pyqSectorGuideTitle" class="text-base font-black text-amber-400">GATE paper guide: pattern, strategy, and review</h2>
+          <p id="pyqSectorGuideOverview">Use an official previous-year paper to understand the section mix, command words, marking logic, calculator or response rules, and time pressure shown for that year. A PYQ is a pattern and revision resource, not a substitute for the current syllabus, admit-card instructions, or conducting authority notice.</p>
+          <h3 class="font-black text-white">How to choose and attempt a sector paper</h3>
+          <ol class="grid md:grid-cols-2 gap-2 list-decimal list-inside">
+            <li>Confirm the examination sector, year, shift/session, stream or discipline, set, and stage shown in the paper header.</li>
+            <li>Review the official syllabus or notification separately. Mark topics that appear repeatedly, but do not assume every old topic is current.</li>
+            <li>Create a quiet timed attempt with the actual question count and available time as closely as the available paper permits.</li>
+            <li>Record confidence, guesses, skipped questions, numerical errors, and conceptual gaps before opening the answer key.</li>
+            <li>Resolve every missed question from a reliable subject source, then reattempt the difficult set after a few days.</li>
+          </ol>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Preparation strategy:</strong> Solve under timed conditions, classify errors, revise formula sheets or concept notes, and complete a second timed or unit-wise attempt.</p>
+            <p><strong class="text-white">Answer key archive:</strong> Compare the exact set and year with an official key or response sheet. Treat unofficial solutions as study references, not final objections.</p>
+            <p><strong class="text-white">Subject notes:</strong> Keep formulas, definitions, assumptions, units, standard question forms, and short solved examples in subject-wise notes.</p>
+          </div>
+          <h3 class="font-black text-white">Sector-specific workflow</h3>
+          <p><strong class="text-white">GATE:</strong> preserve engineering units and General Aptitude separately. <strong class="text-white">SSC/RRB:</strong> compare section time, repeated arithmetic/reasoning patterns, and shift-specific questions. <strong class="text-white">UPSC/APPSC/TGPSC:</strong> distinguish preliminary elimination from descriptive or technical stages. <strong class="text-white">B.Tech and entrance papers:</strong> match the semester, branch, subject code, and exam version before interpreting difficulty.</p>
+          <h3 class="font-black text-white">Common errors and fixes</h3>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Wrong set:</strong> Review is misleading if the session or set differs. Verify the header and all question numbers before scoring.</p>
+            <p><strong class="text-white">Score-only review:</strong> A score does not explain reading, conceptual, or time errors. Rework each incorrect and skipped item.</p>
+            <p><strong class="text-white">Outdated syllabus:</strong> Do not make a current study plan from one old paper alone. Combine PYQs with the active notification and syllabus.</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-3">
+            <p><strong class="text-amber-300">FAQ:</strong> If a downloaded PDF is unavailable or cannot preview, try the direct/download control, use a current PDF viewer, and verify the archive status. Do not assume a missing copy means the exam did not occur.</p>
+            <p><strong class="text-amber-300">FAQ:</strong> If answer options differ across sources, confirm the question image, set, year, and official revision. Preserve evidence before filing an objection or challenge.</p>
+          </div>
+          <p><strong class="text-white">Best practice:</strong> Maintain a revision log with source paper, date attempted, topics, error type, corrected answer, and next review date. Use archive papers for deliberate practice, not as a prediction of the future question set.</p>
+        </article>
       </div>
 
       <!-- IN-APP VIEWER MODAL -->
@@ -745,6 +812,35 @@
               <p class="text-xs text-amber-400 font-semibold" id="readerSessionInfo">Reference Answer Keys Attached</p>
             </div>
             <div class="relative z-10 w-full" id="readerQuestionsBody"></div>
+            <article id="openedPyqGuide" class="relative z-10 rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-5 space-y-4 text-xs leading-relaxed text-slate-300">
+              <h2 class="text-base font-black text-amber-400">How to review the selected previous-year paper</h2>
+              <p>The open PDF is a historical examination record. Read the header, year, session or shift, set, paper code, and instructions before interpreting the questions. The conducting authority, final answer key, and current examination notification remain the controlling sources.</p>
+              <h3 class="font-black text-white">Complete review workflow</h3>
+              <ol class="grid md:grid-cols-2 gap-2 list-decimal list-inside">
+                <li>Open or download the paper and verify that the title, year, and set match the archive card.</li>
+                <li>Set a timer consistent with the paper or section. If full official timing is unavailable, time a realistic sub-section and record the method.</li>
+                <li>Attempt from the question paper without using solutions, memory-based keys, or external explanations.</li>
+                <li>Mark every unsure, skipped, and incorrect response. Separate a conceptual gap from a reading or calculation mistake.</li>
+                <li>Use an official or prescribed key for the exact set. Compare units, response type, and any official revision or correction.</li>
+                <li>Rework missed questions from reliable subject material and schedule a second attempt after the correction is understood.</li>
+              </ol>
+              <div class="grid md:grid-cols-3 gap-3">
+                <p><strong class="text-white">Pattern analysis:</strong> Count repeated subjects, question formats, command words, and time-consuming topics. A pattern is evidence for revision, not a forecast of identical questions.</p>
+                <p><strong class="text-white">Answer-key review:</strong> For each mismatch, verify set and source first. The selected option is final only after checking the official response, not merely an online discussion.</p>
+                <p><strong class="text-white">Subject notes:</strong> Record each new formula, rule, exception, factual connection, and standard solved form under the relevant subject heading.</p>
+              </div>
+              <h3 class="font-black text-white">Common mistakes and practical fixes</h3>
+              <div class="grid md:grid-cols-3 gap-3">
+                <p><strong class="text-white">Reading the score first:</strong> This hides error patterns. Diagnose each missed item before calculating or comparing the final score.</p>
+                <p><strong class="text-white">Using an unmatched set:</strong> Confirm the set and shift. One option list or numerical response can differ across session versions.</p>
+                <p><strong class="text-white">Overusing old memory aids:</strong> Calculator or marking rules may differ by year. Use only the current official exam instructions for current attempts.</p>
+              </div>
+              <div class="grid md:grid-cols-2 gap-3">
+                <p><strong class="text-amber-300">Frequently asked:</strong> How should I score a paper with an unofficial solution? Score conceptually for learning, but avoid treating an unofficial key as an official objection basis. Record disputed items separately.</p>
+                <p><strong class="text-amber-300">Frequently asked:</strong> What if the PDF preview is blank or clipped? Download it, open it in a PDF reader, check the internet connection, and verify that the viewer can read the stored file.</p>
+              </div>
+              <p><strong class="text-white">Best practice:</strong> Keep a table of paper, year, set, attempt date, subject scores, repeated weakness, official key status, and review date. The same paper should support analysis, correction, and a later reattempt rather than be solved only once.</p>
+            </article>
           </div>
           <div class="p-3 border-t border-white/10 bg-black/80 text-center text-[11px] text-slate-400 flex items-center justify-between px-6">
             <span>Academic Reference Suite | ExamResizer Hub</span>
@@ -856,6 +952,44 @@
             <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-3">Sequential Test Progression Matrix</h4>
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5" id="mockTestsGridContainer"></div>
           </div>
+
+          <article id="cbtHubGuide" class="p-5 rounded-xl border border-blue-500/20 bg-blue-500/[0.04] space-y-4 text-xs leading-relaxed text-slate-300">
+            <h2 class="text-base font-black text-blue-300">How to take a mock in the CBT Exam Terminal</h2>
+            <p>Choose a full-length examination or a subject drill, select a branch or subject, and open the first unlocked stage. The terminal is a practice environment and may use a 35% pass rule for progression; it is not a substitute for the final marking scheme or eligibility rules in the official notification.</p>
+            <div class="grid md:grid-cols-3 gap-3">
+              <div>
+                <h3 class="font-bold text-white mb-1">Before starting</h3>
+                <ol class="space-y-1 list-decimal list-inside">
+                  <li>Use a stable device and readable full-screen view.</li>
+                  <li>Read the 35% unlock rule, question count, and displayed timer.</li>
+                  <li>Accept the candidate instructions before the start button becomes available.</li>
+                </ol>
+              </div>
+              <div>
+                <h3 class="font-bold text-white mb-1">During the test</h3>
+                <p>Use Save &amp; Next, Clear Response, and Mark for Review purposefully. Watch the question palette and remaining timer. Do not refresh or close the tab unless you intend to restart.</p>
+              </div>
+              <div>
+                <h3 class="font-bold text-white mb-1">Scoring and unlock</h3>
+                <p>Correct answers score <strong class="text-emerald-300">+2.00</strong>; incorrect answers receive <strong class="text-rose-300">-0.50</strong>. Unattempted questions remain zero. Reach at least 35% to unlock the next stage.</p>
+              </div>
+            </div>
+            <h3 class="font-black text-white">Recommended attempt method</h3>
+            <p>Begin with a short scan of the section and identify questions that are familiar, moderate, or likely to consume too much time. Answer confident items first, leave unfamiliar choices for a planned second pass, and reserve several minutes for marked and unanswered questions. Read every stem twice when words such as “except,” “not,” “least,” or “cannot” may change the answer. Keep a rough page count of the time used per section rather than spending the whole timer on one strong subject.</p>
+            <h3 class="font-black text-white">Question palette and response status</h3>
+            <p>An emerald or answered status means a choice has been recorded. A purple marked-for-review status can also display a recorded answer. A rose or not-answered status means no valid saved response was recorded. A slate or not-visited status means the question has not yet been opened. Saving a selection and marking it for review are separate actions; submitting or moving on without saving can leave the expected response absent.</p>
+            <div class="grid md:grid-cols-3 gap-3">
+              <p><strong class="text-white">Time management:</strong> Allocate a first pass to confident questions, mark uncertain items, and reserve a review buffer. Avoid spending the whole timer on one difficult question.</p>
+              <p><strong class="text-white">Negative marking:</strong> Use a minimum-confidence rule before guessing. One correct answer is <strong>+2.00</strong>, while an incorrect choice may cost <strong>-0.50</strong>; blank answers do not add a penalty.</p>
+              <p><strong class="text-white">Privacy:</strong> Candidate name and progress are browser-profile data. Clear the saved profile or browser storage on a shared device after practice.</p>
+            </div>
+            <h3 class="font-black text-white">Post-test review</h3>
+            <p>After submitting, read the analytical scorecard and answer review. Classify errors into lack of concept, reading the stem incorrectly, calculation slip, option confusion, or time pressure. Revisit the concept and solve two similar questions instead of retaking the whole test immediately. Check 35% as a progression threshold, but remember that it is a practice rule configured by this terminal unless it matches the real examination.</p>
+            <div class="grid md:grid-cols-2 gap-3">
+              <p><strong class="text-blue-300">FAQ:</strong> If a stage is locked, clear the preceding stage. If a question set is unavailable, retry another stage or return later; mock availability can differ from interface labels.</p>
+              <p><strong class="text-blue-300">FAQ:</strong> If the timer closes unexpectedly, submit the visible or saved responses according to the terminal state. Refreshing or reopening the browser may clear an active session; avoid it during a mock.</p>
+            </div>
+          </article>
         </div>
 
         <!-- MODULE 2: GATEKEEPER SCREEN -->
@@ -877,8 +1011,10 @@
           </div>
           <article class="p-4 rounded-xl border border-blue-500/20 bg-blue-500/[0.04] text-xs leading-relaxed text-slate-300 space-y-2">
             <h4 class="font-bold text-blue-300">How to take a CBT mock</h4>
-            <p>Choose an exam and branch or a subject drill, select an unlocked test, accept the rules, and start the uninterrupted timer. Every correct response earns <strong>+2.00</strong>; every incorrect response deducts <strong>-0.50</strong>. An unattempted question normally earns zero.</p>
-            <p><strong>Time management:</strong> scan the section first, answer confident questions early, mark difficult items for review, and reserve a final few minutes for rechecking marked responses. Save & Next records an answer; Clear Response removes it.</p>
+            <p>Choose an exam and branch or a subject drill, select an unlocked test, accept the rules, and start the uninterrupted timer. Every correct response earns <strong>+2.00</strong>; every incorrect response deducts <strong>-0.50</strong>. An unattempted question normally earns zero. A configured score of at least 35% unlocks the next stage.</p>
+            <p><strong>Before starting:</strong> close unrelated tabs, use a stable internet connection when questions must load, and read the timer and scoring line. Do not refresh or share the session link; the browser profile controls local progression.</p>
+            <p><strong>Time management:</strong> scan the section first, answer confident questions early, mark difficult items for review, and reserve a final few minutes for rechecking marked responses. Save &amp; Next records an answer; Clear Response removes it; Mark for Review changes the palette status.</p>
+            <p><strong>After submission:</strong> review the analysis and answer solutions, classify each error, and revise the concept before repeating. A practice negative mark should be used to improve caution, not to discourage later exam attempts.</p>
           </article>
 
           <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
@@ -990,7 +1126,55 @@
     </section>
 
     <!-- SECTION 4: PDF MEGA STUDIO -->
-    <section id="pdf-zone" class="hidden space-y-4"></section>
+    <section id="pdf-zone" class="hidden space-y-4">
+      <div id="pdf-studio-root"></div>
+      <article id="pdfMegaSuiteGuide" class="glass-card p-5 rounded-2xl border border-emerald-500/30 space-y-4 text-xs leading-relaxed text-slate-300">
+        <h2 class="text-base font-black text-emerald-300">PDF Mega Suite: compression, merge, A4 conversion, and page extraction</h2>
+        <p>PDF Fast Studio performs the selected operation locally in browser memory. It can help prepare application documents, but it does not verify the legal validity or acceptance of a certificate. The final notice and upload portal control page count, size, orientation, format, and legibility.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-black text-white mb-2">Compress under 100, 200, or 300 KB</h3>
+            <ol class="space-y-1.5 list-decimal list-inside">
+              <li>Keep a clear, complete PDF original and confirm whether the portal permits 100, 200, or 300 KB.</li>
+              <li>Select the PDF, choose the exact target, and start compression.</li>
+              <li>Download and inspect the output at full zoom. Verify actual file size with the device's properties or file manager.</li>
+              <li>Reject the result if text, signatures, seals, portrait, or margins become unreadable.</li>
+            </ol>
+          </div>
+          <div>
+            <h3 class="font-black text-white mb-2">Merge memos and certificates</h3>
+            <ol class="space-y-1.5 list-decimal list-inside">
+              <li>Select all required PDFs in the same sequence requested by the application.</li>
+              <li>Open every source first to confirm that pages are complete and in the correct orientation.</li>
+              <li>Create the merged PDF and compare the page count and order to a prepared checklist.</li>
+              <li>Remove duplicates or unrelated documents before uploading.</li>
+            </ol>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="font-black text-white mb-2">Convert images to A4 PDF</h3>
+            <p>Select upright JPG or PNG images in intended page order. Scan or photograph documents on a flat surface with even light, without glare or cropped borders. The conversion places images onto A4 pages locally and does not add an official seal or improve a blurred source. Confirm whether the portal allows multiple pages or requires each certificate separately.</p>
+          </div>
+          <div>
+            <h3 class="font-black text-white mb-2">Extract pages as JPG or PDF</h3>
+            <p>Use PDF to JPG for a page image or enter a range such as 1 or 1-3 for selected-page extraction. Count physical pages from the PDF preview rather than assuming cover and numbered pages match. Keep the original because splitting or rendering creates a derived copy.</p>
+          </div>
+        </div>
+        <h3 class="font-black text-white">Common errors and fixes</h3>
+        <div class="grid md:grid-cols-3 gap-3">
+          <p><strong class="text-white">Compression still too large:</strong> The source may contain many high-resolution images or embedded pages. Re-scan legibly at a suitable resolution or extract/split only when permitted.</p>
+          <p><strong class="text-white">Output too dark or blurred:</strong> Use a clean source rather than repeatedly compressing it. Compression can reduce detail that cannot be recovered later.</p>
+          <p><strong class="text-white">Wrong merge or split order:</strong> Rename source files by page sequence or prepare a checklist, then compare the generated pages before download.</p>
+        </div>
+        <h3 class="font-black text-white">Privacy, validation, and best practices</h3>
+        <p>Files remain within the browser environment for processing rather than being sent to a PDF-upload server. Browser memory and temporary downloads can still remain on a shared device, so remove sensitive copies and close private previews after use. Encryption, DRM, or damaged PDFs may prevent processing. Keep the untouched original, use the A4 or page-size format only when allowed, and verify the output's size, page count, orientation, and text at 100% zoom.</p>
+        <div class="grid md:grid-cols-2 gap-3">
+          <p><strong class="text-emerald-300">FAQ:</strong> Why was a PDF rejected despite having the right KB size? The portal may inspect page count, dimensions, password protection, MIME type, or readability beyond the byte limit.</p>
+          <p><strong class="text-emerald-300">FAQ:</strong> Can merging or splitting authenticate a memo or certificate? No. It only reorganizes pages. The final issuer or authority must authenticate the source document.</p>
+        </div>
+      </article>
+    </section>
 
     <!-- SECTION 5: RECRUITMENT ALERTS -->
     <section id="jobs-zone" class="hidden space-y-4">
@@ -1003,6 +1187,40 @@
           <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-xs text-amber-400 hover:underline">↑ Top of Alerts</button>
         </div>
         <div class="space-y-3" id="liveAlertsContainer"></div>
+        <article id="jobAlertsGuide" class="p-5 rounded-xl border border-rose-500/20 bg-rose-500/[0.04] space-y-4 text-xs leading-relaxed text-slate-300">
+          <h2 class="text-base font-black text-rose-300">How to read Government Job Alerts and verify an application safely</h2>
+          <p>Use a listed alert as a discovery notice, then verify the vacancy, eligibility, closing date, and application link on the official department or conducting authority website. Forwarded images, social posts, and cached lists can be outdated even when a former advertisement is visible.</p>
+          <h3 class="font-black text-white">Step-by-step notice check</h3>
+          <ol class="grid md:grid-cols-2 gap-2 list-decimal list-inside">
+            <li>Open the official gazette or notification PDF and confirm its notification number, issuing authority, and advertisement date.</li>
+            <li>Check post name, department, vacancy distribution, pay level or scale, qualification, and location.</li>
+            <li>Read age eligibility using the prescribed cut-off date and verify category, experience, local status, and physical or medical rules where applicable.</li>
+            <li>Record application start and closing times, fee deadline, correction window, selection stages, syllabus, exam date, and document requirements.</li>
+            <li>Open the official application portal only from the notice and test the HTTPS address and organisation name before entering personal details.</li>
+            <li>Submit before the deadline, download or capture the final acknowledgement, and preserve the registration number and fee receipt.</li>
+          </ol>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Eligibility check:</strong> Do not rely only on a post title. Compare required degree, branch, marks, work experience, age, category, domicile, and exam cutoff with the official notice.</p>
+            <p><strong class="text-white">Deadline check:</strong> Convert closing time to the user's local time carefully and submit early. Server overload, payment delay, or document rejection near closure is not a valid extension.</p>
+            <p><strong class="text-white">Status check:</strong> “Applied,” “online,” “pending,” or “verified” is meaningful only in the official portal. A third-party card or email is not final unless the authority confirms it.</p>
+          </div>
+          <h3 class="font-black text-white">Official gazette and deadline workflow</h3>
+          <p>Begin by saving a copy of the notification and its PDF URL. Highlight vacancy, eligibility, selection method, fee, important dates, and required certificates. Add the published closing date and correction window to a personal calendar, not only a forwarded reminder. If a notice is amended or corrected, read the corrigendum and recheck whether age, qualification, vacancies, or fee changed.</p>
+          <h3 class="font-black text-white">Common errors and fixes</h3>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Wrong category or post:</strong> Read the exact post code and vacancy table. Applying under an unsupported category or post can make the application invalid.</p>
+            <p><strong class="text-white">Unverified deadline:</strong> Use the closing time from the official notice and correction/corrigendum, not a social media image or stale listing.</p>
+            <p><strong class="text-white">Unsafe payment:</strong> Never pay through a contact number, QR code, or “guaranteed vacancy” message. Use the payment path named in the official application.</p>
+          </div>
+          <h3 class="font-black text-white">When live database status is unavailable</h3>
+          <p>If the live registry cannot be reached, this module may show a connection warning or cached verified notices. A warning means only that the live refresh did not succeed; it does not prove that recruitment is open or closed. Do not submit from cache alone. Check the official department, commission, railway, PSU, or gazette portal manually and compare the closing date.</p>
+          <h3 class="font-black text-white">Privacy and safe status handling</h3>
+          <p>Provide identity, education, bank, and certificate details only in the official portal or approved payment gateway. Keep acknowledgements and receipts privately; do not upload them to unknown groups. Log out after use on shared devices, avoid saving passwords, and ignore messages claiming recruitment, selection, or fee waivers in exchange for data or payment.</p>
+          <div class="grid md:grid-cols-2 gap-3">
+            <p><strong class="text-rose-300">FAQ:</strong> The alert shows a vacancy but the official page says it is closed. Which source wins? The official conducting authority and published notice/corrigendum control the status.</p>
+            <p><strong class="text-rose-300">FAQ:</strong> No alerts are visible. Does that mean no recruitment is happening? No. It can mean no active verified record met the current filter or that the live registry is unavailable. Search official portals directly.</p>
+          </div>
+        </article>
       </div>
     </section>
 
