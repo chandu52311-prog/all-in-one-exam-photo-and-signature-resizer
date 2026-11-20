@@ -12,7 +12,7 @@ import re
 import hashlib
 import logging
 import time
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 from urllib.parse import urljoin, quote
 
@@ -70,7 +70,7 @@ def parse_indian_date(date_str: str) -> date | None:
     return None
 
 
-def calculate_relative_date(text: str, base_date: datetime.date | None) -> datetime.date | None:
+def calculate_relative_date(text: str, base_date: date | None) -> date | None:
     if not text or not base_date:
         return None
     m = re.search(r"(\d{1,3})\s*days", text.lower())
@@ -80,7 +80,7 @@ def calculate_relative_date(text: str, base_date: datetime.date | None) -> datet
     return None
 
 
-def generate_job_id(authority: str, title: str, issued_date: datetime.date | None) -> str:
+def generate_job_id(authority: str, title: str, issued_date: date | None) -> str:
     source = "|".join([
         authority.lower().strip(),
         title.lower().strip(),
