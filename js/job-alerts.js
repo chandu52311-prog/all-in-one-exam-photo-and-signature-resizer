@@ -28,55 +28,14 @@ const OFFICIAL_PORTALS = {
 };
 
 const CATEGORIES = [
-  { key: "ALL", label: "All Active Alerts" },
   { key: "UPSC", label: "UPSC" },
-  { key: "UPSC_CSE", label: "UPSC Civil Services" },
-  { key: "UPSC_IFS", label: "UPSC Forest Service" },
-  { key: "UPSC_ESE", label: "UPSC Engineering Services" },
-  { key: "UPSC_CDS", label: "UPSC CDS" },
-  { key: "UPSC_NDA", label: "UPSC NDA" },
-  { key: "UPSC_CAPF", label: "UPSC CAPF" },
   { key: "SSC", label: "SSC" },
-  { key: "SSC_CGL", label: "SSC CGL" },
-  { key: "SSC_CHSL", label: "SSC CHSL" },
-  { key: "SSC_MTS", label: "SSC MTS" },
-  { key: "SSC_CPO", label: "SSC CPO" },
-  { key: "SSC_GD", label: "SSC GD" },
-  { key: "SSC_JE", label: "SSC JE" },
-  { key: "SSC_STENOGRAPHER", label: "SSC Stenographer" },
   { key: "RAILWAYS", label: "Railways (RRB)" },
-  { key: "RRB_NTPC_GRAD", label: "RRB NTPC Graduate" },
-  { key: "RRB_NTPC_UNDERGRAD", label: "RRB NTPC Undergraduate" },
-  { key: "RRB_GROUP_D", label: "RRB Group D" },
-  { key: "RRB_JE", label: "RRB JE" },
-  { key: "RRB_ALP", label: "RRB ALP" },
-  { key: "RRB_TECHNICIAN", label: "RRB Technician" },
-  { key: "RPF", label: "RPF Recruitment" },
-  { key: "STATE_PSC", label: "State PSCs" },
   { key: "APPSC", label: "APPSC" },
   { key: "TGPSC", label: "TGPSC" },
-  { key: "STATE_GOVT", label: "State Government" },
-  { key: "STATE_AP", label: "Andhra Pradesh Government" },
-  { key: "STATE_TG", label: "Telangana Government" },
   { key: "BANKING", label: "Banking" },
-  { key: "IBPS_PO", label: "IBPS PO" },
-  { key: "IBPS_CLERK", label: "IBPS Clerk" },
-  { key: "SBI_PO", label: "SBI PO" },
-  { key: "SBI_CLERK", label: "SBI Clerk" },
-  { key: "RBI", label: "RBI" },
   { key: "DEFENCE", label: "Defence" },
-  { key: "ARMY", label: "Indian Army" },
-  { key: "NAVY", label: "Indian Navy" },
-  { key: "AIR_FORCE", label: "Indian Air Force" },
   { key: "PSU", label: "PSU & Power" },
-  { key: "NTPC", label: "NTPC" },
-  { key: "BHEL", label: "BHEL" },
-  { key: "POWERGRID", label: "POWERGRID" },
-  { key: "NHPC", label: "NHPC" },
-  { key: "ONGC", label: "ONGC" },
-  { key: "IOCL", label: "IOCL" },
-  { key: "GAIL", label: "GAIL" },
-  { key: "ARCHIVED", label: "Archived" }
 ];
 
 function parseIST(value, endOfDay = false) {
@@ -170,15 +129,7 @@ function categoryForItem(item) {
 }
 
 const JobAlertsRegistry = {
-  activeCategory: "ALL",
-  activeSection: "ACTIVE",
-  search: "",
-  state: "",
-  sort: "newest",
-  openOnly: false,
-  closingSoon: false,
-  newlyReleased: false,
-  upcoming: false,
+  activeCategory: "UPSC",
   records: [],
   archiveRecords: [],
   isLoading: false,
@@ -198,72 +149,30 @@ const JobAlertsRegistry = {
     if (!root) return;
     const staticGuide = document.getElementById("jobAlertsGuide");
     const guideHtml = staticGuide ? staticGuide.outerHTML : "";
-    const staticSources = document.getElementById("officialSourcesBoard");
-    const sourcesHtml = staticSources ? staticSources.outerHTML : "";
 
     root.innerHTML = `
-      <div class="glass-card rounded-2xl p-5 border border-rose-500/30 space-y-5">
-        <div class="flex items-center justify-between pb-4 border-b border-white/10">
+      <div class="glass-card rounded-2xl p-4 sm:p-5 border border-rose-500/30 space-y-4">
+        <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
-            <h2 class="font-black text-xl text-white">Live Government Jobs &amp; Notifications</h2>
+            <h2 class="font-black text-lg sm:text-xl text-white">Live Government Jobs</h2>
             <p class="text-xs text-slate-400">Official verified records • Asia/Kolkata deadline handling</p>
           </div>
           <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white">← Resizer</button>
         </div>
 
-        <div id="organizationCategoryTabs" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+        <div id="organizationCategoryTabs" class="grid grid-cols-2 md:grid-cols-4 gap-2">
           ${CATEGORIES.map(category => `
             <button type="button" data-category="${category.key}" id="job-category-${category.key}"
-              class="exam-btn p-2.5 text-xs ${category.key === "ALL" ? "active" : ""}">
+              class="exam-btn p-2.5 text-xs ${category.key === "UPSC" ? "active" : ""}">
               ${esc(category.label)}
             </button>
           `).join("")}
         </div>
 
-        <div class="grid md:grid-cols-[1fr_180px_180px] gap-2.5">
-          <label>
-            <span class="sr-only">Search notifications</span>
-            <input id="jobSearchInput" type="search" autocomplete="off"
-              placeholder="Search exam, organization or qualification"
-              class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400">
-          </label>
-          <select id="jobStateFilter" aria-label="Filter by state"
-            class="bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none">
-            <option value="">All States</option>
-            <option value="ANDHRA PRADESH">Andhra Pradesh</option>
-            <option value="TELANGANA">Telangana</option>
-            <option value="OTHER">Other State</option>
-          </select>
-          <select id="jobSortSelect" aria-label="Sort notifications"
-            class="bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none">
-            <option value="newest">Newest Notification</option>
-            <option value="closing">Closing Date</option>
-            <option value="exam">Examination Date</option>
-          </select>
-        </div>
-
-        <div class="flex flex-wrap gap-2 text-[11px]" id="jobQuickFilters">
-          <button type="button" data-quick="open" class="exam-btn px-3 py-1.5">Applications Open</button>
-          <button type="button" data-quick="upcoming" class="exam-btn px-3 py-1.5">Upcoming Examinations</button>
-          <button type="button" data-quick="closing" class="exam-btn px-3 py-1.5">Closing Soon</button>
-          <button type="button" data-quick="new" class="exam-btn px-3 py-1.5">Newly Released</button>
-        </div>
-
-        <div id="jobSectionTabs" class="tab-pills">
-          <button type="button" data-section="ACTIVE" class="tab-btn active">Active Notifications</button>
-          <button type="button" data-section="CLOSING_SOON" class="tab-btn">Closing Soon</button>
-          <button type="button" data-section="NEW" class="tab-btn">Newly Released</button>
-          <button type="button" data-section="UPCOMING" class="tab-btn">Upcoming Exams</button>
-          <button type="button" data-section="ARCHIVED" class="tab-btn">Archived</button>
-        </div>
-
         <div id="jobLastVerified" class="text-[11px] text-slate-400"></div>
         <div id="alerts-listing-container" class="space-y-3.5">
-          <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/5">
-            Checking official verified records…
-          </div>
+          <div class="p-4 text-center text-xs text-slate-400 border border-white/10 rounded-xl">Checking official verified records…</div>
         </div>
-        ${sourcesHtml}
         ${guideHtml}
       </div>
     `;
@@ -271,25 +180,7 @@ const JobAlertsRegistry = {
     root.onclick = (event) => {
       const category = event.target.closest("[data-category]");
       if (category) this.setCategory(category.dataset.category);
-      const quick = event.target.closest("[data-quick]");
-      if (quick) this.toggleQuickFilter(quick.dataset.quick, quick);
-      const section = event.target.closest("[data-section]");
-      if (section) this.setSection(section.dataset.section, section);
     };
-
-    const search = document.getElementById("jobSearchInput");
-    search?.addEventListener("input", event => {
-      this.search = event.target.value.trim();
-      this.renderListing();
-    });
-    document.getElementById("jobStateFilter")?.addEventListener("change", event => {
-      this.state = event.target.value;
-      this.renderListing();
-    });
-    document.getElementById("jobSortSelect")?.addEventListener("change", event => {
-      this.sort = event.target.value;
-      this.renderListing();
-    });
 
     if (window.lucide) window.lucide.createIcons();
   },
@@ -299,23 +190,6 @@ const JobAlertsRegistry = {
     this.activeCategory = category;
     document.querySelectorAll("[id^='job-category-']").forEach(button => button.classList.remove("active"));
     document.getElementById(`job-category-${category}`)?.classList.add("active");
-    if (category === "ARCHIVED") this.activeSection = "ARCHIVED";
-    this.renderListing();
-  },
-
-  toggleQuickFilter(key, button) {
-    if (key === "open") this.openOnly = !this.openOnly;
-    if (key === "upcoming") this.upcoming = !this.upcoming;
-    if (key === "closing") this.closingSoon = !this.closingSoon;
-    if (key === "new") this.newlyReleased = !this.newlyReleased;
-    button.classList.toggle("active");
-    this.renderListing();
-  },
-
-  setSection(section, button) {
-    this.activeSection = section;
-    document.querySelectorAll("#jobSectionTabs [data-section]").forEach(tab => tab.classList.remove("active"));
-    button.classList.add("active");
     this.renderListing();
   },
 
@@ -383,94 +257,24 @@ const JobAlertsRegistry = {
 
   getFilteredRecords() {
     const now = new Date();
-    let source = this.activeSection === "ARCHIVED"
-      ? this.archiveRecords
-      : this.records.filter(record => isOpenRecord(record, now));
+    let source = this.records.filter(record => isOpenRecord(record, now));
 
-    if (this.activeCategory !== "ALL") {
-      source = source.filter(record => {
-        const recordCategory = String(record._category || record.category || "").trim().toUpperCase();
-        const selected = this.activeCategory;
-        if (recordCategory === selected) return true;
-        if (selected === "UPSC") return recordCategory === "UPSC" || recordCategory.startsWith("UPSC_") || /UNION PUBLIC SERVICE COMMISSION|UPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "SSC") return recordCategory === "SSC" || recordCategory.startsWith("SSC_") || /\bSSC\b/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "RAILWAYS") return recordCategory === "RAILWAYS" || recordCategory.startsWith("RRB") || recordCategory === "RPF" || /RAILWAY|RRB|RPF/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "STATE_PSC") return recordCategory === "STATE_PSC" || recordCategory === "APPSC" || recordCategory === "TGPSC" || /APPSC|TGPSC|TSPSC|PUBLIC SERVICE COMMISSION/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "STATE_GOVT") return recordCategory === "STATE_GOVT" || recordCategory.startsWith("STATE_AP") || recordCategory.startsWith("STATE_TG");
-        if (selected === "BANKING") return recordCategory === "BANKING" || /IBPS|SBI|RBI|BANK/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "DEFENCE") return recordCategory === "DEFENCE" || ["ARMY","NAVY","AIR_FORCE"].includes(recordCategory) || /ARMY|NAVY|AIR FORCE|DEFENCE/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected === "PSU") return recordCategory === "PSU" || ["NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL"].includes(recordCategory) || /PSU|NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-        if (selected.startsWith("RRB_")) return recordCategory === selected;
-        if (selected.startsWith("SSC_")) return recordCategory === selected;
-        if (selected.startsWith("UPSC_")) return recordCategory === selected;
-        if (selected.startsWith("STATE_")) return recordCategory === selected;
-        if (["IBPS_PO","IBPS_CLERK","SBI_PO","SBI_CLERK","RBI","ARMY","NAVY","AIR_FORCE","NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL","APPSC","TGPSC","RPF"].includes(selected)) return recordCategory === selected;
-        return false;
-      });
-    }
+    source = source.filter(record => {
+      const recordCategory = String(record._category || record.category || "").trim().toUpperCase();
+      const selected = this.activeCategory;
+      if (recordCategory === selected) return true;
+      if (selected === "UPSC") return recordCategory === "UPSC" || recordCategory.startsWith("UPSC_") || /UNION PUBLIC SERVICE COMMISSION|UPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "SSC") return recordCategory === "SSC" || recordCategory.startsWith("SSC_") || /\bSSC\b/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "RAILWAYS") return recordCategory === "RAILWAYS" || recordCategory.startsWith("RRB") || recordCategory === "RPF" || /RAILWAY|RRB|RPF/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "APPSC") return recordCategory === "APPSC" || /ANDHRA PRADESH PUBLIC SERVICE COMMISSION|APPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "TGPSC") return recordCategory === "TGPSC" || /TELANGANA PUBLIC SERVICE COMMISSION|TGPSC|TSPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "BANKING") return recordCategory === "BANKING" || /IBPS|SBI|RBI|BANK/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "DEFENCE") return recordCategory === "DEFENCE" || ["ARMY","NAVY","AIR_FORCE"].includes(recordCategory) || /ARMY|NAVY|AIR FORCE|DEFENCE/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      if (selected === "PSU") return recordCategory === "PSU" || ["NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL"].includes(recordCategory) || /PSU|NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+      return false;
+    });
 
-    if (this.state) {
-      source = source.filter(record => String(record.state || "").toUpperCase().includes(this.state));
-    }
-
-    if (this.search) {
-      const needle = this.search.toLowerCase();
-      source = source.filter(record => [
-        record.title, record.exam_name, record.authority, record.organization,
-        record.qualification, record.posts, record.notification_number
-      ].some(value => String(value || "").toLowerCase().includes(needle)));
-    }
-
-    if (this.openOnly) {
-      source = source.filter(record => {
-        const opening = parseIST(openingValue(record), false);
-        return !opening || opening.getTime() <= now.getTime();
-      });
-    }
-    if (this.closingSoon) {
-      source = source.filter(record => {
-        const closing = parseIST(closingValue(record), true);
-        return closing && closing.getTime() - now.getTime() <= 7 * 24 * 60 * 60 * 1000;
-      });
-    }
-    if (this.newlyReleased) {
-      source = source.filter(record => {
-        const released = parseIST(record.released_at, false);
-        return released && now.getTime() - released.getTime() <= 14 * 24 * 60 * 60 * 1000;
-      });
-    }
-    if (this.upcoming) {
-      source = source.filter(record => {
-        const opening = parseIST(openingValue(record), false);
-        return opening && opening.getTime() > now.getTime();
-      });
-    }
-    if (this.activeSection === "CLOSING_SOON") {
-      source = source.filter(record => {
-        const closing = parseIST(closingValue(record), true);
-        return closing && closing.getTime() - now.getTime() <= 7 * 24 * 60 * 60 * 1000;
-      });
-    }
-    if (this.activeSection === "NEW") {
-      source = source.filter(record => {
-        const released = parseIST(record.released_at, false);
-        return released && now.getTime() - released.getTime() <= 14 * 24 * 60 * 60 * 1000;
-      });
-    }
-    if (this.activeSection === "UPCOMING") {
-      source = source.filter(record => {
-        const opening = parseIST(openingValue(record), false);
-        return opening && opening.getTime() > now.getTime();
-      });
-    }
-
-    if (this.sort === "closing") {
-      source.sort((a, b) => (parseIST(closingValue(a), true)?.getTime() || Infinity) - (parseIST(closingValue(b), true)?.getTime() || Infinity));
-    } else if (this.sort === "exam") {
-      source.sort((a, b) => (parseIST(a.exam_date, false)?.getTime() || Infinity) - (parseIST(b.exam_date, false)?.getTime() || Infinity));
-    } else {
-      source.sort((a, b) => (parseIST(b.released_at, false)?.getTime() || 0) - (parseIST(a.released_at, false)?.getTime() || 0));
-    }
+    source.sort((a, b) => (parseIST(b.released_at, false)?.getTime() || 0) - (parseIST(a.released_at, false)?.getTime() || 0));
     return source;
   },
 
@@ -504,13 +308,8 @@ const JobAlertsRegistry = {
     }
 
     if (filtered.length === 0) {
-      const categoryLabel = CATEGORIES.find(item => item.key === this.activeCategory)?.label || "Selected category";
       container.innerHTML = `
-        <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.04] space-y-2">
-          <h3 class="text-sm font-black text-amber-300">No active official notifications found</h3>
-          <p class="text-xs text-slate-300">${esc(categoryLabel)} has no verified open record matching the current filters. This is not an official recruitment status.</p>
-          <p class="text-[11px] text-slate-400">Verify the latest notification, corrigendum and application window on the official organization website.</p>
-        </div>
+        <p class="py-5 px-3 text-center text-xs text-slate-400 border border-white/10 rounded-xl">No active verified notifications currently available.</p>
       `;
       return;
     }
@@ -549,17 +348,10 @@ const JobAlertsRegistry = {
           <h3 class="font-bold text-white text-sm md:text-base">${esc(record.exam_name || record.title || "Recruitment Notification")}</h3>
           <p class="text-[11px] text-amber-300 font-semibold mt-1">Organization: ${esc(record.organization || record.authority || "Awaiting Official Verification")}</p>
         </div>
-        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
-          <div><dt class="text-slate-500">Notification Number</dt><dd>${esc(notificationNumber)}</dd></div>
+        <dl class="grid grid-cols-1 gap-1.5 text-[11px] text-slate-300">
           <div><dt class="text-slate-500">Vacancies</dt><dd>${vacancies}</dd></div>
-          <div><dt class="text-slate-500">Qualification</dt><dd>${qualification}</dd></div>
-          <div><dt class="text-slate-500">Age Limit</dt><dd>${ageLimit}</dd></div>
-          <div><dt class="text-slate-500">Application Fee</dt><dd>${fee}</dd></div>
-          <div><dt class="text-slate-500">Registration Opens</dt><dd>${opening ? esc(opening) : "Awaiting Official Verification"}</dd></div>
-          <div class="sm:col-span-2"><dt class="text-slate-500">Last Registration Date (IST / Asia/Kolkata)</dt><dd class="text-amber-300 font-bold">${closing ? esc(closing) : "Awaiting Official Verification"}</dd></div>
-          <div><dt class="text-slate-500">Examination Date</dt><dd>${examDate ? esc(examDate) : "Awaiting Official Verification"}</dd></div>
-          <div><dt class="text-slate-500">${archived ? "Archived Status" : "Countdown"}</dt><dd>${archived ? esc(status) : esc(this.countdown(record))}</dd></div>
-          <div class="sm:col-span-2"><dt class="text-slate-500">Last Verified</dt><dd>${verified ? esc(verified) : "Awaiting Official Verification"}</dd></div>
+          <div><dt class="text-slate-500">Last Registration Date (IST / Asia/Kolkata)</dt><dd class="text-amber-300 font-bold">${closing ? esc(closing) : "Awaiting Official Verification"}</dd></div>
+          <div><dt class="text-slate-500">Last Verified</dt><dd>${verified ? esc(verified) : "Awaiting Official Verification"}</dd></div>
         </dl>
         <div class="flex flex-wrap gap-2 pt-1">
           ${notificationUrl ? `<a href="${esc(notificationUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-extrabold text-xs">VIEW OFFICIAL NOTIFICATION ↗</a>` : `<span class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs">Awaiting Official Notification Link</span>`}
