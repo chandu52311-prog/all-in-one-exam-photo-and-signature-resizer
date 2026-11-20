@@ -141,81 +141,81 @@ function getCuratedExamNotifications() {
       id: 'curated-ssc',
       category: 'CENTRAL',
       authority: 'Staff Selection Commission',
-      title: 'SSC Recruitment & Examination Notice Tracker',
-      posts: 'CGL, CHSL, MTS, GD, JE, CPO and other advertised posts',
-      qualification: 'Post-wise qualification and age limits are specified in each SSC notification.',
+      title: 'SSC CGL & CHSL Annual Recruitment',
+      posts: 'CGL, CHSL, MTS, GD, JE, CPO and Selection Posts',
+      qualification: 'Post-wise graduation, 10+2, age and category rules appear in the SSC notice.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://ssc.gov.in/',
       preset_target: 'SSC',
-      status: 'OFFICIAL DATES / CYCLE STATUS TO VERIFY'
+      status: 'ANNUAL CYCLE / DATES TO VERIFY'
     },
     {
       id: 'curated-upsc',
       category: 'CENTRAL',
       authority: 'Union Public Service Commission',
-      title: 'UPSC Examination & Recruitment Notice Tracker',
-      posts: 'Civil Services, NDA, CDS, Engineering Services and other UPSC examinations',
-      qualification: 'Eligibility, age, academic and attempt limits vary by notification.',
+      title: 'UPSC Civil Services, NDA & CDS Examinations',
+      posts: 'Civil Services, NDA, CDS and Engineering Services examinations',
+      qualification: 'Age, degree, attempt limits and post-specific qualification vary by UPSC notice.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://upsc.gov.in/',
       preset_target: 'UPSC',
-      status: 'UPCOMING / OFFICIAL SCHEDULE TO VERIFY'
+      status: 'ANNUAL EXAM SCHEDULE / VERIFY'
     },
     {
       id: 'curated-rrb',
       category: 'RAILWAYS',
       authority: 'Railway Recruitment Boards',
-      title: 'RRB Recruitment Notice Tracker',
-      posts: 'NTPC, Group D, ALP, JE, Paramedical and ministerial recruitment cycles',
-      qualification: 'Post-wise education, medical, age and technical requirements apply.',
+      title: 'RRB NTPC, ALP, JE & Group D Recruitment',
+      posts: 'NTPC graduate/undergraduate, Group D, ALP/Technician, JE and Paramedical',
+      qualification: 'Post-wise education, medical, age, trade and technical requirements apply.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://www.rrbapply.gov.in/',
       preset_target: 'RRB',
-      status: 'UPCOMING / OFFICIAL CEN STATUS TO VERIFY'
+      status: 'CENTRALISED NOTICE / CEN VERIFY'
     },
     {
       id: 'curated-state-psc',
       category: 'STATE_PSC',
       authority: 'APPSC / TGPSC',
-      title: 'APPSC & TGPSC Commission Notice Tracker',
-      posts: 'Group services, AEE, technical and executive recruitment posts',
-      qualification: 'Verify service rules, local status, degree/technical qualification and age cut-off.',
+      title: 'APPSC Group & AEE / TGPSC Group & Technical Posts',
+      posts: 'Group I, II, III/IV, AEE, technical and executive posts',
+      qualification: 'Verify local status, degree/technical branch, age cut-off and service rules.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://psc.ap.gov.in/',
       alternateOfficialUrl: 'https://www.tgpsc.gov.in/',
       preset_target: 'STATE_PSC',
-      status: 'COMMISSION SCHEDULE / OFFICIAL STATUS TO VERIFY'
+      status: 'PSC CYCLE / NOTIFICATION VERIFY'
     },
     {
       id: 'curated-state-govt',
       category: 'STATE_GOVT',
       authority: 'State Government Departments',
-      title: 'State Government Recruitment Notice Tracker',
-      posts: 'Departmental, district, police, health, education and local recruitment',
-      qualification: 'Post-wise domicile, qualification, category, age and experience rules apply.',
+      title: 'State Police, Health, Education & Department Recruitment',
+      posts: 'Police, health, education, district, municipal and departmental posts',
+      qualification: 'Post-wise domicile, qualification, category, age, medical and experience rules apply.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://www.india.gov.in/topics/labour-employment',
       preset_target: 'STATE_PSC',
-      status: 'DEPARTMENT NOTICE / OFFICIAL STATUS TO VERIFY'
+      status: 'DEPARTMENT CYCLE / NOTICE VERIFY'
     },
     {
       id: 'curated-psu',
       category: 'PSU',
       authority: 'Central and State Power Utilities / PSUs',
-      title: 'Power PSU & Utility Recruitment Tracker',
-      posts: 'Engineering, technical, apprentice, management and executive vacancies',
-      qualification: 'Verify GATE score, branch, CGPA, age, experience and PSU-specific eligibility.',
+      title: 'PowerGrid, NTPC, TRANSCO & PSU Engineering Recruitment',
+      posts: 'GATE-linked engineering, executive, technical, apprentice and utility posts',
+      qualification: 'Verify GATE score/discipline, CGPA, branch, age and PSU-specific experience rules.',
       application_start_date: '',
       closing_at: '',
       official_notification_url: 'https://www.psuconnect.in/',
       alternateOfficialUrl: 'https://www.india.gov.in/topics/industries',
       preset_target: 'PSU_HUB',
-      status: 'UTILITY / PSU NOTICE STATUS TO VERIFY'
+      status: 'PSU CYCLE / OFFICIAL NOTICE VERIFY'
     }
   ];
 }
@@ -248,8 +248,8 @@ function renderCuratedNotificationCards(items) {
               <span>Registration closes: Refer to official notice</span>
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
-              <a href="${esc(item.official_notification_url)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-bold text-xs">Official Notice / Portal</a>
-              ${item.alternateOfficialUrl ? `<a href="${esc(item.alternateOfficialUrl)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 font-extrabold text-xs">Alternate Portal</a>` : ''}
+              <a href="${esc(item.official_notification_url)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">Apply on Official Website ↗</a>
+              ${item.alternateOfficialUrl ? `<a href="${esc(item.alternateOfficialUrl)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-bold text-xs">Official alternate portal</a>` : ''}
             </div>
           </div>
         `).join('')}
@@ -665,23 +665,19 @@ const JobAlertsRegistry = {
     }
 
     if (validLiveItems.length === 0) {
-      const fallback = getCategoryFallback(this.activeFilter);
-      list.innerHTML = html + staticBoard + curatedCards + `
-        <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] space-y-3">
-          <div>
+      let emptyCategoryCard = '';
+      if (curatedItems.length === 0) {
+        const fallback = getCategoryFallback(this.activeFilter);
+        emptyCategoryCard = `
+          <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] space-y-3">
             <h3 class="text-sm font-black text-amber-300">${esc(fallback.title)}</h3>
-            <p class="text-xs text-slate-300 mt-1">${esc(fallback.description)}</p>
+            <p class="text-xs text-slate-300">${esc(fallback.description)}</p>
+            <p class="text-[11px] text-slate-400"><strong class="text-white">Official verification:</strong> ${esc(fallback.checks)}</p>
+            <a href="${esc(fallback.portal)}" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">Open official portal ↗</a>
           </div>
-          <div class="grid md:grid-cols-2 gap-3 text-[11px] text-slate-400">
-            <p><strong class="text-white">Official verification:</strong> ${esc(fallback.checks)}</p>
-            <p><strong class="text-white">Check official source:</strong> Visit the category portal and confirm that an application is open. Expired closing dates are automatically excluded.</p>
-          </div>
-          <div class="flex flex-wrap gap-2">
-            <a href="${esc(fallback.portal)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 font-extrabold text-xs">Open official portal</a>
-            ${fallback.alternate ? `<a href="${esc(fallback.alternate)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/10 text-slate-200 font-bold text-xs">Open alternate official portal</a>` : ''}
-          </div>
-        </div>
-      `;
+        `;
+      }
+      list.innerHTML = html + curatedCards + emptyCategoryCard + staticBoard;
       if (window.lucide) lucide.createIcons();
       return;
     }
@@ -767,17 +763,17 @@ const JobAlertsRegistry = {
             </a>
 
             ${applyUrl ? `
-              <a href="${esc(applyUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-extrabold text-xs transition flex items-center space-x-1.5 shadow-md">
+              <a href="${esc(applyUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-md">
                 <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                <span>Apply Online</span>
+                <span>Apply on Official Website ↗</span>
               </a>
-            ` : ''}
+            ` : `<a href="${esc(notifUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-md"><span>Apply on Official Website ↗</span></a>`}
           </div>
         </div>
       `;
     });
 
-    list.innerHTML = html + staticBoard + curatedCards;
+    list.innerHTML = html + curatedCards + staticBoard;
     if (window.lucide) lucide.createIcons();
   },
 
