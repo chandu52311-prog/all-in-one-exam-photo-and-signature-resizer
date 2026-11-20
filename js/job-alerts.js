@@ -28,6 +28,7 @@ const OFFICIAL_PORTALS = {
 };
 
 const CATEGORIES = [
+  { key: "ALL", label: "All Active" },
   { key: "UPSC", label: "UPSC" },
   { key: "SSC", label: "SSC" },
   { key: "RAILWAYS", label: "Railways (RRB)" },
@@ -115,21 +116,26 @@ function safeOfficialUrl(value) {
 
 function categoryForItem(item) {
   const explicit = String(item?.category || "").trim().toUpperCase();
-  if (explicit) return explicit;
-  const text = `${item?.authority || ""} ${item?.title || ""} ${item?.organization || ""}`.toUpperCase();
-  if (/UPSC/.test(text)) return "UPSC";
-  if (/\bSSC\b/.test(text)) return "SSC";
-  if (/RRB|RAILWAY|RPF/.test(text)) return "RAILWAYS";
-  if (/APPSC|TGPSC|TSPSC|STATE PSC|PUBLIC SERVICE COMMISSION/.test(text)) return "STATE_PSC";
-  if (/IBPS|SBI|RBI|BANK/.test(text)) return "BANKING";
-  if (/ARMY|NAVY|AIR FORCE|DEFENCE|CAPF/.test(text)) return "DEFENCE";
-  if (/NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL|PSU|UTILITY/.test(text)) return "PSU";
-  if (/STATE GOVERNMENT|POLICE|DEPARTMENT/.test(text)) return "STATE_GOVT";
-  return "STATE_GOVT";
+  const text = `${item?.authority || ""} ${item?.title || ""} ${item?.organization || ""} ${item?.exam_name || ""}`.toUpperCase();
+
+  // State PSC records must be split strictly by authority/title.
+  if (/ANDHRA PRADESH PUBLIC SERVICE COMMISSION|\bAPPSC\b/.test(text)) return "APPSC";
+  if (/TELANGANA PUBLIC SERVICE COMMISSION|\bTGPSC\b|\bTSPSC\b/.test(text)) return "TGPSC";
+
+  if (/UNION PUBLIC SERVICE COMMISSION|\bUPSC\b/.test(text) || explicit.startsWith("UPSC")) return "UPSC";
+  if (/STAFF SELECTION COMMISSION|\bSSC\b/.test(text) || explicit.startsWith("SSC")) return "SSC";
+  if (/RAILWAY RECRUITMENT BOARD|\bRRB\b|\bRPF\b|\bRAILWAYS?\b/.test(text) || explicit === "RAILWAYS" || explicit === "RRB") return "RAILWAYS";
+  if (/\bIBPS\b|\bSBI\b|\bRBI\b|RESERVE BANK|BANKING/.test(text) || ["BANKING","IBPS","SBI","RBI"].includes(explicit)) return "BANKING";
+  if (/INDIAN ARMY|INDIAN NAVY|INDIAN AIR FORCE|\bDEFENCE\b|\bARMY\b|\bNAVY\b|\bAIR_FORCE\b/.test(text) || ["DEFENCE","ARMY","NAVY","AIR_FORCE"].includes(explicit)) return "DEFENCE";
+  if (/NTPC|BHEL|POWERGRID|\bPGCIL\b|NHPC|ONGC|IOCL|GAIL|PSU|POWER UTILIT/.test(text) || explicit === "PSU" || explicit === "PSU & POWER" || explicit.startsWith("PSU")) return "PSU";
+
+  if (explicit === "APPSC") return "APPSC";
+  if (explicit === "TGPSC") return "TGPSC";
+  return "OTHER";
 }
 
 const JobAlertsRegistry = {
-  activeCategory: "UPSC",
+  activeCategory: "ALL",
   records: [],
   archiveRecords: [],
   isLoading: false,
@@ -163,8 +169,9 @@ const JobAlertsRegistry = {
         <div id="organizationCategoryTabs" class="grid grid-cols-2 md:grid-cols-4 gap-2">
           ${CATEGORIES.map(category => `
             <button type="button" data-category="${category.key}" id="job-category-${category.key}"
-              class="exam-btn p-2.5 text-xs ${category.key === "UPSC" ? "active" : ""}">
-              ${esc(category.label)}
+              class="exam-btn p-2.5 text-xs ${category.key === "ALL" ? "active" : ""}">
+              <span>${esc(category.label)}</span>
+              <span id="job-count-${category.key}" class="ml-1 inline-flex min-w-5 h-5 items-center justify-center rounded-full bg-black/20 px-1 text-[10px]">0</span>
             </button>
           `).join("")}
         </div>
@@ -259,23 +266,28 @@ const JobAlertsRegistry = {
     const now = new Date();
     let source = this.records.filter(record => isOpenRecord(record, now));
 
-    source = source.filter(record => {
-      const recordCategory = String(record._category || record.category || "").trim().toUpperCase();
-      const selected = this.activeCategory;
-      if (recordCategory === selected) return true;
-      if (selected === "UPSC") return recordCategory === "UPSC" || recordCategory.startsWith("UPSC_") || /UNION PUBLIC SERVICE COMMISSION|UPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "SSC") return recordCategory === "SSC" || recordCategory.startsWith("SSC_") || /\bSSC\b/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "RAILWAYS") return recordCategory === "RAILWAYS" || recordCategory.startsWith("RRB") || recordCategory === "RPF" || /RAILWAY|RRB|RPF/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "APPSC") return recordCategory === "APPSC" || /ANDHRA PRADESH PUBLIC SERVICE COMMISSION|APPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "TGPSC") return recordCategory === "TGPSC" || /TELANGANA PUBLIC SERVICE COMMISSION|TGPSC|TSPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "BANKING") return recordCategory === "BANKING" || /IBPS|SBI|RBI|BANK/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "DEFENCE") return recordCategory === "DEFENCE" || ["ARMY","NAVY","AIR_FORCE"].includes(recordCategory) || /ARMY|NAVY|AIR FORCE|DEFENCE/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      if (selected === "PSU") return recordCategory === "PSU" || ["NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL"].includes(recordCategory) || /PSU|NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
-      return false;
-    });
+    if (this.activeCategory !== "ALL") {
+      source = source.filter(record => categoryForItem(record) === this.activeCategory);
+    }
 
     source.sort((a, b) => (parseIST(b.released_at, false)?.getTime() || 0) - (parseIST(a.released_at, false)?.getTime() || 0));
     return source;
+  },
+
+  updateCategoryCounts() {
+    const now = new Date();
+    const openRecords = this.records.filter(record => isOpenRecord(record, now));
+    const counts = { ALL: openRecords.length };
+
+    openRecords.forEach(record => {
+      const organization = categoryForItem(record);
+      if (organization !== "OTHER") counts[organization] = (counts[organization] || 0) + 1;
+    });
+
+    CATEGORIES.forEach(category => {
+      const badge = document.getElementById(`job-count-${category.key}`);
+      if (badge) badge.textContent = String(counts[category.key] || 0);
+    });
   },
 
   countdown(record) {
@@ -293,6 +305,7 @@ const JobAlertsRegistry = {
     const container = document.getElementById("alerts-listing-container");
     if (!container) return;
     const now = new Date();
+    this.updateCategoryCounts();
     const filtered = this.getFilteredRecords();
 
     const verification = document.getElementById("jobLastVerified");
