@@ -294,6 +294,76 @@ function switchAuthority(authKey) {
 }
 window.switchAuthority = switchAuthority;
 
+function getPyqSectorGuide(authKey) {
+  const guides = {
+    GATE: {
+      title: 'GATE paper guide: pattern, strategy, and review',
+      pattern: 'Check the year, paper code, question types, marking scheme, and General Aptitude weight. Cross-check the current syllabus and qualifying rules because an older paper is a pattern reference, not a current notification.',
+      strategy: 'Time each subject attempt, separate recall errors from calculation errors, and revise weak units from a formula and concept sheet.',
+      answer: 'Use an official answer key or response sheet to score honestly. Recheck numerical tolerance, units, and negative marking rather than changing answers merely to match a memory.',
+      subjects: 'Maintain subject notes for core theory, standard formulas, assumptions, and solved PYQ patterns; include both direct and application-level questions.'
+    },
+    SSC: {
+      title: 'SSC paper guide: sections, revision, and answer-key review',
+      pattern: 'Review the split among Quantitative Aptitude, Reasoning, General Awareness, and English, plus shift and tier-specific instructions. Verify the latest exam notice before planning.',
+      strategy: 'Attempt quick sections first, follow a section-wise time target, and keep a separate log for calculation and reading errors.',
+      answer: 'Match responses only against an authentic key or response sheet. Question objections should be supported by the notice, syllabus, and reliable source.',
+      subjects: 'Make concise notes for arithmetic shortcuts, vocabulary, grammar rules, one-liner polity/history/geography, and recent-current-affairs sources.'
+    },
+    RRB: {
+      title: 'RRB paper guide: CBT pattern and post-specific preparation',
+      pattern: 'Identify CBT stage, post, subject weight, time allocation, language, and negative marking. Technical subjects vary significantly across NTPC, JE, ALP, Group D, and paramedical posts.',
+      strategy: 'Practise with the exact number of questions and use early screening questions to reserve time for technical or general-knowledge sections.',
+      answer: 'Use the official key or response link for scoring; distinguish options due to missing concepts from mistakes caused by speed.',
+      subjects: 'Create separate notes for the selected post: technical basics, railway awareness, arithmetic, reasoning, science, and general current affairs.'
+    },
+    STATE_PSC: {
+      title: 'APPSC/TGPSC paper guide: syllabus and state-awareness review',
+      pattern: 'Confirm paper number, optional or technical subject, screening stage, language, and official marks. APPSC and TGPSC post patterns are different and may change by recruitment.',
+      strategy: 'Study state geography, economy, polity, history, schemes, and core subject notes in weekly cycles; practise writing and comprehension as required.',
+      answer: 'Cross-check every doubtful answer with the official final key and notification syllabus. Do not reuse an unofficial key as proof for objections.',
+      subjects: 'Maintain bilingual terminology, Andhra Pradesh/Telangana facts, constitutional provisions, public administration concepts, and technical formulas for selected posts.'
+    },
+    UPSC: {
+      title: 'UPSC Prelims paper guide: elimination and revision method',
+      pattern: 'Separate GS-1 scope, CSAT nature, number of questions, and official negative marking. Earlier papers help identify themes but do not replace the current syllabus.',
+      strategy: 'Build elimination discipline, track confidence, and limit speculative attempts. In CSAT, practise reading comprehension and basic quantitative speed separately.',
+      answer: 'Use the official key after a complete timed attempt. Review why correct options are valid and why alternatives are incorrect.',
+      subjects: 'Notes should cover polity, economy, environment, geography, history, science, and current-affairs connections with sources and dates.'
+    },
+    BTECH: {
+      title: 'B.Tech paper guide: university pattern and subject revision',
+      pattern: 'Check semester regulations, branch, subject code, internal/external divisions, question type, and section instructions from the paper.',
+      strategy: 'Classify questions by unit and derive each formula. Solve unit-wise PYQs before full timed papers so missing prerequisites are identified early.',
+      answer: 'Compare only with prescribed textbooks, laboratory records, or faculty solution standards. University papers do not always publish a universal final key.',
+      subjects: 'Build compact formula and theorem notes with units, assumptions, derivation steps, and common numerical traps.'
+    },
+    ENTRANCE: {
+      title: 'JEE/entrance paper guide: attempt planning and topic review',
+      pattern: 'Review the subject balance, section rules, integer or multiple-choice format, optional attempt limits, and marking method applicable to that NTA or state entrance session.',
+      strategy: 'Use subject rotations, preserve short accuracy checks, and leave difficult calculation blocks for a planned second pass.',
+      answer: 'Score with the official answer key and challenge windows rather than informal solution channels. Preserve response evidence and the exact question version.',
+      subjects: 'Use concept maps for Physics, Chemistry, and Mathematics, with formula cards, reaction mechanisms, common approximations, and solved standard problem types.'
+    }
+  };
+  return guides[authKey] || guides.GATE;
+}
+
+function renderPyqSectorGuide() {
+  const guideEl = document.getElementById('pyqSectorGuide');
+  if (!guideEl) return;
+  const guide = getPyqSectorGuide(currentAuthorityKey);
+  guideEl.innerHTML = `
+    <h3 class="text-base font-black text-amber-400">${guide.title}</h3>
+    <p><strong class="text-white">Exam pattern overview:</strong> ${guide.pattern}</p>
+    <div class="grid md:grid-cols-3 gap-3">
+      <p><strong class="text-white">Preparation strategy:</strong> ${guide.strategy}</p>
+      <p><strong class="text-white">Answer key/archive usage:</strong> ${guide.answer}</p>
+      <p><strong class="text-white">Subject notes:</strong> ${guide.subjects}</p>
+    </div>
+  `;
+}
+
 // ----------------------------------------------------
 // CONTROLLER: TIER-2 SUB-BUTTONS RENDERER
 // ----------------------------------------------------
@@ -323,6 +393,7 @@ function renderSubButtons() {
   });
 
   container.innerHTML = html;
+  renderPyqSectorGuide();
   renderPaperCards();
 }
 
@@ -421,7 +492,18 @@ function openPyqReader(title, year, body, filePath) {
     : `${SUPABASE_STORAGE_BASE}/pyq/${filePath}`;
 
   const qBody = document.getElementById('readerQuestionsBody');
+  const guide = getPyqSectorGuide(currentAuthorityKey);
   qBody.innerHTML = `
+    <article class="rounded-xl border border-amber-500/20 bg-amber-500/[0.04] p-4 space-y-3">
+      <h3 class="text-base font-black text-amber-400">${guide.title}</h3>
+      <p><strong class="text-white">This selected paper:</strong> Treat ${title} (${year}) as a record of that year's syllabus, difficulty, and question style. ${guide.pattern}</p>
+      <div class="grid md:grid-cols-3 gap-3">
+        <p><strong class="text-white">Preparation strategy:</strong> ${guide.strategy}</p>
+        <p><strong class="text-white">Answer key usage:</strong> ${guide.answer}</p>
+        <p><strong class="text-white">Subject notes:</strong> ${guide.subjects}</p>
+      </div>
+      <p class="text-slate-400">Before relying on a downloaded paper or uploaded answer, verify the year, session, set, and official key on the conducting body's portal. This viewer is an academic reference, not an official claim of the final result.</p>
+    </article>
     <div class="rounded-xl border border-white/10 bg-black/40 overflow-hidden flex flex-col items-center justify-center min-h-[70vh] w-full">
       <iframe src="${targetUrl}#toolbar=1" class="w-full h-[70vh] border-none rounded-xl" title="Official Question Paper Preview">
         <p class="p-6 text-center text-slate-400 text-sm">

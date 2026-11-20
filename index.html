@@ -365,6 +365,24 @@
         <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet standard pixel dimensions, dpi specifications, and file size byte thresholds.
       </div>
 
+      <article class="glass-card gold-border p-5 rounded-2xl space-y-4 text-xs leading-relaxed text-slate-300">
+        <div>
+          <h2 class="text-base font-black text-amber-400">How to resize photos and signatures</h2>
+          <p class="mt-1 text-slate-400">Choose an examination, select Photo or Signature, upload a clear original, check the displayed specification, and download the formatted file.</p>
+        </div>
+        <ol class="grid md:grid-cols-2 gap-2 list-decimal list-inside">
+          <li><strong class="text-white">Check the notice:</strong> confirm the active cycle's dimensions, format, and minimum/maximum KB limit.</li>
+          <li><strong class="text-white">Upload a clear image:</strong> use a recent, well-lit portrait or signature with simple contrast and no text overlays.</li>
+          <li><strong class="text-white">Confirm the target:</strong> SSC, UPSC, RRB, GATE, APPSC/TGPSC, IBPS/SBI, NTA, and PSU/TRANSCO presets are available.</li>
+          <li><strong class="text-white">Verify the result:</strong> preview the output, read the verification note, and test the downloaded file before application submission.</li>
+        </ol>
+        <div class="grid md:grid-cols-2 gap-3 pt-1">
+          <p><strong class="text-amber-300">KB and dimensions:</strong> The on-screen target is a working preset. Online forms vary by post and year; final validity always comes from that examination's official instructions. Do not enlarge a tiny photo, crop an old image, or add artificial borders unless the notice permits it.</p>
+          <p><strong class="text-amber-300">Privacy:</strong> Photo and signature editing is performed locally in this browser. The uploaded image is not sent to an ExamResizer server. Closing or refreshing the page removes the current in-memory workspace.</p>
+        </div>
+        <p class="text-slate-400"><strong class="text-white">FAQ tip:</strong> If the file is too small or large, select another target preset and regenerate rather than repeatedly renaming a file. JPG/JPEG is usually accepted, while PNG should be used only when the notice allows it.</p>
+      </article>
+
       <div class="glass-card gold-border p-5 rounded-2xl space-y-5">
         <div class="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-slate-400 border-b border-white/10 pb-3">
           <span>Target Examination Category</span>
@@ -446,6 +464,16 @@
     
     <!-- SECTION: SPEED APTITUDE & IQ ARENA -->
     <section id="iq-zone" class="hidden space-y-4">
+      <article class="glass-card p-5 rounded-2xl border border-purple-500/30 space-y-3 text-xs leading-relaxed text-slate-300">
+        <h2 class="text-base font-black text-purple-300">How to use the Speed Aptitude & Calculation Arena</h2>
+        <p>Choose Tables, Squares, Roots, Cubes, BODMAS, or Rapid English. Each game contains five progressive stages and ten questions per sprint. The timer counts down without pausing, while consecutive correct answers build a streak.</p>
+        <div class="grid md:grid-cols-3 gap-3">
+          <p><strong class="text-white">Step 1:</strong> Start at Level 1, read the question, and answer with the numeric box or English option buttons.</p>
+          <p><strong class="text-white">Step 2:</strong> Correct answers advance automatically or on Enter; incorrect attempts end the streak and show the result.</p>
+          <p><strong class="text-white">Step 3:</strong> Clear the required score to unlock the next level. Repeat a level to improve accuracy and average seconds per question.</p>
+        </div>
+        <p class="text-slate-400"><strong class="text-purple-300">Mental math tip:</strong> Practise tables and squares for recall, use approximation only after understanding the exact method, and solve BODMAS from brackets through addition/subtraction. Keep English choices in the exam language only if a drill offers that setting.</p>
+      </article>
       <div class="glass-card rounded-2xl p-6 border border-purple-500/30 space-y-6">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
@@ -682,6 +710,16 @@
           <span class="px-3 py-1 rounded-md bg-black/60 border border-white/10 text-slate-300 font-bold text-xs" id="activeAuthorityCount">Archive Scope: 2020–2026</span>
         </div>
 
+        <article id="pyqSectorGuide" class="p-4 rounded-xl border border-white/10 bg-white/[0.02] space-y-3 text-xs leading-relaxed text-slate-300">
+          <h3 class="text-base font-black text-amber-400">GATE paper guide: pattern, strategy, and review</h3>
+          <p>Use an official paper to understand the section mix, command words, calculator rules, and time pressure shown for that year. GATE engineering papers commonly combine General Aptitude with discipline questions, but always verify the current syllabus and exam-day rules.</p>
+          <div class="grid md:grid-cols-3 gap-3">
+            <p><strong class="text-white">Preparation strategy:</strong> Solve under timed conditions, mark weak concepts, then revise formula sheets and repeated topics before a second timed attempt.</p>
+            <p><strong class="text-white">Answer key usage:</strong> Compare only the final response with an authentic key or official response sheet. Investigate skipped and incorrect items, not just the score.</p>
+            <p><strong class="text-white">Subject notes:</strong> Maintain one page of formulas, standard units, assumptions, and recurring question types for each engineering subject.</p>
+          </div>
+        </article>
+
         <div class="space-y-3" id="papersStackContainer"></div>
       </div>
 
@@ -833,10 +871,15 @@
           <div class="bg-black/50 p-4 rounded-xl border border-white/10 text-xs text-slate-300 space-y-2.5 leading-relaxed">
             <h4 class="font-bold text-white uppercase tracking-wider">Candidate Guidelines & Examination Rules:</h4>
             <p>1. <strong>Passing Criterion:</strong> Score at least <strong>35.00% Marks</strong> to unlock the next test.</p>
-            <p>2. <strong>Scoring System:</strong> Correct +2.00 marks, Incorrect -0.50 negative marks.</p>
+            <p id="gatekeeperScoringRule">2. <strong>Scoring System:</strong> Correct +2.00 marks, Incorrect -0.50 negative marks.</p>
             <p>3. <strong>Timer Control:</strong> Session timer runs uninterrupted.</p>
             <p>4. <strong>Result Analysis:</strong> Download your analytical result card with answer keys.</p>
           </div>
+          <article class="p-4 rounded-xl border border-blue-500/20 bg-blue-500/[0.04] text-xs leading-relaxed text-slate-300 space-y-2">
+            <h4 class="font-bold text-blue-300">How to take a CBT mock</h4>
+            <p>Choose an exam and branch or a subject drill, select an unlocked test, accept the rules, and start the uninterrupted timer. Every correct response earns <strong>+2.00</strong>; every incorrect response deducts <strong>-0.50</strong>. An unattempted question normally earns zero.</p>
+            <p><strong>Time management:</strong> scan the section first, answer confident questions early, mark difficult items for review, and reserve a final few minutes for rechecking marked responses. Save & Next records an answer; Clear Response removes it.</p>
+          </article>
 
           <div class="p-4 rounded-xl bg-white/[0.03] border border-amber-500/30 flex items-start space-x-3">
             <input type="checkbox" id="policyAgreementCheckbox" onchange="toggleCBTReady(this)" class="mt-1 w-4 h-4 rounded accent-amber-500 cursor-pointer">

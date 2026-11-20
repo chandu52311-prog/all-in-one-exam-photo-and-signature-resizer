@@ -37,6 +37,17 @@ const PDFSuite = {
           </button>
         </div>
 
+        <article class="mt-5 p-4 rounded-xl border border-emerald-500/20 bg-emerald-500/[0.04] space-y-3 text-xs leading-relaxed text-slate-300">
+          <h3 class="text-base font-black text-emerald-300">How to use PDF Fast Studio safely</h3>
+          <div class="grid md:grid-cols-2 gap-3">
+            <p><strong class="text-white">Compress:</strong> Select a PDF and choose 100 KB, 200 KB, or 300 KB. Processing is local; verify the actual downloaded size in the result card and recheck legibility. Compression cannot guarantee every portal's acceptance because page count and source quality also matter.</p>
+            <p><strong class="text-white">Merge memos:</strong> Choose the required certificates or memos in the order needed, then merge them into one PDF. Review the page order before uploading.</p>
+            <p><strong class="text-white">Image to A4 PDF:</strong> Select JPG or PNG pages. The studio places images on standard A4 pages locally, which is useful for clear scans, mark sheets, and declaration formats.</p>
+            <p><strong class="text-white">Extract pages locally:</strong> Convert a PDF into JPG pages or enter a range such as 1 or 1-3 for split output. All conversion remains in browser memory and should not be treated as document authentication.</p>
+          </div>
+          <p class="text-slate-400"><strong class="text-emerald-300">FAQ tip:</strong> Keep a backup original. Confirm that portraits, signatures, seals, and text remain readable after compression, and follow the portal's accepted format, total page limit, and target file size.</p>
+        </article>
+
         <!-- 5 Safe & Fast Tools Grid -->
         <div class="grid grid-cols-2 md:grid-cols-5 gap-3 mt-5">
           <button onclick="PDFSuite.setTool('compress')" id="tool-btn-compress" class="pdf-tool-card active p-3 rounded-xl border border-emerald-500 bg-emerald-500/20 text-center transition">
