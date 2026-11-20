@@ -42,7 +42,7 @@ MONTHS_MAP = {
 }
 
 
-def parse_indian_date(date_str: str) -> datetime.date | None:
+def parse_indian_date(date_str: str) -> date | None:
     if not date_str or not date_str.strip():
         return None
     cleaned = date_str.strip().lower()
