@@ -98,12 +98,17 @@ def get_auth_headers():
     }
 
 
-def purge_expired(session: requests.Session):
+def archive_expired(session: requests.Session):
     now_utc = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     url = f"{SUPABASE_URL}/rest/v1/live_job_alerts?closing_at=lt.{quote(now_utc)}"
+    payload = {
+        "status": "Application Closed",
+        "archived_at": datetime.now(IST).isoformat(),
+        "archive_reason": "Application Closed"
+    }
     try:
-        r = session.delete(url, headers=get_auth_headers(), timeout=15)
-        logger.info(f"Purge expired records: HTTP {r.status_code}")
+        r = session.patch(url, headers=get_auth_headers(), json=payload, timeout=15)
+        logger.info(f"Archive expired records: HTTP {r.status_code}")
     except Exception as e:
         logger.error(f"Purge request error: {e}")
 
@@ -217,7 +222,10 @@ def discover_employment_news(session: requests.Session) -> list[dict]:
             candidates.append({
                 "id": job_id,
                 "authority": authority,
+                "organization": authority,
                 "title": title,
+                "exam_name": title,
+                "notification_number": f"EN-{issued_raw}",
                 "posts": f"Method: {app_method}",
                 "qualification": "Refer Official Employment News Notification",
                 "application_start_date": None,
@@ -253,7 +261,7 @@ def main():
     session = requests.Session()
 
     # Step 1: Purge records already expired
-    purge_expired(session)
+    archive_expired(session)
 
     # Step 2: Extract official jobs from Employment News
     all_jobs = discover_employment_news(session)

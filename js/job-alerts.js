@@ -1,872 +1,575 @@
 /**
- * ExamResizer Pro - Live Alerts Engine
- * Module: js/job-alerts.js
- * Architecture: 100% Dynamic Supabase Stream with Keyset Pagination & Per-Job Auth
- * Theme: Obsidian Dark Glass & Gold Accent UI Architecture
+ * ExamResizer - Live Government Recruitment & Examination Notifications
+ * Frontend reads only verified records from Supabase.
+ * No fabricated notification, vacancy, deadline or application URL is rendered.
  */
 
-const SUPABASE_API_URL = "https://znkwwzasysqkvtclmktd.supabase.co/rest/v1/live_job_alerts";
+const SUPABASE_API_URL = "https://znkwwzasysqkvtclmktd.supabase.co/rest/v1";
 const SUPABASE_ANON_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh0g_tQbM_zE9";
+const IST = "Asia/Kolkata";
 
-// HTML Sanitization Utility
-const esc = (s) => String(s ?? '').replace(/[&<>"']/g, c => ({
-  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-}[c]));
+const esc = (value) => String(value ?? "").replace(/[&<>"']/g, char => ({
+  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[char]));
 
-// 1. Strict Official Government & PSU Domain Allowlist for Notices / Documents
-const ALLOWED_GOV_PATTERNS = [
-  'gov.in', 'nic.in',
-  'upsc.gov.in', 'upsconline.nic.in', 'ssc.gov.in', 'rrbapply.gov.in',
-  'psc.ap.gov.in', 'tgpsc.gov.in', 'tspsc.gov.in',
-  'powergrid.in', 'ntpc.co.in', 'bhel.com', 'iocl.com',
-  'ongcindia.com', 'coalindia.in', 'sail.co.in', 'gailonline.com',
-  'bel-india.in', 'hal-india.co.in', 'nhpcindia.com'
+const OFFICIAL_PORTALS = {
+  UPSC: "https://upsc.gov.in/",
+  SSC: "https://ssc.gov.in/",
+  RAILWAYS: "https://www.rrbapply.gov.in/",
+  STATE_PSC: "https://www.indiacode.nic.in/",
+  APPSC: "https://psc.ap.gov.in/",
+  TGPSC: "https://www.tgpsc.gov.in/",
+  STATE_GOVT: "https://www.india.gov.in/topics/labour-employment",
+  BANKING: "https://www.ibps.in/",
+  SBI: "https://sbi.co.in/web/careers",
+  DEFENCE: "https://www.indianarmy.nic.in/",
+  PSU: "https://employmentnews.gov.in/",
+  IBPS: "https://www.ibps.in/"
+};
+
+const CATEGORIES = [
+  { key: "ALL", label: "All Active Alerts" },
+  { key: "UPSC", label: "UPSC" },
+  { key: "UPSC_CSE", label: "UPSC Civil Services" },
+  { key: "UPSC_IFS", label: "UPSC Forest Service" },
+  { key: "UPSC_ESE", label: "UPSC Engineering Services" },
+  { key: "UPSC_CDS", label: "UPSC CDS" },
+  { key: "UPSC_NDA", label: "UPSC NDA" },
+  { key: "UPSC_CAPF", label: "UPSC CAPF" },
+  { key: "SSC", label: "SSC" },
+  { key: "SSC_CGL", label: "SSC CGL" },
+  { key: "SSC_CHSL", label: "SSC CHSL" },
+  { key: "SSC_MTS", label: "SSC MTS" },
+  { key: "SSC_CPO", label: "SSC CPO" },
+  { key: "SSC_GD", label: "SSC GD" },
+  { key: "SSC_JE", label: "SSC JE" },
+  { key: "SSC_STENOGRAPHER", label: "SSC Stenographer" },
+  { key: "RAILWAYS", label: "Railways (RRB)" },
+  { key: "RRB_NTPC_GRAD", label: "RRB NTPC Graduate" },
+  { key: "RRB_NTPC_UNDERGRAD", label: "RRB NTPC Undergraduate" },
+  { key: "RRB_GROUP_D", label: "RRB Group D" },
+  { key: "RRB_JE", label: "RRB JE" },
+  { key: "RRB_ALP", label: "RRB ALP" },
+  { key: "RRB_TECHNICIAN", label: "RRB Technician" },
+  { key: "RPF", label: "RPF Recruitment" },
+  { key: "STATE_PSC", label: "State PSCs" },
+  { key: "APPSC", label: "APPSC" },
+  { key: "TGPSC", label: "TGPSC" },
+  { key: "STATE_GOVT", label: "State Government" },
+  { key: "STATE_AP", label: "Andhra Pradesh Government" },
+  { key: "STATE_TG", label: "Telangana Government" },
+  { key: "BANKING", label: "Banking" },
+  { key: "IBPS_PO", label: "IBPS PO" },
+  { key: "IBPS_CLERK", label: "IBPS Clerk" },
+  { key: "SBI_PO", label: "SBI PO" },
+  { key: "SBI_CLERK", label: "SBI Clerk" },
+  { key: "RBI", label: "RBI" },
+  { key: "DEFENCE", label: "Defence" },
+  { key: "ARMY", label: "Indian Army" },
+  { key: "NAVY", label: "Indian Navy" },
+  { key: "AIR_FORCE", label: "Indian Air Force" },
+  { key: "PSU", label: "PSU & Power" },
+  { key: "NTPC", label: "NTPC" },
+  { key: "BHEL", label: "BHEL" },
+  { key: "POWERGRID", label: "POWERGRID" },
+  { key: "NHPC", label: "NHPC" },
+  { key: "ONGC", label: "ONGC" },
+  { key: "IOCL", label: "IOCL" },
+  { key: "GAIL", label: "GAIL" },
+  { key: "ARCHIVED", label: "Archived" }
 ];
 
-// 2. Verified Third-Party Application Engines (Officially Contracted by Gov / PSUs)
-const ALLOWED_APP_ENGINES = [
-  ...ALLOWED_GOV_PATTERNS,
-  'digialm.com',
-  'online-cbexams.com',
-  'cdac.in',
-  'ibps.in',
-  'cbtexam.in',
-  'nta.ac.in'
-];
-
-const matchHostInPatterns = (host, patterns) => {
-  return patterns.some(pat => {
-    const normalized = pat.replace(/^\./, '').toLowerCase();
-    return host === normalized || host.endsWith('.' + normalized);
-  });
-};
-
-const safeOfficialNoticeUrl = (u) => {
-  if (!u || typeof u !== 'string') return '';
-  try {
-    const x = new URL(u.trim());
-    if (x.protocol !== 'https:') return '';
-    if (x.username || x.password) return ''; // Embedded credentials rejection
-    return matchHostInPatterns(x.hostname.toLowerCase(), ALLOWED_GOV_PATTERNS) ? x.href : '';
-  } catch {
-    return '';
+function parseIST(value, endOfDay = false) {
+  if (!value || typeof value !== "string") return null;
+  const cleaned = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(cleaned)) {
+    const timePart = endOfDay ? "23:59:59.999" : "00:00:00.000";
+    const date = new Date(`${cleaned}T${timePart}+05:30`);
+    return Number.isFinite(date.getTime()) ? date : null;
   }
-};
+  const date = new Date(cleaned);
+  return Number.isFinite(date.getTime()) ? date : null;
+}
 
-const safeApplicationUrl = (u) => {
-  if (!u || typeof u !== 'string') return '';
+function formatIST(value, endOfDay = false) {
+  const date = parseIST(value, endOfDay);
+  if (!date) return "";
   try {
-    const x = new URL(u.trim());
-    if (x.protocol !== 'https:') return '';
-    if (x.username || x.password) return ''; // Embedded credentials rejection
-    return matchHostInPatterns(x.hostname.toLowerCase(), ALLOWED_APP_ENGINES) ? x.href : '';
-  } catch {
-    return '';
-  }
-};
-
-// Fail-closed IST Deadline Parser: Returns NaN for invalid strings
-const parseISTDeadlineMs = (dateStr, isStart = false) => {
-  if (!dateStr || typeof dateStr !== 'string') return NaN;
-  try {
-    const cleanStr = dateStr.trim();
-    if (/^\d{4}-\d{2}-\d{2}$/.test(cleanStr)) {
-      const timePart = isStart ? '00:00:00.000' : '23:59:59.999';
-      const ms = new Date(`${cleanStr}T${timePart}+05:30`).getTime();
-      return Number.isFinite(ms) ? ms : NaN;
-    }
-    const ms = new Date(cleanStr).getTime();
-    return Number.isFinite(ms) ? ms : NaN;
-  } catch {
-    return NaN;
-  }
-};
-
-const fmtIST = (iso, isStart = false) => {
-  const ms = parseISTDeadlineMs(iso, isStart);
-  if (!Number.isFinite(ms)) return '';
-  try {
-    return new Date(ms).toLocaleString('en-IN', {
-      timeZone: 'Asia/Kolkata',
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: 'numeric',
-      minute: '2-digit',
+    return new Intl.DateTimeFormat("en-IN", {
+      timeZone: IST,
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
       hour12: true
-    }) + ' IST';
+    }).format(date) + " IST";
   } catch {
-    return '';
+    return "";
   }
-};
-
-function getRegistrationClosingValue(item) {
-  if (!item || typeof item !== 'object') return '';
-  return item.closing_at || item.last_date || item.closing_date || '';
 }
 
-function getRegistrationClosingIST(item) {
-  const raw = getRegistrationClosingValue(item);
-  if (!raw) return '';
-  return fmtIST(raw, false);
+function closingValue(item) {
+  return item?.closing_at || item?.last_date || item?.closing_date || "";
 }
 
-function getCuratedExamNoticeBoard() {
-  const cards = [
-    ['SSC', 'Notifications, admit cards, answer keys and posts', 'https://ssc.gov.in/', 'https://ssc.gov.in/'],
-    ['RRB', 'Regional railway recruitment notices and CEN updates', 'https://www.rrbcdg.gov.in/', 'https://www.indianrailways.gov.in/'],
-    ['UPSC', 'Civil services and central recruitment examinations', 'https://upsc.gov.in/', 'https://upsc.gov.in/'],
-    ['IBPS / SBI', 'Banking recruitment calendar and institute notices', 'https://www.ibps.in/', 'https://sbi.co.in/web/careers'],
-    ['NTA', 'National entrance and admission examination notices', 'https://nta.ac.in/', 'https://nta.ac.in/Examination'],
-    ['GATE', 'GATE application, admit card and institute information', 'https://gate.iitr.ac.in/', 'https://gate.iitr.ac.in/'],
-    ['APPSC / TGPSC', 'Andhra Pradesh and Telangana public service notices', 'https://psc.ap.gov.in/', 'https://www.tgpsc.gov.in/']
-  ];
-
-  return `
-    <article class="p-4 rounded-xl border border-amber-500/25 bg-amber-500/[0.04] space-y-3">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <div>
-          <h3 class="text-sm font-black text-amber-300">Current official notice &amp; exam portal board</h3>
-          <p class="text-[11px] text-slate-400">Use these portals to verify dates, eligibility, fees, corrigenda and active applications.</p>
-        </div>
-        <span class="text-[10px] text-emerald-300 font-bold border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 rounded-lg">Official sources</span>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-2.5">
-        ${cards.map(([name, description, url, labelUrl]) => `
-          <div class="p-3 rounded-xl border border-white/10 bg-black/25">
-            <h4 class="text-xs font-bold text-white">${name}</h4>
-            <p class="text-[11px] text-slate-400 mt-1">${description}</p>
-            <a href="${url}" target="_blank" rel="noopener noreferrer" class="inline-block mt-2 text-[11px] text-amber-300 underline font-bold">Open official portal</a>
-          </div>
-        `).join('')}
-      </div>
-      <p class="text-[11px] text-slate-400"><strong class="text-white">Verification checklist:</strong> Confirm notification number, post, category, cut-off date, application window, fee, exam stage, corrigendum and closing time before applying. A board link is a starting point, not a guarantee that a recruitment is currently open.</p>
-    </article>
-  `;
+function openingValue(item) {
+  return item?.application_start_date || item?.registration_start_date || item?.opening_date || "";
 }
-window.getCuratedExamNoticeBoard = getCuratedExamNoticeBoard;
 
-function getCuratedExamNotifications() {
-  return [
-    {
-      id: 'curated-ssc-cgl',
-      category: 'CENTRAL',
-      authority: 'Staff Selection Commission',
-      title: 'SSC CGL Examination',
-      posts: 'Combined Graduate Level posts',
-      qualification: 'Graduate qualification and post-wise age/category rules apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://ssc.gov.in/',
-      preset_target: 'SSC',
-      status: 'ANNUAL CYCLE / DATES TO VERIFY'
-    },
-    {
-      id: 'curated-ssc-chsl',
-      category: 'CENTRAL',
-      authority: 'Staff Selection Commission',
-      title: 'SSC CHSL Examination',
-      posts: 'Combined Higher Secondary Level posts',
-      qualification: '10+2 qualification and post-wise age/category rules apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://ssc.gov.in/',
-      preset_target: 'SSC',
-      status: 'ANNUAL CYCLE / DATES TO VERIFY'
-    },
-    {
-      id: 'curated-upsc-cse',
-      category: 'CENTRAL',
-      authority: 'Union Public Service Commission',
-      title: 'UPSC Civil Services Examination',
-      posts: 'Civil Services examination',
-      qualification: 'Graduate qualification, age and attempt limits apply under the UPSC notice.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://upsc.gov.in/',
-      preset_target: 'UPSC',
-      status: 'ANNUAL EXAM SCHEDULE / VERIFY'
-    },
-    {
-      id: 'curated-rrb-ntpc',
-      category: 'RAILWAYS',
-      authority: 'Railway Recruitment Boards',
-      title: 'RRB NTPC Recruitment',
-      posts: 'NTPC graduate and undergraduate posts',
-      qualification: 'Post-wise education, medical, age and trade rules apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://www.rrbapply.gov.in/',
-      preset_target: 'RRB',
-      status: 'CENTRALISED NOTICE / CEN VERIFY'
-    },
-    {
-      id: 'curated-rrb-alp',
-      category: 'RAILWAYS',
-      authority: 'Railway Recruitment Boards',
-      title: 'RRB ALP Recruitment',
-      posts: 'Assistant Loco Pilot and related technician posts',
-      qualification: 'Prescribed ITI/diploma, qualification, age and medical standards apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://www.rrbapply.gov.in/',
-      preset_target: 'RRB',
-      status: 'CENTRALISED NOTICE / CEN VERIFY'
-    },
-    {
-      id: 'curated-appsc-group1',
-      category: 'STATE_PSC',
-      authority: 'Andhra Pradesh Public Service Commission',
-      title: 'APPSC Group-1 Services',
-      posts: 'Group-1 gazetted and executive services',
-      qualification: 'Graduate qualification, local status, age and service rules apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://psc.ap.gov.in/',
-      preset_target: 'STATE_PSC',
-      status: 'PSC CYCLE / NOTIFICATION VERIFY'
-    },
-    {
-      id: 'curated-tgpsc-group2',
-      category: 'STATE_PSC',
-      authority: 'Telangana Public Service Commission',
-      title: 'TGPSC Group-2 Services',
-      posts: 'Group-2 administrative and executive posts',
-      qualification: 'Degree qualification, local status, age and category rules apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://www.tgpsc.gov.in/',
-      preset_target: 'STATE_PSC',
-      status: 'PSC CYCLE / NOTIFICATION VERIFY'
-    },
-    {
-      id: 'curated-state-police',
-      category: 'STATE_GOVT',
-      authority: 'State Police Recruitment Boards',
-      title: 'State Police Constable Recruitment',
-      posts: 'Police constable and civil police posts',
-      qualification: 'Post-wise domicile, education, age, physical and medical standards apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://www.india.gov.in/topics/labour-employment',
-      preset_target: 'STATE_PSC',
-      status: 'DEPARTMENT CYCLE / NOTICE VERIFY'
-    },
-    {
-      id: 'curated-powergrid-trainee',
-      category: 'PSU',
-      authority: 'PowerGrid Corporation of India Limited',
-      title: 'PowerGrid Engineering Trainee',
-      posts: 'Engineering trainee posts',
-      qualification: 'Discipline, GATE score, CGPA, age and branch requirements apply.',
-      application_start_date: '',
-      closing_at: '',
-      official_notification_url: 'https://www.psuconnect.in/',
-      alternateOfficialUrl: 'https://www.india.gov.in/topics/industries',
-      preset_target: 'PSU_HUB',
-      status: 'PSU CYCLE / OFFICIAL NOTICE VERIFY'
-    }
-  ];
-}
-window.getCuratedExamNotifications = getCuratedExamNotifications;
+function isOpenRecord(item, now = new Date()) {
+  if (!item) return false;
+  if (item.disabled === true) return false;
+  if (item.verification_status !== "verified") return false;
+  if (item.is_government_employer !== true) return false;
 
-function renderCuratedNotificationCards(items) {
-  if (!items || items.length === 0) return '';
-  return `
-    <article class="p-4 rounded-xl border border-white/10 bg-white/[0.02] space-y-3">
-      <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-        <div>
-          <h3 class="text-sm font-black text-amber-300">Active Exam &amp; Recruitment Notice Trackers</h3>
-          <p class="text-[11px] text-slate-400">Structured official-cycle trackers. Exact registration dates appear only after verification in the official notice.</p>
-        </div>
-        <span class="text-[10px] text-slate-300 border border-white/10 bg-black/30 px-2.5 py-1 rounded-lg">Official status: verify</span>
-      </div>
-      <div class="grid md:grid-cols-2 gap-3">
-        ${items.map(item => `
-          <div class="glass-card p-4 rounded-xl border border-white/10 space-y-2">
-            <div class="flex flex-wrap items-center gap-2">
-              <span class="px-2 py-0.5 rounded border border-amber-500/30 bg-amber-500/10 text-[10px] font-black text-amber-300">${esc(item.category)}</span>
-              <span class="px-2 py-0.5 rounded border border-white/10 bg-black/30 text-[10px] font-bold text-slate-300">${esc(item.status)}</span>
-            </div>
-            <h4 class="font-bold text-white text-sm">${esc(item.title)}</h4>
-            <p class="text-[11px] font-semibold text-amber-300">Conducting body / department: ${esc(item.authority)}</p>
-            <p class="text-xs text-slate-300">${esc(item.posts)}</p>
-            <p class="text-[11px] text-slate-400">Eligibility: ${esc(item.qualification)}</p>
-            <div class="grid sm:grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
-              <span>Registration starts: Refer to official notice</span>
-              <span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): Check Official Notification (IST)</span>
-            </div>
-            <div class="flex flex-wrap gap-2 pt-1">
-              <a href="${esc(item.official_notification_url)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">Apply on Official Website ↗</a>
-              ${item.alternateOfficialUrl ? `<a href="${esc(item.alternateOfficialUrl)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-bold text-xs">Official alternate portal</a>` : ''}
-            </div>
-          </div>
-        `).join('')}
-      </div>
-    </article>
-  `;
-}
-window.renderCuratedNotificationCards = renderCuratedNotificationCards;
+  const rawClosing = closingValue(item);
+  if (!rawClosing) return false;
+  const closing = parseIST(rawClosing, true);
+  if (!closing || closing.getTime() <= now.getTime()) return false;
 
-function getCategoryFallback(categoryKey) {
-  const fallbacks = {
-    CENTRAL: {
-      title: 'No active UPSC or SSC registration found',
-      description: 'No open UPSC/SSC record is currently available in the active registry.',
-      portal: 'https://ssc.nic.in/',
-      alternate: 'https://upsc.gov.in/',
-      checks: 'Verify the SSC or UPSC notice number, post, category, application window, fee deadline, corrigendum and closing time.'
-    },
-    RAILWAYS: {
-      title: 'No active RRB or railway registration found',
-      description: 'No open railway recruitment record is currently available in the active registry.',
-      portal: 'https://www.indianrailways.gov.in/',
-      alternate: 'https://www.rrbapply.gov.in/',
-      checks: 'Verify the RRB zone, CEN number, post, qualification, RRB-specific payment window and official closing time.'
-    },
-    STATE_PSC: {
-      title: 'No active State Commission registration found',
-      description: 'No open APPSC, TGPSC or other State PSC record is currently available.',
-      portal: 'https://psc.ap.gov.in/',
-      alternate: 'https://www.tgpsc.gov.in/',
-      checks: 'Verify the commission, notification number, post, local status, age cut-off, fee and correction window.'
-    },
-    STATE_GOVT: {
-      title: 'No active State Government registration found',
-      description: 'No open State Government department record is currently available in the active registry.',
-      portal: 'https://www.india.gov.in/topics/labour-employment',
-      alternate: 'https://www.mygov.in/',
-      checks: 'Verify the department website, gazette or recruitment notice, post code, eligibility and official closing deadline.'
-    },
-    PSU: {
-      title: 'No active PSU or utility registration found',
-      description: 'No open power utility or PSU record is currently available in the active registry.',
-      portal: 'https://www.psuconnect.in/',
-      alternate: 'https://www.india.gov.in/topics/industries',
-      checks: 'Verify the company or utility recruitment page, notification number, qualification, fee and official application deadline.'
-    }
-  };
-  return fallbacks[categoryKey] || {
-    title: 'No active registrations found',
-    description: 'No open verified record is currently available in this live category.',
-    portal: 'https://www.india.gov.in/topics/labour-employment',
-    alternate: '',
-    checks: 'Verify the notification number, authority, eligibility, category, fee, corrigendum and closing time on the official website.'
-  };
+  const rawOpening = openingValue(item);
+  if (rawOpening) {
+    const opening = parseIST(rawOpening, false);
+    if (opening && opening.getTime() > now.getTime()) return false;
+  }
+  return true;
 }
-window.getCategoryFallback = getCategoryFallback;
+
+function safeOfficialUrl(value) {
+  if (!value || typeof value !== "string") return "";
+  try {
+    const url = new URL(value);
+    if (url.protocol !== "https:") return "";
+    const host = url.hostname.toLowerCase();
+    const allowed = [
+      ".gov.in", ".nic.in", "gov.in", "nic.in",
+      "ibps.in", "sbi.co.in", "employmentnews.gov.in",
+      "rrbapply.gov.in", "nta.ac.in", "gate.iitr.ac.in"
+    ];
+    if (!allowed.some(domain => host === domain || host.endsWith(domain))) return "";
+    return url.href;
+  } catch {
+    return "";
+  }
+}
+
+function categoryForItem(item) {
+  const explicit = String(item?.category || "").trim().toUpperCase();
+  if (explicit) return explicit;
+  const text = `${item?.authority || ""} ${item?.title || ""} ${item?.organization || ""}`.toUpperCase();
+  if (/UPSC/.test(text)) return "UPSC";
+  if (/\bSSC\b/.test(text)) return "SSC";
+  if (/RRB|RAILWAY|RPF/.test(text)) return "RAILWAYS";
+  if (/APPSC|TGPSC|TSPSC|STATE PSC|PUBLIC SERVICE COMMISSION/.test(text)) return "STATE_PSC";
+  if (/IBPS|SBI|RBI|BANK/.test(text)) return "BANKING";
+  if (/ARMY|NAVY|AIR FORCE|DEFENCE|CAPF/.test(text)) return "DEFENCE";
+  if (/NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL|PSU|UTILITY/.test(text)) return "PSU";
+  if (/STATE GOVERNMENT|POLICE|DEPARTMENT/.test(text)) return "STATE_GOVT";
+  return "STATE_GOVT";
+}
 
 const JobAlertsRegistry = {
-  activeFilter: 'ALL',
-  liveNotifications: [],
+  activeCategory: "ALL",
+  activeSection: "ACTIVE",
+  search: "",
+  state: "",
+  sort: "newest",
+  openOnly: false,
+  closingSoon: false,
+  newlyReleased: false,
+  upcoming: false,
+  records: [],
+  archiveRecords: [],
   isLoading: false,
   loadError: false,
-  isStaleData: false,
-  paginationTruncated: false,
-  KNOWN_PRESETS: ['UPSC', 'SSC', 'RRB', 'STATE_PSC', 'APPSC', 'TGPSC', 'PSU_HUB', 'AP_PSU', 'TG_PSU'],
-  _uiTickTimer: null,
-  _autoFetchTimer: null,
-  _currentAbortController: null,
-  _fetchRequestId: 0,
-  _isInitialized: false,
+  lastSuccessfulFetch: null,
+  abortController: null,
 
-  async init() {
-    if (this._isInitialized) return;
-    this._isInitialized = true;
-
+  init() {
+    if (this.initialized) return;
+    this.initialized = true;
     this.renderSkeleton();
-    await this.fetchLiveAlerts(false);
-
-    this._uiTickTimer = setInterval(() => {
-      this.renderListing();
-    }, 60000);
-
-    this._autoFetchTimer = setInterval(() => {
-      this.fetchLiveAlerts(true);
-    }, 5 * 60 * 1000);
+    this.fetchRecords();
   },
 
   renderSkeleton() {
-    const root = document.getElementById('jobs-zone');
+    const root = document.getElementById("jobs-zone");
     if (!root) return;
-    const staticGuide = document.getElementById('jobAlertsGuide');
-    const guideHtml = staticGuide ? staticGuide.outerHTML : '';
-
-    const btn = (key, label, on) => `
-      <button type="button" data-filter="${key}" id="filter-btn-${key}" 
-        class="px-3.5 py-1.5 rounded-lg border font-bold transition text-xs cursor-pointer ${
-          on 
-            ? 'border-rose-500 bg-rose-500/20 text-rose-300' 
-            : 'border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white'
-        }">
-        ${label}
-      </button>
-    `;
+    const staticGuide = document.getElementById("jobAlertsGuide");
+    const guideHtml = staticGuide ? staticGuide.outerHTML : "";
+    const staticSources = document.getElementById("officialSourcesBoard");
+    const sourcesHtml = staticSources ? staticSources.outerHTML : "";
 
     root.innerHTML = `
-      <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-6">
+      <div class="glass-card rounded-2xl p-5 border border-rose-500/30 space-y-5">
         <div class="flex items-center justify-between pb-4 border-b border-white/10">
           <div>
-            <h2 class="font-bold text-xl text-white flex items-center">
-              <i data-lucide="bell-ring" class="w-5 h-5 text-rose-400 mr-2 animate-pulse"></i>
-              Live Government Recruitment & Examination Alerts
-            </h2>
-            <p class="text-xs text-slate-400">Verified Official Gazette Notices • Auto-Purged Upon Expiry (Asia/Kolkata)</p>
+            <h2 class="font-black text-xl text-white">Live Government Jobs &amp; Notifications</h2>
+            <p class="text-xs text-slate-400">Official verified records • Asia/Kolkata deadline handling</p>
           </div>
-          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white flex items-center space-x-1 transition cursor-pointer">
-            <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i>
-            <span>Return to Workspace</span>
-          </button>
+          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white">← Resizer</button>
         </div>
 
-        <div class="flex items-center space-x-2 overflow-x-auto pb-1 text-xs select-none">
-          ${btn('ALL', 'All Active Alerts', true)}
-          ${btn('CENTRAL', 'Central Govt (UPSC/SSC)', false)}
-          ${btn('RAILWAYS', 'Railways (RRB)', false)}
-          ${btn('STATE_PSC', 'State Commissions (APPSC/TGPSC)', false)}
-          ${btn('STATE_GOVT', 'State Govt Depts', false)}
-          ${btn('PSU', 'Power Utilities & PSUs', false)}
+        <div id="organizationCategoryTabs" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+          ${CATEGORIES.map(category => `
+            <button type="button" data-category="${category.key}" id="job-category-${category.key}"
+              class="exam-btn p-2.5 text-xs ${category.key === "ALL" ? "active" : ""}">
+              ${esc(category.label)}
+            </button>
+          `).join("")}
         </div>
 
+        <div class="grid md:grid-cols-[1fr_180px_180px] gap-2.5">
+          <label>
+            <span class="sr-only">Search notifications</span>
+            <input id="jobSearchInput" type="search" autocomplete="off"
+              placeholder="Search exam, organization or qualification"
+              class="w-full bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-amber-400">
+          </label>
+          <select id="jobStateFilter" aria-label="Filter by state"
+            class="bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none">
+            <option value="">All States</option>
+            <option value="ANDHRA PRADESH">Andhra Pradesh</option>
+            <option value="TELANGANA">Telangana</option>
+            <option value="OTHER">Other State</option>
+          </select>
+          <select id="jobSortSelect" aria-label="Sort notifications"
+            class="bg-black/60 border border-white/15 rounded-xl px-3 py-2.5 text-xs text-white outline-none">
+            <option value="newest">Newest Notification</option>
+            <option value="closing">Closing Date</option>
+            <option value="exam">Examination Date</option>
+          </select>
+        </div>
+
+        <div class="flex flex-wrap gap-2 text-[11px]" id="jobQuickFilters">
+          <button type="button" data-quick="open" class="exam-btn px-3 py-1.5">Applications Open</button>
+          <button type="button" data-quick="upcoming" class="exam-btn px-3 py-1.5">Upcoming Examinations</button>
+          <button type="button" data-quick="closing" class="exam-btn px-3 py-1.5">Closing Soon</button>
+          <button type="button" data-quick="new" class="exam-btn px-3 py-1.5">Newly Released</button>
+        </div>
+
+        <div id="jobSectionTabs" class="tab-pills">
+          <button type="button" data-section="ACTIVE" class="tab-btn active">Active Notifications</button>
+          <button type="button" data-section="CLOSING_SOON" class="tab-btn">Closing Soon</button>
+          <button type="button" data-section="NEW" class="tab-btn">Newly Released</button>
+          <button type="button" data-section="UPCOMING" class="tab-btn">Upcoming Exams</button>
+          <button type="button" data-section="ARCHIVED" class="tab-btn">Archived</button>
+        </div>
+
+        <div id="jobLastVerified" class="text-[11px] text-slate-400"></div>
         <div id="alerts-listing-container" class="space-y-3.5">
           <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/5">
-            <span class="inline-block animate-spin mr-2">⏳</span> Connecting to verified government registry...
+            Checking official verified records…
           </div>
         </div>
+        ${sourcesHtml}
         ${guideHtml}
       </div>
     `;
 
-    root.onclick = (e) => {
-      const f = e.target.closest('[data-filter]');
-      if (f) return this.setFilter(f.dataset.filter);
-
-      const p = e.target.closest('[data-preset]');
-      if (p) return this.routeToResizer(p.dataset.preset);
+    root.onclick = (event) => {
+      const category = event.target.closest("[data-category]");
+      if (category) this.setCategory(category.dataset.category);
+      const quick = event.target.closest("[data-quick]");
+      if (quick) this.toggleQuickFilter(quick.dataset.quick, quick);
+      const section = event.target.closest("[data-section]");
+      if (section) this.setSection(section.dataset.section, section);
     };
 
-    if (window.lucide) lucide.createIcons();
-  },
-
-  async fetchLiveAlerts(silent = false) {
-    if (!silent) {
-      this.isLoading = true;
+    const search = document.getElementById("jobSearchInput");
+    search?.addEventListener("input", event => {
+      this.search = event.target.value.trim();
       this.renderListing();
-    }
-
-    if (this._currentAbortController) {
-      this._currentAbortController.abort();
-    }
-    this._currentAbortController = new AbortController();
-    const signal = this._currentAbortController.signal;
-    const thisRequestId = ++this._fetchRequestId;
-
-    try {
-      const nowIso = new Date().toISOString();
-      const cols = 'id,authority,title,posts,qualification,application_start_date,closing_date,last_date,closing_at,official_notification_url,application_url,application_url_verified,official_portal,preset_target,category,verified_at,verification_status,is_government_employer';
-
-      let allRecords = [];
-      const batchSize = 100;
-      let hasMore = true;
-      let lastClosingAt = null;
-      let lastId = null;
-      let pageCount = 0;
-      const MAX_PAGES = 100;
-
-      while (hasMore && pageCount < MAX_PAGES) {
-        pageCount++;
-
-        const params = new URLSearchParams({
-          select: cols,
-          closing_at: `gt.${nowIso}`,
-          verified_at: 'not.is.null',
-          verification_status: 'eq.verified',
-          is_government_employer: 'eq.true',
-          order: 'closing_at.asc,id.asc',
-          limit: String(batchSize)
-        });
-
-        if (this.activeFilter !== 'ALL') {
-          params.set('category', `eq.${this.activeFilter}`);
-        }
-
-        const conditions = [
-          `or(application_start_date.is.null,application_start_date.lte.${nowIso})`
-        ];
-
-        if (lastClosingAt !== null && lastId !== null) {
-          conditions.push(
-            `or(closing_at.gt.${lastClosingAt},and(closing_at.eq.${lastClosingAt},id.gt.${lastId}))`
-          );
-        }
-
-        params.set('and', `(${conditions.join(',')})`);
-        const pagedUrl = `${SUPABASE_API_URL}?${params.toString()}`;
-
-        const res = await fetch(pagedUrl, {
-          signal,
-          headers: {
-            "apikey": SUPABASE_ANON_KEY,
-            "Authorization": `Bearer ${SUPABASE_ANON_KEY}`
-          }
-        });
-
-        if (!res.ok) throw new Error("HTTP Status: " + res.status);
-        const batch = await res.json();
-
-        if (Array.isArray(batch) && batch.length > 0) {
-          allRecords = allRecords.concat(batch);
-          const lastItem = batch[batch.length - 1];
-
-          const previousClosingAt = lastClosingAt;
-          const previousId = lastId;
-          const nextClosingAt = lastItem.closing_at;
-          const nextId = lastItem.id;
-
-          if (!nextClosingAt || typeof nextId !== 'string') {
-            throw new Error("Invalid pagination cursor in payload");
-          }
-
-          if (previousClosingAt !== null) {
-            // Safe collation check for Text / UUID IDs
-            const idComp = nextId.localeCompare(previousId, 'en', { numeric: false });
-            const advanced =
-              nextClosingAt > previousClosingAt ||
-              (nextClosingAt === previousClosingAt && idComp > 0);
-
-            if (!advanced) {
-              throw new Error("Pagination cursor did not advance");
-            }
-          }
-
-          lastClosingAt = nextClosingAt;
-          lastId = nextId;
-
-          if (batch.length < batchSize) {
-            hasMore = false;
-          }
-        } else {
-          hasMore = false;
-        }
-      }
-
-      if (thisRequestId !== this._fetchRequestId) return;
-
-      this.paginationTruncated = hasMore && pageCount >= MAX_PAGES;
-
-      const seenIds = new Set();
-      this.liveNotifications = allRecords.filter(item => {
-        if (!item || !item.id || seenIds.has(item.id)) return false;
-        seenIds.add(item.id);
-        const nowMs = Date.now();
-        return this.isJobActive(item, nowMs);
-      });
-
-      this.loadError = false;
-      this.isStaleData = false;
-
-    } catch (err) {
-      if (err.name === 'AbortError') return;
-
-      if (thisRequestId === this._fetchRequestId) {
-        this.loadError = true;
-        if (silent && this.liveNotifications.length > 0) {
-          this.isStaleData = true;
-        } else {
-          this.liveNotifications = [];
-          this.isStaleData = false;
-        }
-      }
-    } finally {
-      if (thisRequestId === this._fetchRequestId) {
-        this.isLoading = false;
-        this.renderListing();
-      }
-    }
-  },
-
-  setFilter(categoryKey) {
-    if (!['ALL', 'CENTRAL', 'RAILWAYS', 'STATE_PSC', 'STATE_GOVT', 'PSU'].includes(categoryKey)) {
-      return;
-    }
-    this.activeFilter = categoryKey;
-
-    document.querySelectorAll('[id^="filter-btn-"]').forEach(btn => {
-      btn.className = 'px-3.5 py-1.5 rounded-lg border border-white/10 bg-white/5 text-slate-300 hover:bg-white/10 hover:text-white font-bold transition text-xs cursor-pointer';
+    });
+    document.getElementById("jobStateFilter")?.addEventListener("change", event => {
+      this.state = event.target.value;
+      this.renderListing();
+    });
+    document.getElementById("jobSortSelect")?.addEventListener("change", event => {
+      this.sort = event.target.value;
+      this.renderListing();
     });
 
-    const activeBtn = document.getElementById(`filter-btn-${categoryKey}`);
-    if (activeBtn) {
-      activeBtn.className = 'px-3.5 py-1.5 rounded-lg border border-rose-500 bg-rose-500/20 text-rose-300 font-bold transition text-xs cursor-pointer';
-    }
-
-    this.fetchLiveAlerts(false);
+    if (window.lucide) window.lucide.createIcons();
   },
 
-  matchesActiveFilter(item) {
-    if (this.activeFilter === 'ALL') return true;
-    if (!item) return false;
+  setCategory(category) {
+    if (!CATEGORIES.some(item => item.key === category)) return;
+    this.activeCategory = category;
+    document.querySelectorAll("[id^='job-category-']").forEach(button => button.classList.remove("active"));
+    document.getElementById(`job-category-${category}`)?.classList.add("active");
+    if (category === "ARCHIVED") this.activeSection = "ARCHIVED";
+    this.renderListing();
+  },
 
-    const category = String(item.category || '').trim().toUpperCase();
-    const authority = String(item.authority || '').toUpperCase();
-    const title = String(item.title || '').toUpperCase();
-    const combined = `${authority} ${title}`;
+  toggleQuickFilter(key, button) {
+    if (key === "open") this.openOnly = !this.openOnly;
+    if (key === "upcoming") this.upcoming = !this.upcoming;
+    if (key === "closing") this.closingSoon = !this.closingSoon;
+    if (key === "new") this.newlyReleased = !this.newlyReleased;
+    button.classList.toggle("active");
+    this.renderListing();
+  },
 
-    if (this.activeFilter === 'CENTRAL') {
-      if (category === 'CENTRAL') {
-        return /\bSSC\b|UPSC/.test(combined);
+  setSection(section, button) {
+    this.activeSection = section;
+    document.querySelectorAll("#jobSectionTabs [data-section]").forEach(tab => tab.classList.remove("active"));
+    button.classList.add("active");
+    this.renderListing();
+  },
+
+  async fetchRecords(silent = false) {
+    if (this.abortController) this.abortController.abort();
+    this.abortController = new AbortController();
+    this.isLoading = true;
+    if (!silent) this.renderListing();
+
+    const columns = [
+      "id","authority","organization","title","notification_number","exam_name",
+      "posts","qualification","age_limit","fee","vacancies","application_start_date",
+      "closing_at","closing_date","last_date","exam_date","official_notification_url",
+      "notification_pdf_url","application_url","application_url_verified","official_portal",
+      "category","state","verified_at","verification_status","is_government_employer",
+      "disabled","status","released_at","source_url"
+    ].join(",");
+
+    try {
+      const url = new URL(`${SUPABASE_API_URL}/live_job_alerts`);
+      url.searchParams.set("select", "*");
+      url.searchParams.set("order", "released_at.desc.nullslast,verified_at.desc");
+      url.searchParams.set("limit", "500");
+
+      const response = await fetch(url, {
+        signal: this.abortController.signal,
+        headers: {
+          apikey: SUPABASE_ANON_KEY,
+          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
+        }
+      });
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      const rows = await response.json();
+      if (!Array.isArray(rows)) throw new Error("Invalid notification payload");
+
+      const now = new Date();
+      const active = [];
+      const archived = [];
+      for (const row of rows) {
+        if (!row || row.disabled === true) continue;
+        if (row.verification_status !== "verified" || row.is_government_employer !== true) continue;
+        const rawClosing = closingValue(row);
+        const closing = parseIST(rawClosing, true);
+        if (!closing) {
+          archived.push({ ...row, _category: categoryForItem(row), _archivedReason: "Awaiting Official Verification" });
+          continue;
+        }
+        if (closing.getTime() <= now.getTime()) {
+          archived.push({ ...row, _category: categoryForItem(row), _archivedReason: "Application Closed" });
+        } else {
+          active.push({ ...row, _category: categoryForItem(row) });
+        }
       }
-      return /\bSSC\b|UPSC/.test(combined);
+      this.records = active;
+      this.archiveRecords = archived;
+      this.loadError = false;
+      this.lastSuccessfulFetch = now;
+    } catch (error) {
+      if (error.name !== "AbortError") this.loadError = true;
+    } finally {
+      this.isLoading = false;
+      this.renderListing();
     }
-    if (this.activeFilter === 'RAILWAYS') {
-      return category === 'RAILWAYS' || /\bRRB\b|RAILWAY/.test(combined);
-    }
-    if (this.activeFilter === 'STATE_PSC') {
-      return category === 'STATE_PSC' || /APPSC|TGPSC|TSPSC|STATE PSC|PUBLIC SERVICE COMMISSION/.test(combined);
-    }
-    if (this.activeFilter === 'STATE_GOVT') {
-      return category === 'STATE_GOVT';
-    }
-    if (this.activeFilter === 'PSU') {
-      return category === 'PSU' || /PSU|POWERGRID|PGCIL|TRANSCO|GENCO|NTPC|BHEL|ONGC|IOCL|GAIL|NHPC|SAIL/.test(combined);
-    }
-    return false;
   },
 
-  // Strict Fail-Closed Active Application Evaluation
-  isJobActive(item, nowMs) {
-    const rawEnd = getRegistrationClosingValue(item);
-    const closeMs = parseISTDeadlineMs(rawEnd, false);
+  getFilteredRecords() {
+    const now = new Date();
+    let source = this.activeSection === "ARCHIVED"
+      ? this.archiveRecords
+      : this.records.filter(record => isOpenRecord(record, now));
 
-    if (!Number.isFinite(closeMs) || closeMs <= nowMs) {
-      return false;
+    if (this.activeCategory !== "ALL") {
+      source = source.filter(record => {
+        const recordCategory = String(record._category || record.category || "").trim().toUpperCase();
+        const selected = this.activeCategory;
+        if (recordCategory === selected) return true;
+        if (selected === "UPSC") return recordCategory === "UPSC" || recordCategory.startsWith("UPSC_") || /UNION PUBLIC SERVICE COMMISSION|UPSC/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "SSC") return recordCategory === "SSC" || recordCategory.startsWith("SSC_") || /\bSSC\b/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "RAILWAYS") return recordCategory === "RAILWAYS" || recordCategory.startsWith("RRB") || recordCategory === "RPF" || /RAILWAY|RRB|RPF/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "STATE_PSC") return recordCategory === "STATE_PSC" || recordCategory === "APPSC" || recordCategory === "TGPSC" || /APPSC|TGPSC|TSPSC|PUBLIC SERVICE COMMISSION/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "STATE_GOVT") return recordCategory === "STATE_GOVT" || recordCategory.startsWith("STATE_AP") || recordCategory.startsWith("STATE_TG");
+        if (selected === "BANKING") return recordCategory === "BANKING" || /IBPS|SBI|RBI|BANK/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "DEFENCE") return recordCategory === "DEFENCE" || ["ARMY","NAVY","AIR_FORCE"].includes(recordCategory) || /ARMY|NAVY|AIR FORCE|DEFENCE/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected === "PSU") return recordCategory === "PSU" || ["NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL"].includes(recordCategory) || /PSU|NTPC|BHEL|POWERGRID|PGCIL|NHPC|ONGC|IOCL|GAIL/.test(`${record.authority || ""} ${record.title || ""}`.toUpperCase());
+        if (selected.startsWith("RRB_")) return recordCategory === selected;
+        if (selected.startsWith("SSC_")) return recordCategory === selected;
+        if (selected.startsWith("UPSC_")) return recordCategory === selected;
+        if (selected.startsWith("STATE_")) return recordCategory === selected;
+        if (["IBPS_PO","IBPS_CLERK","SBI_PO","SBI_CLERK","RBI","ARMY","NAVY","AIR_FORCE","NTPC","BHEL","POWERGRID","NHPC","ONGC","IOCL","GAIL","APPSC","TGPSC","RPF"].includes(selected)) return recordCategory === selected;
+        return false;
+      });
     }
 
-    if (!item.application_start_date) {
-      return true; // Start date not specified, window open by default
+    if (this.state) {
+      source = source.filter(record => String(record.state || "").toUpperCase().includes(this.state));
     }
 
-    const startMs = parseISTDeadlineMs(item.application_start_date, true);
-    return Number.isFinite(startMs) && startMs <= nowMs;
+    if (this.search) {
+      const needle = this.search.toLowerCase();
+      source = source.filter(record => [
+        record.title, record.exam_name, record.authority, record.organization,
+        record.qualification, record.posts, record.notification_number
+      ].some(value => String(value || "").toLowerCase().includes(needle)));
+    }
+
+    if (this.openOnly) {
+      source = source.filter(record => {
+        const opening = parseIST(openingValue(record), false);
+        return !opening || opening.getTime() <= now.getTime();
+      });
+    }
+    if (this.closingSoon) {
+      source = source.filter(record => {
+        const closing = parseIST(closingValue(record), true);
+        return closing && closing.getTime() - now.getTime() <= 7 * 24 * 60 * 60 * 1000;
+      });
+    }
+    if (this.newlyReleased) {
+      source = source.filter(record => {
+        const released = parseIST(record.released_at, false);
+        return released && now.getTime() - released.getTime() <= 14 * 24 * 60 * 60 * 1000;
+      });
+    }
+    if (this.upcoming) {
+      source = source.filter(record => {
+        const opening = parseIST(openingValue(record), false);
+        return opening && opening.getTime() > now.getTime();
+      });
+    }
+    if (this.activeSection === "CLOSING_SOON") {
+      source = source.filter(record => {
+        const closing = parseIST(closingValue(record), true);
+        return closing && closing.getTime() - now.getTime() <= 7 * 24 * 60 * 60 * 1000;
+      });
+    }
+    if (this.activeSection === "NEW") {
+      source = source.filter(record => {
+        const released = parseIST(record.released_at, false);
+        return released && now.getTime() - released.getTime() <= 14 * 24 * 60 * 60 * 1000;
+      });
+    }
+    if (this.activeSection === "UPCOMING") {
+      source = source.filter(record => {
+        const opening = parseIST(openingValue(record), false);
+        return opening && opening.getTime() > now.getTime();
+      });
+    }
+
+    if (this.sort === "closing") {
+      source.sort((a, b) => (parseIST(closingValue(a), true)?.getTime() || Infinity) - (parseIST(closingValue(b), true)?.getTime() || Infinity));
+    } else if (this.sort === "exam") {
+      source.sort((a, b) => (parseIST(a.exam_date, false)?.getTime() || Infinity) - (parseIST(b.exam_date, false)?.getTime() || Infinity));
+    } else {
+      source.sort((a, b) => (parseIST(b.released_at, false)?.getTime() || 0) - (parseIST(a.released_at, false)?.getTime() || 0));
+    }
+    return source;
+  },
+
+  countdown(record) {
+    const closing = parseIST(closingValue(record), true);
+    if (!closing) return "Awaiting Official Verification";
+    const milliseconds = closing.getTime() - Date.now();
+    if (milliseconds <= 0) return "Application Closed";
+    const days = Math.floor(milliseconds / 86400000);
+    const hours = Math.floor((milliseconds % 86400000) / 3600000);
+    const minutes = Math.floor((milliseconds % 3600000) / 60000);
+    return `${days}d ${hours}h ${minutes}m remaining`;
   },
 
   renderListing() {
-    const list = document.getElementById('alerts-listing-container');
-    if (!list) return;
+    const container = document.getElementById("alerts-listing-container");
+    if (!container) return;
+    const now = new Date();
+    const filtered = this.getFilteredRecords();
 
-    const staticBoard = typeof getCuratedExamNoticeBoard === 'function'
-      ? getCuratedExamNoticeBoard()
-      : '';
-    const allCuratedItems = typeof getCuratedExamNotifications === 'function'
-      ? getCuratedExamNotifications()
-      : [];
-    const curatedItems = allCuratedItems.filter(item => this.matchesActiveFilter(item));
-    const curatedCards = typeof renderCuratedNotificationCards === 'function'
-      ? renderCuratedNotificationCards(curatedItems)
-      : '';
-
-    const nowMs = Date.now();
-    this.liveNotifications = this.liveNotifications.filter(item => this.isJobActive(item, nowMs));
-
-    // Defense-in-depth: Verified government status & document allowlist
-    const validLiveItems = this.liveNotifications.filter(item => 
-      item &&
-      item.verification_status === 'verified' &&
-      item.is_government_employer === true &&
-      Boolean(item.verified_at) &&
-      this.isJobActive(item, nowMs) &&
-      Boolean(safeOfficialNoticeUrl(item.official_notification_url)) &&
-      this.matchesActiveFilter(item)
-    );
-
-    let html = '';
-
-    if (this.isLoading) {
-      html += `
-        <div class="p-3 rounded-xl bg-white/[0.03] border border-white/10 text-slate-300 text-xs">
-          Checking the live official-registry records. The notice board remains available for verification.
-        </div>
-      `;
-    } else if (this.loadError && !this.isStaleData) {
-      html += `
-        <div class="p-3 rounded-xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-xs">
-          Live records are refreshing separately. Verify all dates and links through the official portal before applying.
-        </div>
-      `;
+    const verification = document.getElementById("jobLastVerified");
+    if (verification) {
+      verification.textContent = this.lastSuccessfulFetch
+        ? `Last successful database verification: ${formatIST(this.lastSuccessfulFetch.toISOString())}`
+        : "Official records are verified when sourced by the recruitment registry.";
     }
 
-    if (this.isStaleData) {
-      html += `
-        <div class="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center space-x-2">
-          <i data-lucide="wifi-off" class="w-4 h-4 flex-shrink-0"></i>
-          <span>Live notice refresh is delayed. Verify the official portal before taking action.</span>
-        </div>
-      `;
-    }
-
-    if (this.paginationTruncated) {
-      html += `
-        <div class="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-xs flex items-center space-x-2">
-          <i data-lucide="alert-triangle" class="w-4 h-4 flex-shrink-0"></i>
-          <span>Partial results: maximum pagination limit reached. Some active alerts may not be displayed.</span>
-        </div>
-      `;
-    }
-
-    if (validLiveItems.length === 0) {
-      let emptyCategoryCard = '';
-      if (curatedItems.length === 0) {
-        const fallback = getCategoryFallback(this.activeFilter);
-        emptyCategoryCard = `
-          <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.05] space-y-3">
-            <h3 class="text-sm font-black text-amber-300">${esc(fallback.title)}</h3>
-            <p class="text-xs text-slate-300">${esc(fallback.description)}</p>
-            <p class="text-[11px] text-slate-400"><strong class="text-white">Official verification:</strong> ${esc(fallback.checks)}</p>
-            <a href="${esc(fallback.portal)}" target="_blank" rel="noopener noreferrer" class="inline-block px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">Open official portal ↗</a>
-          </div>
-        `;
-      }
-      list.innerHTML = html + curatedCards + emptyCategoryCard + staticBoard;
-      if (window.lucide) lucide.createIcons();
+    if (this.isLoading && filtered.length === 0) {
+      container.innerHTML = `<div class="p-8 text-center text-xs text-slate-400 border border-white/10 rounded-xl">Checking official verified records…</div>`;
       return;
     }
 
-    validLiveItems.forEach(item => {
-      const rawEnd = getRegistrationClosingValue(item);
-      const closeMs = parseISTDeadlineMs(rawEnd, false);
-      const diffMs = closeMs - nowMs;
-      const totalHoursRemaining = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60)));
-      const totalDaysRemaining = Math.floor(totalHoursRemaining / 24);
-
-      const formattedDeadline = fmtIST(rawEnd, false) || 'Refer Notice';
-
-      let badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-      let badgeText = `CLOSING: ${formattedDeadline}`;
-
-      if (totalHoursRemaining <= 24) {
-        badgeClass = 'bg-rose-500/20 text-rose-400 border-rose-500/40 animate-pulse font-black';
-        badgeText = `CLOSING IN ${totalHoursRemaining} HOURS • ${formattedDeadline}`;
-      } else if (totalDaysRemaining <= 3) {
-        badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-bold';
-        badgeText = `CLOSING IN ${totalDaysRemaining} DAYS • ${formattedDeadline}`;
-      }
-
-      const safeBadgeHtml = esc(badgeText);
-      const notifUrl = safeOfficialNoticeUrl(item.official_notification_url);
-
-      // Per-recruitment application URL verification check
-      const applyUrl = item.application_url_verified === true 
-        ? safeApplicationUrl(item.application_url) 
-        : '';
-
-      const preset = this.KNOWN_PRESETS.includes(item.preset_target) ? item.preset_target : '';
-      const startFormatted = fmtIST(item.application_start_date, true);
-      const closingFormatted = fmtIST(rawEnd, false);
-      const categoryLabel = esc(item.category || 'GENERAL');
-      const department = esc(item.authority || item.official_portal || 'Conducting authority');
-      const startInfo = startFormatted
-        ? `<span>Registration starts: ${esc(startFormatted)}</span>`
-        : '<span>Registration start: Refer to official notice</span>';
-      const closeInfo = closingFormatted
-        ? `<span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): ${esc(closingFormatted)}</span>`
-        : '<span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): Check Official Notification (IST)</span>';
-
-      html += `
-        <div class="glass-card p-4 rounded-xl border border-white/10 hover:border-rose-500/30 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div class="space-y-1.5">
-            <div class="flex items-center flex-wrap gap-2">
-              <span class="px-2 py-0.5 rounded border text-[10px] uppercase ${badgeClass}">
-                ${safeBadgeHtml}
-              </span>
-              <span class="px-2 py-0.5 rounded border border-white/10 bg-white/5 text-[10px] font-extrabold text-slate-300 uppercase tracking-wider">${categoryLabel}</span>
-            </div>
-            <h3 class="font-bold text-white text-sm md:text-base leading-snug">
-              ${esc(item.title)}
-            </h3>
-            <p class="text-[11px] font-semibold text-amber-300">
-              Conducting body / department: ${department}
-            </p>
-            <p class="text-xs text-slate-300 font-medium">
-              ${esc(item.posts)}
-            </p>
-            <p class="text-[11px] text-slate-400">
-              Eligibility: ${esc(item.qualification)}
-            </p>
-            <div class="grid sm:grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
-              ${startInfo}
-              ${closeInfo}
-            </div>
-          </div>
-
-          <div class="flex items-center flex-wrap gap-2 flex-shrink-0">
-            ${preset ? `
-              <button type="button" data-preset="${esc(preset)}" class="px-3.5 py-2 rounded-xl bg-amber-500/10 border border-amber-500/40 text-amber-300 font-extrabold text-xs hover:bg-amber-500/20 transition flex items-center space-x-1.5 cursor-pointer shadow-sm">
-                <i data-lucide="crop" class="w-3.5 h-3.5"></i>
-                <span>Format Photo/Sign</span>
-              </button>
-            ` : ''}
-
-            <a href="${esc(notifUrl)}" target="_blank" rel="noopener noreferrer" class="px-3.5 py-2 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-bold text-xs hover:bg-white/10 hover:text-white transition flex items-center space-x-1.5 shadow-sm">
-              <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
-              <span>Official Notice</span>
-            </a>
-
-            ${applyUrl ? `
-              <a href="${esc(applyUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-md">
-                <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
-                <span>Apply on Official Website ↗</span>
-              </a>
-            ` : `<a href="${esc(notifUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center space-x-1.5 shadow-md"><span>Apply on Official Website ↗</span></a>`}
-          </div>
+    if (filtered.length === 0) {
+      const categoryLabel = CATEGORIES.find(item => item.key === this.activeCategory)?.label || "Selected category";
+      container.innerHTML = `
+        <div class="p-5 rounded-xl border border-amber-500/25 bg-amber-500/[0.04] space-y-2">
+          <h3 class="text-sm font-black text-amber-300">No active official notifications found</h3>
+          <p class="text-xs text-slate-300">${esc(categoryLabel)} has no verified open record matching the current filters. This is not an official recruitment status.</p>
+          <p class="text-[11px] text-slate-400">Verify the latest notification, corrigendum and application window on the official organization website.</p>
         </div>
       `;
-    });
-
-    list.innerHTML = html + curatedCards + staticBoard;
-    if (window.lucide) lucide.createIcons();
-  },
-
-  routeToResizer(presetKey) {
-    if (typeof switchZone === 'function') switchZone('resizer-zone');
-
-    if (presetKey === 'STATE_PSC' || presetKey === 'APPSC' || presetKey === 'TGPSC') {
-      if (typeof window.currentExam !== 'undefined') window.currentExam = 'STATE_PSC';
-      if (typeof window.currentState !== 'undefined') {
-        window.currentState = presetKey === 'TGPSC' ? 'TGPSC' : 'APPSC';
-      }
-      const stateSelect = document.getElementById('stateDropdown');
-      if (stateSelect) {
-        stateSelect.value = presetKey === 'TGPSC' ? 'TGPSC' : 'APPSC';
-        stateSelect.dispatchEvent(new Event('change'));
-      }
-    } else if (presetKey === 'PSU_HUB' || presetKey === 'AP_PSU' || presetKey === 'TG_PSU') {
-      if (typeof window.currentExam !== 'undefined') window.currentExam = 'PSU_HUB';
-      if (typeof window.currentPsu !== 'undefined') {
-        window.currentPsu = presetKey === 'TG_PSU' ? 'TG_PSU' : 'AP_PSU';
-      }
-      const psuSelect = document.getElementById('psuDropdown');
-      if (psuSelect) {
-        psuSelect.value = presetKey === 'TG_PSU' ? 'TG_PSU' : 'AP_PSU';
-        psuSelect.dispatchEvent(new Event('change'));
-      }
-    } else {
-      if (typeof window.currentExam !== 'undefined') window.currentExam = presetKey;
-      const examSelect = document.getElementById('examDropdown');
-      if (examSelect) {
-        examSelect.value = presetKey;
-        examSelect.dispatchEvent(new Event('change'));
-      }
+      return;
     }
 
-    if (typeof window.updateExamSpecs === 'function') window.updateExamSpecs();
+    container.innerHTML = `<div class="grid md:grid-cols-2 gap-3">${filtered.map(record => this.card(record, now)).join("")}</div>`;
+    if (window.lucide) window.lucide.createIcons();
+  },
 
-    const uploadArea = document.getElementById('uploadBox');
-    if (uploadArea) uploadArea.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  card(record, now) {
+    const category = record._category || categoryForItem(record);
+    const notificationUrl = safeOfficialUrl(record.notification_pdf_url || record.official_notification_url || record.source_url);
+    const applicationUrl = record.application_url_verified === true
+      ? safeOfficialUrl(record.application_url)
+      : "";
+    const opening = formatIST(openingValue(record), false);
+    const closing = formatIST(closingValue(record), true);
+    const examDate = formatIST(record.exam_date, false);
+    const verified = formatIST(record.verified_at, false);
+    const notificationNumber = record.notification_number || record.notification_ref || "Awaiting Official Verification";
+    const vacancies = record.vacancies ? esc(record.vacancies) : "As per official notification";
+    const qualification = record.qualification ? esc(record.qualification) : "As per official notification";
+    const ageLimit = record.age_limit ? esc(record.age_limit) : "As per official notification";
+    const fee = record.fee ? esc(record.fee) : "As per official notification";
+    const archived = this.activeSection === "ARCHIVED";
+    const status = archived
+      ? (record._archivedReason === "Application Closed" ? "Application Closed" : "Awaiting Official Verification")
+      : (isOpenRecord(record, now) ? "Applications Open" : "Application Closed");
+
+    return `
+      <article class="glass-card p-4 rounded-xl border border-white/10 space-y-3">
+        <div class="flex items-center flex-wrap gap-2">
+          <span class="px-2.5 py-1 rounded border border-rose-500/30 bg-rose-500/10 text-[10px] font-black text-rose-300 uppercase">${esc(category)}</span>
+          <span class="px-2.5 py-1 rounded ${status === "Applications Open" ? "border border-emerald-500/30 bg-emerald-500/10 text-emerald-300" : "border border-amber-500/30 bg-amber-500/10 text-amber-300"} text-[10px] font-black">${esc(status)}</span>
+        </div>
+        <div>
+          <h3 class="font-bold text-white text-sm md:text-base">${esc(record.exam_name || record.title || "Recruitment Notification")}</h3>
+          <p class="text-[11px] text-amber-300 font-semibold mt-1">Organization: ${esc(record.organization || record.authority || "Awaiting Official Verification")}</p>
+        </div>
+        <dl class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] text-slate-300">
+          <div><dt class="text-slate-500">Notification Number</dt><dd>${esc(notificationNumber)}</dd></div>
+          <div><dt class="text-slate-500">Vacancies</dt><dd>${vacancies}</dd></div>
+          <div><dt class="text-slate-500">Qualification</dt><dd>${qualification}</dd></div>
+          <div><dt class="text-slate-500">Age Limit</dt><dd>${ageLimit}</dd></div>
+          <div><dt class="text-slate-500">Application Fee</dt><dd>${fee}</dd></div>
+          <div><dt class="text-slate-500">Registration Opens</dt><dd>${opening ? esc(opening) : "Awaiting Official Verification"}</dd></div>
+          <div class="sm:col-span-2"><dt class="text-slate-500">Last Registration Date (IST / Asia/Kolkata)</dt><dd class="text-amber-300 font-bold">${closing ? esc(closing) : "Awaiting Official Verification"}</dd></div>
+          <div><dt class="text-slate-500">Examination Date</dt><dd>${examDate ? esc(examDate) : "Awaiting Official Verification"}</dd></div>
+          <div><dt class="text-slate-500">${archived ? "Archived Status" : "Countdown"}</dt><dd>${archived ? esc(status) : esc(this.countdown(record))}</dd></div>
+          <div class="sm:col-span-2"><dt class="text-slate-500">Last Verified</dt><dd>${verified ? esc(verified) : "Awaiting Official Verification"}</dd></div>
+        </dl>
+        <div class="flex flex-wrap gap-2 pt-1">
+          ${notificationUrl ? `<a href="${esc(notificationUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl bg-white/5 border border-white/20 text-slate-200 font-extrabold text-xs">VIEW OFFICIAL NOTIFICATION ↗</a>` : `<span class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs">Awaiting Official Notification Link</span>`}
+          ${applicationUrl ? `<a href="${esc(applicationUrl)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">APPLY ON OFFICIAL WEBSITE ↗</a>` : `<span class="px-4 py-2.5 rounded-xl bg-slate-800 text-slate-400 font-bold text-xs">Official application link pending verification</span>`}
+        </div>
+      </article>
+    `;
   }
 };
 
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => JobAlertsRegistry.init());
-} else {
-  JobAlertsRegistry.init();
-}
+window.JobAlertsRegistry = JobAlertsRegistry;
+
+document.addEventListener("DOMContentLoaded", () => JobAlertsRegistry.init());

@@ -97,7 +97,10 @@ def discover_employment_news(session: cr.Session) -> List[Dict[str, Any]]:
             candidates.append({
                 "id": cand_id,
                 "authority": authority,
+                "organization": authority,
                 "title": title,
+                "exam_name": title,
+                "notification_number": f"EN-Issue-{issued_date_str}",
                 "posts": f"Method: {appointment_method}",
                 "qualification": "Refer Official Gazette / Employment News Notice",
                 "application_start_date": None,

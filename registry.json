@@ -6,13 +6,37 @@
     {"id": "appsc", "authority": "Andhra Pradesh Public Service Commission", "kind": "state_psc", "preset_target": "STATE_PSC", "domains": ["psc.ap.gov.in"]},
     {"id": "tgpsc", "authority": "Telangana State Public Service Commission", "kind": "state_psc", "preset_target": "STATE_PSC", "domains": ["tgpsc.gov.in", "tspsc.gov.in"]},
     {"id": "powergrid", "authority": "Power Grid Corporation of India Limited", "kind": "central_psu", "preset_target": "PSU_HUB", "domains": ["powergrid.in"], "ownership_basis": "CPSE under Ministry of Power"},
-    {"id": "ntpc", "authority": "NTPC Limited", "kind": "central_psu", "preset_target": "PSU_HUB", "domains": ["ntpc.co.in"], "ownership_basis": "CPSE under Ministry of Power"}
+    {"id": "ntpc", "authority": "NTPC Limited", "kind": "central_psu", "preset_target": "PSU_HUB", "domains": ["ntpc.co.in"], "ownership_basis": "CPSE under Ministry of Power"},
+    {"id":"ibps","authority":"Institute of Banking Personnel Selection","kind":"banking","preset_target":"IBPS","domains":["ibps.in"], "category":"BANKING"},
+    {"id":"sbi","authority":"State Bank of India","kind":"banking","preset_target":"IBPS","domains":["sbi.co.in"], "category":"BANKING"},
+    {"id":"rbi","authority":"Reserve Bank of India","kind":"banking","preset_target":"IBPS","domains":["rbi.org.in"], "category":"BANKING"},
+    {"id":"army","authority":"Indian Army","kind":"defence","preset_target":"DEFENCE","domains":["joinindianarmy.nic.in","indianarmy.nic.in"], "category":"DEFENCE"},
+    {"id":"navy","authority":"Indian Navy","kind":"defence","preset_target":"DEFENCE","domains":["joinindiannavy.gov.in","indiannavy.nic.in"], "category":"DEFENCE"},
+    {"id":"airforce","authority":"Indian Air Force","kind":"defence","preset_target":"DEFENCE","domains":["careerindianairforce.cdac.in","indianairforce.nic.in"], "category":"DEFENCE"},
+    {"id":"bhel","authority":"Bharat Heavy Electricals Limited","kind":"psu","preset_target":"PSU_HUB","domains":["bhel.com"], "category":"PSU"},
+    {"id":"nhpc","authority":"NHPC Limited","kind":"psu","preset_target":"PSU_HUB","domains":["nhpcindia.com"], "category":"PSU"},
+    {"id":"ongc","authority":"Oil and Natural Gas Corporation","kind":"psu","preset_target":"PSU_HUB","domains":["ongcindia.com"], "category":"PSU"},
+    {"id":"iocl","authority":"Indian Oil Corporation Limited","kind":"psu","preset_target":"PSU_HUB","domains":["iocl.com"], "category":"PSU"},
+    {"id":"gail","authority":"GAIL (India) Limited","kind":"psu","preset_target":"PSU_HUB","domains":["gailonline.com"], "category":"PSU"}
   ],
   "sources": [
     {"id": "upsc-whats-new", "employer": "upsc", "method": "html", "url": "https://upsc.gov.in/whats-new"},
     {"id": "ssc-home", "employer": "ssc", "method": "html", "url": "https://ssc.gov.in/"},
     {"id": "rrb-apply", "employer": "rrb", "method": "html", "url": "https://www.rrbapply.gov.in/"},
     {"id": "appsc", "employer": "appsc", "method": "html", "url": "https://psc.ap.gov.in/"},
-    {"id": "tgpsc", "employer": "tgpsc", "method": "html", "url": "https://www.tgpsc.gov.in/"}
+    {"id": "tgpsc", "employer": "tgpsc", "method": "html", "url": "https://www.tgpsc.gov.in/"},
+    {"id":"ibps-home","employer":"ibps","method":"html","url":"https://www.ibps.in/"},
+    {"id":"sbi-careers","employer":"sbi","method":"html","url":"https://sbi.co.in/web/careers"},
+    {"id":"rbi-opportunities","employer":"rbi","method":"html","url":"https://www.rbi.org.in/Scripts/Vacancies.aspx"},
+    {"id":"army-careers","employer":"army","method":"html","url":"https://joinindianarmy.nic.in/"},
+    {"id":"navy-careers","employer":"navy","method":"html","url":"https://www.joinindiannavy.gov.in/"},
+    {"id":"airforce-careers","employer":"airforce","method":"html","url":"https://indianairforce.nic.in/career/"},
+    {"id":"ntpc-careers","employer":"ntpc","method":"html","url":"https://careers.ntpc.co.in/"},
+    {"id":"bhel-careers","employer":"bhel","method":"html","url":"https://careers.bhel.in/"},
+    {"id":"powergrid-careers","employer":"powergrid","method":"html","url":"https://www.powergrid.in/careers"},
+    {"id":"nhpc-careers","employer":"nhpc","method":"html","url":"https://www.nhpcindia.com/careers"},
+    {"id":"ongc-careers","employer":"ongc","method":"html","url":"https://ongcindia.com/web/eng/career"},
+    {"id":"iocl-careers","employer":"iocl","method":"html","url":"https://iocl.com/people-careers"},
+    {"id":"gail-careers","employer":"gail","method":"html","url":"https://gailonline.com/CRBrief.html"}
   ]
 }

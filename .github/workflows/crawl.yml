@@ -1,27 +1,29 @@
-name: Diagnose Network & Portal Reachability
+name: Government Recruitment Ingestion
 
 on:
   workflow_dispatch:
+  schedule:
+    - cron: "15 */6 * * *"
+  push:
+    branches:
+      - main
+    paths:
+      - "auto_job_crawler.py"
+      - "crawler/**"
+      - "requirements.txt"
 
 jobs:
-  diagnose:
+  crawl:
     runs-on: ubuntu-latest
     steps:
-      - name: Run Diagnostics against Official Portals
-        run: |
-          echo "=== 1. DNS RESOLUTION ==="
-          getent ahosts upsc.gov.in || true
-          getent ahosts employmentnews.gov.in || true
-
-          echo "=== 2. EMPLOYMENT NEWS (High-Priority Discovery) ==="
-          curl -Iv --connect-timeout 8 --max-time 15 "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All" || true
-
-          echo "=== 3. UPSC IPv4 vs IPv6 ==="
-          curl -4 -Iv --connect-timeout 8 --max-time 15 "https://upsc.gov.in/" || true
-          curl -6 -Iv --connect-timeout 8 --max-time 15 "https://upsc.gov.in/" || true
-
-          echo "=== 4. PIB RSS FEED ==="
-          curl -Iv --connect-timeout 8 --max-time 15 "https://pib.gov.in/RssMain.aspx?ModId=6&Lang=1&Regid=1" || true
-
-          echo "=== 5. INSPECT EMPLOYMENT NEWS HTML TABLE ==="
-          curl -sL "https://employmentnews.gov.in/newemp/AllJobs.aspx?k=All" | grep -i -C 3 "<table" | head -n 30 || true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install crawler dependencies
+        run: pip install -r requirements.txt
+      - name: Run official-source harvest
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+        run: python auto_job_crawler.py

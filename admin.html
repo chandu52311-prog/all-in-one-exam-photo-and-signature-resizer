@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recruitment Registry Admin | EXAMRESIZER</title>
+  <style>
+    :root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#03060c;color:#e2e8f0;font-family:Segoe UI,Arial,sans-serif}main{max-width:1100px;margin:auto;padding:24px}.card{background:#0b101b;border:1px solid rgba(245,158,11,.25);border-radius:14px;padding:16px;margin:12px 0}h1,h2,h3{color:#fbbf24}input,select,textarea,button{width:100%;margin:6px 0;padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,.12);background:#05070e;color:white}button{background:linear-gradient(180deg,#fde047,#f59e0b,#b45309);color:#05070e;font-weight:900;cursor:pointer}.grid{display:grid;grid-cols:1fr 1fr;gap:12px}.row{border-top:1px solid rgba(255,255,255,.08);padding:12px 0}.muted{color:#94a3b8}.gold{color:#fbbf24}@media(min-width:800px){.grid{grid-template-columns:1fr 1fr}}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+</head>
+<body>
+  <main>
+    <h1>Recruitment Registry Admin</h1>
+    <p class="muted">Administrative access requires a Supabase authenticated account with <code>app_metadata.role = "admin"</code>. This page never contains a service-role credential.</p>
+    <section class="card" id="loginCard">
+      <h2>Administrator Sign In</h2>
+      <input id="adminEmail" type="email" placeholder="Admin email" autocomplete="username">
+      <input id="adminPassword" type="password" placeholder="Password" autocomplete="current-password">
+      <button type="button" onclick="adminSignIn()">Sign In</button>
+      <p id="loginStatus" class="muted"></p>
+    </section>
+    <section class="card hidden" id="adminPanel" style="display:none">
+      <div class="grid">
+        <div>
+          <h2>Add or Edit Notification</h2>
+          <input id="recordId" placeholder="Stable notification ID (leave blank to generate)">
+          <input id="organization" placeholder="Organization / conducting body">
+          <input id="examName" placeholder="Specific examination name">
+          <input id="notificationNumber" placeholder="Notification number">
+          <select id="category"><option>UPSC</option><option>SSC</option><option>RAILWAYS</option><option>APPSC</option><option>TGPSC</option><option>STATE_PSC</option><option>STATE_GOVT</option><option>BANKING</option><option>DEFENCE</option><option>PSU</option></select>
+          <input id="state" placeholder="State, if applicable">
+          <textarea id="qualification" placeholder="Eligibility / qualification"></textarea>
+          <input id="vacancies" placeholder="Vacancies (only if official)">
+          <input id="openingDate" type="datetime-local" placeholder="Application opening">
+          <input id="closingDate" type="datetime-local" placeholder="Application closing (IST)">
+          <input id="examDate" type="datetime-local" placeholder="Examination date (IST)">
+          <input id="notificationUrl" type="url" placeholder="Official notification PDF URL">
+          <input id="applicationUrl" type="url" placeholder="Official application URL">
+          <input id="sourceUrl" type="url" placeholder="Official source page URL">
+          <button type="button" onclick="saveNotification()">Save / Verify Notification</button>
+        </div>
+        <div>
+          <h2>Records &amp; Logs</h2>
+          <button type="button" onclick="loadRecords()">Refresh Records</button>
+          <button type="button" onclick="archiveExpired()">Archive Expired Records</button>
+          <div id="recordList"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script>
+    const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh0g_tQbM_zE9";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    async function adminSignIn(){
+      const email=document.getElementById("adminEmail").value;
+      const password=document.getElementById("adminPassword").value;
+      const status=document.getElementById("loginStatus");
+      const {data,error}=await supabase.auth.signInWithPassword({email,password});
+      if(error){status.textContent=error.message;return;}
+      const role=data.session?.user?.app_metadata?.role;
+      if(role!=="admin"){await supabase.auth.signOut();status.textContent="This account does not have administrator permission.";return;}
+      document.getElementById("loginCard").style.display="none";
+      document.getElementById("adminPanel").style.display="block";
+      await loadRecords();
+    }
+
+    async function saveNotification(){
+      const id=document.getElementById("recordId").value.trim()||crypto.randomUUID();
+      const toIso=(idValue)=>idValue?new Date(idValue).toISOString():null;
+      const row={
+        id,
+        organization:document.getElementById("organization").value.trim(),
+        authority:document.getElementById("organization").value.trim(),
+        exam_name:document.getElementById("examName").value.trim(),
+        title:document.getElementById("examName").value.trim(),
+        notification_number:document.getElementById("notificationNumber").value.trim(),
+        category:document.getElementById("category").value,
+        state:document.getElementById("state").value.trim(),
+        qualification:document.getElementById("qualification").value.trim(),
+        vacancies:document.getElementById("vacancies").value.trim(),
+        application_start_date:toIso(document.getElementById("openingDate").value),
+        closing_at:toIso(document.getElementById("closingDate").value),
+        closing_date:toIso(document.getElementById("closingDate").value),
+        exam_date:toIso(document.getElementById("examDate").value),
+        notification_pdf_url:document.getElementById("notificationUrl").value.trim(),
+        official_notification_url:document.getElementById("notificationUrl").value.trim(),
+        application_url:document.getElementById("applicationUrl").value.trim(),
+        application_url_verified:Boolean(document.getElementById("applicationUrl").value.trim()),
+        source_url:document.getElementById("sourceUrl").value.trim(),
+        official_portal:document.getElementById("sourceUrl").value.trim(),
+        is_government_employer:true,
+        verification_status:"verified",
+        disabled:false,
+        status:"Applications Open",
+        released_at:new Date().toISOString(),
+        verified_at:new Date().toISOString()
+      };
+      const {error}=await supabase.from("live_job_alerts").upsert(row,{onConflict:"id"});
+      alert(error?error.message:"Notification saved.");
+      if(!error) await loadRecords();
+    }
+
+    async function loadRecords(){
+      const list=document.getElementById("recordList");
+      const {data,error}=await supabase.from("live_job_alerts").select("*").order("updated_at",{ascending:false}).limit(200);
+      if(error){list.textContent=error.message;return;}
+      list.innerHTML=(data||[]).map(row=>`
+        <div class="row">
+          <strong>${row.exam_name||row.title||"Unnamed notification"}</strong>
+          <div class="muted">${row.organization||row.authority||"Organization pending"} • ${row.category||"Category pending"} • ${row.status||"Awaiting Official Verification"}</div>
+          <button type="button" onclick="disableRecord('${String(row.id).replace(/'/g,"&#39;")}')">${row.disabled?"Enable":"Disable"}</button>
+        </div>`).join("");
+    }
+
+    async function disableRecord(id){
+      const {data}=await supabase.from("live_job_alerts").select("disabled").eq("id",id).maybeSingle();
+      await supabase.from("live_job_alerts").update({disabled:!data?.disabled}).eq("id",id);
+      await loadRecords();
+    }
+
+    async function archiveExpired(){
+      const {error}=await supabase.rpc("archive_expired_live_job_alerts");
+      alert(error?error.message:"Expired records archived.");
+      await loadRecords();
+    }
+  </script>
+</body>
+</html>
