@@ -100,6 +100,17 @@ const fmtIST = (iso, isStart = false) => {
   }
 };
 
+function getRegistrationClosingValue(item) {
+  if (!item || typeof item !== 'object') return '';
+  return item.closing_at || item.last_date || item.closing_date || '';
+}
+
+function getRegistrationClosingIST(item) {
+  const raw = getRegistrationClosingValue(item);
+  if (!raw) return '';
+  return fmtIST(raw, false);
+}
+
 function getCuratedExamNoticeBoard() {
   const cards = [
     ['SSC', 'Notifications, admit cards, answer keys and posts', 'https://ssc.gov.in/', 'https://ssc.gov.in/'],
@@ -245,7 +256,7 @@ function renderCuratedNotificationCards(items) {
             <p class="text-[11px] text-slate-400">Eligibility: ${esc(item.qualification)}</p>
             <div class="grid sm:grid-cols-2 gap-1 text-[10px] text-slate-300 pt-1">
               <span>Registration starts: Refer to official notice</span>
-              <span>Registration closes: Refer to official notice</span>
+              <span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): Check Official Notification (IST)</span>
             </div>
             <div class="flex flex-wrap gap-2 pt-1">
               <a href="${esc(item.official_notification_url)}" target="_blank" rel="noopener noreferrer" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs">Apply on Official Website ↗</a>
@@ -414,7 +425,7 @@ const JobAlertsRegistry = {
 
     try {
       const nowIso = new Date().toISOString();
-      const cols = 'id,authority,title,posts,qualification,application_start_date,closing_date,closing_at,official_notification_url,application_url,application_url_verified,official_portal,preset_target,category,verified_at,verification_status,is_government_employer';
+      const cols = 'id,authority,title,posts,qualification,application_start_date,closing_date,last_date,closing_at,official_notification_url,application_url,application_url_verified,official_portal,preset_target,category,verified_at,verification_status,is_government_employer';
 
       let allRecords = [];
       const batchSize = 100;
@@ -586,7 +597,7 @@ const JobAlertsRegistry = {
 
   // Strict Fail-Closed Active Application Evaluation
   isJobActive(item, nowMs) {
-    const rawEnd = item.closing_at || item.closing_date;
+    const rawEnd = getRegistrationClosingValue(item);
     const closeMs = parseISTDeadlineMs(rawEnd, false);
 
     if (!Number.isFinite(closeMs) || closeMs <= nowMs) {
@@ -683,7 +694,7 @@ const JobAlertsRegistry = {
     }
 
     validLiveItems.forEach(item => {
-      const rawEnd = item.closing_at || item.closing_date;
+      const rawEnd = getRegistrationClosingValue(item);
       const closeMs = parseISTDeadlineMs(rawEnd, false);
       const diffMs = closeMs - nowMs;
       const totalHoursRemaining = Math.max(0, Math.floor(diffMs / (1000 * 60 * 60)));
@@ -719,8 +730,8 @@ const JobAlertsRegistry = {
         ? `<span>Registration starts: ${esc(startFormatted)}</span>`
         : '<span>Registration start: Refer to official notice</span>';
       const closeInfo = closingFormatted
-        ? `<span>Registration closes: ${esc(closingFormatted)}</span>`
-        : '<span>Registration closing time: Refer to official notice</span>';
+        ? `<span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): ${esc(closingFormatted)}</span>`
+        : '<span class="px-2 py-1 rounded border border-amber-500/30 bg-amber-500/10 text-amber-300 font-bold">Last Registration Date (IST / Asia/Kolkata): Check Official Notification (IST)</span>';
 
       html += `
         <div class="glass-card p-4 rounded-xl border border-white/10 hover:border-rose-500/30 transition flex flex-col md:flex-row md:items-center justify-between gap-4">
