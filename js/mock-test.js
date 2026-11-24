@@ -1,5 +1,5 @@
 // ====================================================================
-// ⏱️ EXAMRESIZER.ME - SINGLE-BUNDLE CBT MOCK ENGINE
+// ⏱️ EXAMRESIZER.ME - SINGLE-BUNDLE CBT MOCK ENGINE (FIXED UI & OPTIONS)
 // Module: js/mock-test.js
 // ====================================================================
 (function () {
@@ -7,6 +7,9 @@
 
   const SUPABASE_MOCK_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/mock-tests";
   const BUNDLE_JSON_URL = `${SUPABASE_MOCK_BASE}/supabase_mocks_ready.json`;
+
+  const GOLD_ACTIVE_BTN = "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-amber-500/25 text-amber-300 shadow-md cursor-pointer";
+  const IDLE_NAV_BTN = "px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-white/10 bg-slate-800/80 text-slate-300 hover:text-white hover:border-amber-400/50 cursor-pointer";
 
   const MOCK_CONFIG = {
     EXAM: {
@@ -128,6 +131,55 @@
   let cbtSubmitted = false;
   let cbtLoadToken = 0;
 
+  function ensureBaseStyles() {
+    if (document.getElementById('er-cbt-gold-style')) return;
+    const style = document.createElement('style');
+    style.id = 'er-cbt-gold-style';
+    style.textContent = `
+      .glass-card {
+        background: rgba(15, 23, 42, 0.86);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(251, 191, 36, 0.22);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+      }
+      .luxury-action-btn {
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%);
+        color: #090d16;
+        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+      }
+      .luxury-action-btn:hover {
+        filter: brightness(1.08);
+      }
+      .cbt-opt-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        text-align: left;
+        padding: 13px 15px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        background: rgba(30, 41, 59, 0.55);
+        color: #e2e8f0;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .cbt-opt-card:hover {
+        border-color: rgba(251, 191, 36, 0.55);
+        background: rgba(245, 158, 11, 0.10);
+      }
+      .cbt-opt-card.is-selected {
+        border: 1.5px solid #fbbf24 !important;
+        background: linear-gradient(90deg, rgba(245, 158, 11, 0.28), rgba(217, 119, 6, 0.16)) !important;
+        color: #fef3c7 !important;
+        font-weight: 700 !important;
+        box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.35);
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
   function escapeHTML(str) {
     if (str === null || str === undefined) return '';
     return String(str)
@@ -243,12 +295,32 @@
     }
   }
 
+  function paintActiveButtons() {
+    const examModeBtn = document.getElementById('mode-btn-EXAM');
+    const subjModeBtn = document.getElementById('mode-btn-SUBJECT');
+    if (examModeBtn) examModeBtn.className = currentMockMode === 'EXAM' ? GOLD_ACTIVE_BTN : IDLE_NAV_BTN;
+    if (subjModeBtn) subjModeBtn.className = currentMockMode === 'SUBJECT' ? GOLD_ACTIVE_BTN : IDLE_NAV_BTN;
+
+    if (currentMockMode === 'EXAM') {
+      Object.keys(MOCK_CONFIG.EXAM).forEach(k => {
+        const btn = document.getElementById('domain-btn-' + k);
+        if (btn) btn.className = (k === currentAuthorityKey) ? GOLD_ACTIVE_BTN : IDLE_NAV_BTN;
+      });
+    } else {
+      Object.keys(MOCK_CONFIG.SUBJECT).forEach(k => {
+        const btn = document.getElementById('domain-btn-' + k);
+        if (btn) btn.className = (k === currentSubjectKey) ? GOLD_ACTIVE_BTN : IDLE_NAV_BTN;
+      });
+    }
+  }
+
   function switchMockMode(mode) {
-    currentMockMode = mode;
+    currentMockMode = (mode === 'SUBJECT') ? 'SUBJECT' : 'EXAM';
     const examBlock = document.getElementById('examDomainNavBlock');
     const subjBlock = document.getElementById('subjectDomainNavBlock');
     const branchContainer = document.getElementById('mockBranchNavContainer');
-    if (mode === 'EXAM') {
+
+    if (currentMockMode === 'EXAM') {
       if (examBlock) examBlock.classList.remove('hidden');
       if (subjBlock) subjBlock.classList.add('hidden');
       if (branchContainer) branchContainer.classList.remove('hidden');
@@ -259,16 +331,18 @@
       if (branchContainer) branchContainer.classList.add('hidden');
       selectSubjectDomain(currentSubjectKey);
     }
+    paintActiveButtons();
   }
   window.switchMockMode = switchMockMode;
 
   function selectMockDomain(authKey) {
+    if (!MOCK_CONFIG.EXAM[authKey]) authKey = 'SSC';
     currentAuthorityKey = authKey;
     const authData = MOCK_CONFIG.EXAM[authKey];
-    if (!authData) return;
     const titleEl = document.getElementById('activeMockDomainTitle');
     if (titleEl) titleEl.innerText = authData.title;
     renderBranchSubButtons();
+    paintActiveButtons();
   }
   window.selectMockDomain = selectMockDomain;
 
@@ -281,26 +355,27 @@
 
     container.innerHTML = keys.map(bk => {
       const active = bk === currentBranchKey;
-      return `<button type="button" onclick="switchBranch('${bk}')" class="px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
-        active ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white'
-      }">${escapeHTML(authData.branches[bk])}</button>`;
+      return `<button type="button" id="mock-branch-btn-${bk}" onclick="switchBranch('${bk}')" class="${active ? GOLD_ACTIVE_BTN : IDLE_NAV_BTN}">${escapeHTML(authData.branches[bk])}</button>`;
     }).join('');
     renderStageCards();
   }
 
   function switchBranch(branchKey) {
+    const authData = MOCK_CONFIG.EXAM[currentAuthorityKey];
+    if (!authData || !authData.branches[branchKey]) return;
     currentBranchKey = branchKey;
     renderBranchSubButtons();
   }
   window.switchBranch = switchBranch;
 
   function selectSubjectDomain(subjKey) {
+    if (!MOCK_CONFIG.SUBJECT[subjKey]) subjKey = 'APTITUDE';
     currentSubjectKey = subjKey;
     const subjData = MOCK_CONFIG.SUBJECT[subjKey];
-    if (!subjData) return;
     const titleEl = document.getElementById('activeMockDomainTitle');
     if (titleEl) titleEl.innerText = `${subjData.title} (${subjData.qCount} Qs • ${Math.round(subjData.timeSec / 60)} Mins)`;
     renderStageCards();
+    paintActiveButtons();
   }
   window.selectSubjectDomain = selectSubjectDomain;
 
@@ -320,31 +395,38 @@
       const isUnlocked = stage <= unlockedStage;
       const isNextTarget = stage === unlockedStage;
       html += `
-        <div class="p-4 rounded-xl glass-card border ${isUnlocked ? (isNextTarget ? 'border-amber-400' : 'border-emerald-500/40') : 'border-white/5 opacity-50'} flex flex-col justify-between space-y-3">
+        <div class="p-4 rounded-xl glass-card ${isNextTarget ? 'border-amber-400' : ''} ${!isUnlocked ? 'opacity-55' : ''} flex flex-col justify-between space-y-3">
           <div>
-            <div class="text-[10px] font-black uppercase text-amber-300 mb-1">EXAMRESIZER.ME • Mock #${stage}</div>
+            <div class="flex items-center justify-between text-[10px] font-black uppercase text-amber-300 mb-1">
+              <span>EXAMRESIZER.ME</span>
+              <span>Mock #${stage}</span>
+            </div>
             <h4 class="font-bold text-white text-sm">${escapeHTML(activeTitle)} • Mock ${stage}</h4>
-            <p class="text-[11px] text-slate-400 mt-0.5">${cfg.qCount} Questions • ${Math.round(cfg.timeSec / 60)} Mins</p>
+            <p class="text-[11px] text-slate-300 mt-0.5">${cfg.qCount} Questions • ${Math.round(cfg.timeSec / 60)} Mins</p>
           </div>
           <div>
             ${isUnlocked
-              ? `<button type="button" onclick="prepareTestStage(${stage})" class="w-full py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs cursor-pointer">${stage < unlockedStage ? 'Retake Mock' : 'Start Mock Test'}</button>`
-              : `<button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-500 font-bold text-xs cursor-not-allowed">🔒 Clear Mock ${stage - 1} First</button>`}
+              ? `<button type="button" onclick="prepareTestStage(${stage})" class="w-full py-2.5 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer">${stage < unlockedStage ? 'Retake Mock' : 'Start Mock Test'}</button>`
+              : `<button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 border border-white/10 font-bold text-xs cursor-not-allowed">🔒 Clear Mock ${stage - 1} First</button>`}
           </div>
         </div>
       `;
     }
 
+    // 11th Mock: Coming Soon
     const upcomingStage = maxStages + 1;
     html += `
-      <div class="p-4 rounded-xl glass-card border border-amber-500/25 bg-slate-900/50 flex flex-col justify-between space-y-3 opacity-90">
+      <div class="p-4 rounded-xl glass-card border border-amber-400/35 flex flex-col justify-between space-y-3 opacity-90">
         <div>
-          <div class="text-[10px] font-black uppercase text-amber-400 mb-1">EXAMRESIZER.ME • Mock #${upcomingStage}</div>
+          <div class="flex items-center justify-between text-[10px] font-black uppercase text-amber-400 mb-1">
+            <span>EXAMRESIZER.ME</span>
+            <span>Mock #${upcomingStage}</span>
+          </div>
           <h4 class="font-bold text-white text-sm">${escapeHTML(activeTitle)} • Mock ${upcomingStage}</h4>
-          <p class="text-[11px] text-slate-400 mt-0.5">Coming Soon • New Verified PYQ Set</p>
+          <p class="text-[11px] text-slate-300 mt-0.5">Coming Soon • New Verified PYQ Set</p>
         </div>
         <div>
-          <button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-amber-300 border border-amber-500/20 font-extrabold text-xs cursor-not-allowed">Coming Soon</button>
+          <button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-amber-300 border border-amber-400/30 font-extrabold text-xs cursor-not-allowed">Coming Soon</button>
         </div>
       </div>
     `;
@@ -369,9 +451,13 @@
     cbtLoadToken++;
     currentTestStage = stage;
     const activeTitle = isExam ? cfg.branches[currentBranchKey] : cfg.title;
-    document.getElementById('mock-hub-dashboard').classList.add('hidden');
-    document.getElementById('mock-gatekeeper-screen').classList.remove('hidden');
-    document.getElementById('gatekeeperTestTitle').innerText = `EXAMRESIZER.ME • ${activeTitle} • Mock #${stage}`;
+    const dash = document.getElementById('mock-hub-dashboard');
+    const gate = document.getElementById('mock-gatekeeper-screen');
+    if (dash) dash.classList.add('hidden');
+    if (gate) gate.classList.remove('hidden');
+
+    const titleEl = document.getElementById('gatekeeperTestTitle');
+    if (titleEl) titleEl.innerText = `EXAMRESIZER.ME • ${activeTitle} • Mock #${stage}`;
 
     const chk = document.getElementById('policyAgreementCheckbox');
     if (chk) { chk.checked = false; toggleCBTReady(chk); }
@@ -389,21 +475,27 @@
     cbtReview = new Set();
     cbtSubmitted = false;
 
-    document.getElementById('mock-gatekeeper-screen').classList.add('hidden');
-    document.getElementById('mock-live-screen').classList.add('hidden');
-    document.getElementById('mock-result-screen').classList.add('hidden');
-    document.getElementById('mock-hub-dashboard').classList.remove('hidden');
+    const gate = document.getElementById('mock-gatekeeper-screen');
+    const live = document.getElementById('mock-live-screen');
+    const res = document.getElementById('mock-result-screen');
+    const dash = document.getElementById('mock-hub-dashboard');
+    if (gate) gate.classList.add('hidden');
+    if (live) live.classList.add('hidden');
+    if (res) res.classList.add('hidden');
+    if (dash) dash.classList.remove('hidden');
     renderStageCards();
+    paintActiveButtons();
   }
   window.returnToMockHub = returnToMockHub;
 
   function toggleCBTReady(el) {
     const btn = document.getElementById('startCbtBtn');
     if (!btn) return;
-    btn.disabled = !el.checked;
-    btn.className = el.checked
-      ? 'px-7 py-3 rounded-xl luxury-action-btn text-black font-extrabold text-xs cursor-pointer'
-      : 'px-7 py-3 rounded-xl bg-slate-700 text-slate-400 font-black text-xs cursor-not-allowed';
+    const ok = Boolean(el && el.checked);
+    btn.disabled = !ok;
+    btn.className = ok
+      ? 'px-7 py-3 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer'
+      : 'px-7 py-3 rounded-xl bg-slate-700 text-slate-400 border border-white/10 font-black text-xs cursor-not-allowed';
   }
   window.toggleCBTReady = toggleCBTReady;
 
@@ -483,9 +575,11 @@
 
       cbtSubmitted = false;
       gateScreen.classList.add('hidden');
-      document.getElementById('mock-live-screen').classList.remove('hidden');
-      document.getElementById('liveExamHeaderTitle').innerText =
-        `EXAMRESIZER.ME • ${activeTitleAtStart} • Mock #${stageAtStart}`;
+      const liveScreen = document.getElementById('mock-live-screen');
+      if (liveScreen) liveScreen.classList.remove('hidden');
+
+      const hdr = document.getElementById('liveExamHeaderTitle');
+      if (hdr) hdr.innerText = `EXAMRESIZER.ME • ${activeTitleAtStart} • Mock #${stageAtStart}`;
 
       cbtIndex = 0;
       cbtAnswers = {};
@@ -516,25 +610,45 @@
   }
   window.startCbtSession = startCbtSession;
 
+  function syncOptionVisuals() {
+    const picked = cbtAnswers[cbtIndex];
+    const cont = document.getElementById('cbtOptionsContainer');
+    if (!cont) return;
+    const cards = cont.querySelectorAll('[data-opt-idx]');
+    cards.forEach(card => {
+      const idx = Number(card.getAttribute('data-opt-idx'));
+      const isSel = picked === idx;
+      card.classList.toggle('is-selected', isSel);
+      const radio = card.querySelector('input[type="radio"]');
+      if (radio) radio.checked = isSel;
+    });
+  }
+
   function renderCbtQuestion() {
     const q = CBT_ACTIVE_QUESTIONS[cbtIndex];
     if (!q) return;
     cbtVisited.add(cbtIndex);
 
-    document.getElementById('cbtQuestionNum').innerText = `EXAMRESIZER.ME • Question ${cbtIndex + 1} of ${CBT_ACTIVE_QUESTIONS.length}`;
-    document.getElementById('cbtSectionTag').innerText = `${q.section} (+${q.marks} / -${q.negativeMarks})`;
-    document.getElementById('cbtQuestionText').textContent = q.en;
+    const numEl = document.getElementById('cbtQuestionNum');
+    const secEl = document.getElementById('cbtSectionTag');
+    const txtEl = document.getElementById('cbtQuestionText');
+    if (numEl) numEl.innerText = `EXAMRESIZER.ME • Question ${cbtIndex + 1} of ${CBT_ACTIVE_QUESTIONS.length}`;
+    if (secEl) secEl.innerText = `${q.section} (+${q.marks} / -${q.negativeMarks})`;
+    if (txtEl) txtEl.textContent = q.en;
 
+    const picked = cbtAnswers[cbtIndex];
     const cont = document.getElementById('cbtOptionsContainer');
-    cont.innerHTML = q.options.map((opt, idx) => {
-      const sel = cbtAnswers[cbtIndex] === idx;
-      return `
-        <label class="flex items-center space-x-3 p-3.5 rounded-xl border ${sel ? 'border-amber-400 bg-amber-500/15 text-white font-bold' : 'border-white/10 text-slate-300'} cursor-pointer text-xs">
-          <input type="radio" name="cbtOptionChoice" value="${idx}" ${sel ? 'checked' : ''} onchange="cbtSelectOpt(${idx})" class="w-4 h-4 accent-amber-500">
-          <span>(${String.fromCharCode(65 + idx)}) ${escapeHTML(opt)}</span>
-        </label>
-      `;
-    }).join('');
+    if (cont) {
+      cont.innerHTML = q.options.map((opt, idx) => {
+        const isSel = picked === idx;
+        return `
+          <div role="button" tabindex="0" data-opt-idx="${idx}" onclick="cbtSelectOpt(${idx})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cbtSelectOpt(${idx});}" class="cbt-opt-card ${isSel ? 'is-selected' : ''}">
+            <input type="radio" name="cbtOptionChoice" value="${idx}" ${isSel ? 'checked' : ''} class="w-4 h-4 accent-amber-400 pointer-events-none">
+            <span class="leading-relaxed"><strong>(${String.fromCharCode(65 + idx)})</strong> ${escapeHTML(opt)}</span>
+          </div>
+        `;
+      }).join('');
+    }
   }
 
   function renderCbtPalette() {
@@ -545,24 +659,31 @@
       const isAns = cbtAnswers[idx] !== undefined;
       const isRev = cbtReview.has(idx);
       const isVis = cbtVisited.has(idx);
+      const isCurr = idx === cbtIndex;
       if (isAns) answered++;
-      let cls = 'bg-slate-800 text-slate-400';
+      let cls = 'bg-slate-800 text-slate-300 border border-white/10';
       if (isAns && isRev) cls = 'bg-purple-600 text-white font-extrabold';
-      else if (isAns) cls = 'bg-emerald-500 text-black font-extrabold';
+      else if (isAns) cls = 'bg-amber-400 text-black font-extrabold';
       else if (isRev) cls = 'bg-purple-600 text-white font-extrabold';
       else if (isVis) cls = 'bg-rose-500/80 text-white font-bold';
-      return `<button type="button" onclick="jumpCbt(${idx})" class="w-full aspect-square rounded-md text-[10px] font-mono ${cls}">${idx + 1}</button>`;
+      const ring = isCurr ? 'ring-2 ring-amber-300' : '';
+      return `<button type="button" onclick="jumpCbt(${idx})" class="w-full aspect-square rounded-md text-[10px] font-mono cursor-pointer ${cls} ${ring}">${idx + 1}</button>`;
     }).join('');
     const badge = document.getElementById('paletteAnsweredCount');
     if (badge) badge.innerText = `${answered} / ${CBT_ACTIVE_QUESTIONS.length} Answered`;
   }
 
-  function cbtSelectOpt(idx) { cbtAnswers[cbtIndex] = idx; renderCbtQuestion(); renderCbtPalette(); }
+  function cbtSelectOpt(idx) {
+    if (cbtSubmitted) return;
+    cbtAnswers[cbtIndex] = idx;
+    syncOptionVisuals();
+    renderCbtPalette();
+  }
   window.cbtSelectOpt = cbtSelectOpt;
 
   function cbtToggleReview() {
     if (cbtReview.has(cbtIndex)) cbtReview.delete(cbtIndex); else cbtReview.add(cbtIndex);
-    renderCbtQuestion(); renderCbtPalette();
+    renderCbtPalette();
   }
   window.cbtToggleReview = cbtToggleReview;
 
@@ -572,7 +693,9 @@
   window.cbtSaveAndNext = cbtSaveAndNext;
 
   function cbtClearResponse() {
-    delete cbtAnswers[cbtIndex]; renderCbtQuestion(); renderCbtPalette();
+    delete cbtAnswers[cbtIndex];
+    syncOptionVisuals();
+    renderCbtPalette();
   }
   window.cbtClearResponse = cbtClearResponse;
 
@@ -587,8 +710,10 @@
 
     cbtSubmitted = true;
     clearInterval(cbtTimerInterval);
-    document.getElementById('mock-live-screen').classList.add('hidden');
+    const liveScreen = document.getElementById('mock-live-screen');
     const resScreen = document.getElementById('mock-result-screen');
+    if (liveScreen) liveScreen.classList.add('hidden');
+    if (!resScreen) return;
     resScreen.classList.remove('hidden');
 
     const cfg = CBT_SESSION_CONFIG || getActiveConfig();
@@ -616,12 +741,12 @@
       <div class="glass-card p-6 rounded-2xl space-y-4">
         <h3 class="text-xl font-black text-white">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Analysis</h3>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div class="p-3 bg-white/5 rounded-xl"><div class="text-xs text-slate-400">Net Score</div><div class="text-lg font-black text-amber-400">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div></div>
-          <div class="p-3 bg-white/5 rounded-xl"><div class="text-xs text-slate-400">Accuracy / %</div><div class="text-lg font-black text-emerald-400">${pct.toFixed(1)}%</div></div>
-          <div class="p-3 bg-white/5 rounded-xl"><div class="text-xs text-slate-400">Correct</div><div class="text-lg font-black text-emerald-400">${correctCount}</div></div>
-          <div class="p-3 bg-white/5 rounded-xl"><div class="text-xs text-slate-400">Wrong / Key Pending</div><div class="text-lg font-black text-rose-400">${wrongCount} / ${pendingKeyCount}</div></div>
+          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Net Score</div><div class="text-lg font-black text-amber-400">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div></div>
+          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Accuracy / %</div><div class="text-lg font-black text-emerald-400">${pct.toFixed(1)}%</div></div>
+          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Correct</div><div class="text-lg font-black text-emerald-400">${correctCount}</div></div>
+          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Wrong / Key Pending</div><div class="text-lg font-black text-rose-400">${wrongCount} / ${pendingKeyCount}</div></div>
         </div>
-        <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs cursor-pointer">Back to Mocks</button>
+        <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer">Back to Mocks</button>
       </div>
       <div class="space-y-3 pt-3">
         ${CBT_ACTIVE_QUESTIONS.map((q, idx) => {
@@ -631,12 +756,12 @@
           const userStr = picked !== undefined ? `(${String.fromCharCode(65 + picked)}) ${escapeHTML(q.options[picked])}` : "Not Attempted";
           const ansStr = hasKey ? `(${String.fromCharCode(65 + q.correct)}) ${escapeHTML(q.options[q.correct])}` : "Pending Authentic Key Verification";
           return `
-            <div class="p-4 rounded-xl glass-card border border-white/10 space-y-1.5 text-xs">
+            <div class="p-4 rounded-xl glass-card space-y-1.5 text-xs">
               <div class="font-bold text-amber-400">EXAMRESIZER.ME • Q${idx + 1} (${escapeHTML(q.section)})</div>
               <p class="text-white font-medium">${escapeHTML(q.en)}</p>
               <p class="${isRight ? 'text-emerald-400 font-bold' : 'text-rose-400'}">Your Answer: ${userStr}</p>
               <p class="${hasKey ? 'text-emerald-400 font-bold' : 'text-amber-300'}">Answer Key: ${ansStr}</p>
-              <p class="text-slate-300"><strong>Analysis:</strong> ${escapeHTML(q.explanation)}</p>
+              <p class="text-slate-200"><strong>Analysis:</strong> ${escapeHTML(q.explanation)}</p>
             </div>
           `;
         }).join('')}
@@ -646,6 +771,7 @@
   window.submitCBT = submitCBT;
 
   document.addEventListener('DOMContentLoaded', () => {
+    ensureBaseStyles();
     checkExistingStudentSession();
     selectMockDomain('SSC');
   });
