@@ -5,8 +5,9 @@
 (function () {
   'use strict';
 
-  const SUPABASE_MOCK_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/mock-tests";
-  const BUNDLE_JSON_URL = `${SUPABASE_MOCK_BASE}/supabase_mocks_ready.json`;
+ const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh8g_tQbN_PASTE_THE_REST_HERE";
+  const BUNDLE_JSON_URL = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/supabase_mocks_ready.json";
 
   const GOLD_ACTIVE_BTN = "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-amber-500/25 text-amber-300 shadow-md cursor-pointer";
   const IDLE_NAV_BTN = "px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-white/10 bg-slate-800/80 text-slate-300 hover:text-white hover:border-amber-400/50 cursor-pointer";
