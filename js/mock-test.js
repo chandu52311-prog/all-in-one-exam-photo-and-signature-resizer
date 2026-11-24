@@ -1,12 +1,12 @@
 // ====================================================================
-// ⏱️ EXAMRESIZER.ME - SINGLE-BUNDLE CBT MOCK ENGINE (FIXED UI & OPTIONS)
+// ⏱️ EXAMRESIZER.ME - CBT MOCK ENGINE (FULL-SCREEN EXAM + EXACT ROUTING)
 // Module: js/mock-test.js
 // ====================================================================
 (function () {
   'use strict';
 
- const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh8g_tQbN_PASTE_THE_REST_HERE";
+  const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh8g_tQbN_";
   const BUNDLE_JSON_URL = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/supabase_mocks_ready.json";
 
   const GOLD_ACTIVE_BTN = "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-amber-500/25 text-amber-300 shadow-md cursor-pointer";
@@ -84,6 +84,30 @@
         negMark: 0.33,
         stages: 10
       },
+      TGPSC: {
+        title: "EXAMRESIZER.ME • TGPSC Group-1 & State Cadre",
+        zone: "TGPSC",
+        branches: {
+          "GROUP_1": "TGPSC Group-1 (150 Qs • 150m)"
+        },
+        qCount: 150,
+        timeSec: 9000,
+        posMark: 1.00,
+        negMark: 0.33,
+        stages: 10
+      },
+      POWER_PSU: {
+        title: "EXAMRESIZER.ME • Power Utilities & PSUs (PGCIL / GENCO / TRANSCO)",
+        zone: "POWER_PSU",
+        branches: {
+          "EE": "PSU Electrical & Power Cadre (100 Qs • 120m)"
+        },
+        qCount: 100,
+        timeSec: 7200,
+        posMark: 1.00,
+        negMark: 0.25,
+        stages: 10
+      },
       GATE: {
         title: "EXAMRESIZER.ME • GATE All Branches",
         zone: "GATE",
@@ -112,6 +136,23 @@
     }
   };
 
+  const DOMAIN_ALIAS = {
+    "GATE": "GATE",
+    "SSC": "SSC",
+    "RRB": "RRB",
+    "RAILWAY": "RRB",
+    "RAILWAY (RRB)": "RRB",
+    "BANKING": "BANKING",
+    "BANK": "BANKING",
+    "APPSC": "APPSC",
+    "TGPSC": "TGPSC",
+    "TSPSC": "TGPSC",
+    "POWER_PSU": "POWER_PSU",
+    "POWER PSU": "POWER_PSU",
+    "POWER PSUS": "POWER_PSU",
+    "PSU": "POWER_PSU"
+  };
+
   let currentMockMode = 'EXAM';
   let currentAuthorityKey = 'SSC';
   let currentBranchKey = 'CGL';
@@ -138,19 +179,16 @@
     style.id = 'er-cbt-gold-style';
     style.textContent = `
       .glass-card {
-        background: rgba(15, 23, 42, 0.86);
+        background: rgba(15, 23, 42, 0.88);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(251, 191, 36, 0.22);
+        border: 1px solid rgba(251, 191, 36, 0.24);
         box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
       }
       .luxury-action-btn {
         background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%);
         color: #090d16;
         box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
-      }
-      .luxury-action-btn:hover {
-        filter: brightness(1.08);
       }
       .cbt-opt-card {
         display: flex;
@@ -166,19 +204,24 @@
         cursor: pointer;
         transition: all 0.15s ease;
       }
-      .cbt-opt-card:hover {
-        border-color: rgba(251, 191, 36, 0.55);
-        background: rgba(245, 158, 11, 0.10);
-      }
       .cbt-opt-card.is-selected {
         border: 1.5px solid #fbbf24 !important;
         background: linear-gradient(90deg, rgba(245, 158, 11, 0.28), rgba(217, 119, 6, 0.16)) !important;
         color: #fef3c7 !important;
         font-weight: 700 !important;
-        box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.35);
+      }
+      body.er-exam-fullscreen header,
+      body.er-exam-fullscreen nav,
+      body.er-exam-fullscreen #mock-hub-dashboard,
+      body.er-exam-fullscreen #mock-gatekeeper-screen {
+        display: none !important;
       }
     `;
     document.head.appendChild(style);
+  }
+
+  function setExamFullscreenMode(active) {
+    document.body.classList.toggle('er-exam-fullscreen', Boolean(active));
   }
 
   function escapeHTML(str) {
@@ -296,6 +339,22 @@
     }
   }
 
+  function ensureBankingButtonVisible() {
+    const examBlock = document.getElementById('examDomainNavBlock');
+    if (!examBlock || document.getElementById('domain-btn-BANKING')) return;
+    const anchor = document.getElementById('domain-btn-APPSC') || examBlock.querySelector('button');
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.id = 'domain-btn-BANKING';
+    btn.textContent = 'Banking';
+    btn.onclick = () => selectMockDomain('BANKING');
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(btn, anchor.nextSibling);
+    } else {
+      examBlock.appendChild(btn);
+    }
+  }
+
   function paintActiveButtons() {
     const examModeBtn = document.getElementById('mode-btn-EXAM');
     const subjModeBtn = document.getElementById('mode-btn-SUBJECT');
@@ -322,6 +381,7 @@
     const branchContainer = document.getElementById('mockBranchNavContainer');
 
     if (currentMockMode === 'EXAM') {
+      ensureBankingButtonVisible();
       if (examBlock) examBlock.classList.remove('hidden');
       if (subjBlock) subjBlock.classList.add('hidden');
       if (branchContainer) branchContainer.classList.remove('hidden');
@@ -336,10 +396,14 @@
   }
   window.switchMockMode = switchMockMode;
 
-  function selectMockDomain(authKey) {
-    if (!MOCK_CONFIG.EXAM[authKey]) authKey = 'SSC';
-    currentAuthorityKey = authKey;
-    const authData = MOCK_CONFIG.EXAM[authKey];
+  function selectMockDomain(rawKey) {
+    currentMockMode = 'EXAM';
+    const norm = DOMAIN_ALIAS[String(rawKey || '').trim().toUpperCase()] || 'SSC';
+    currentAuthorityKey = MOCK_CONFIG.EXAM[norm] ? norm : 'SSC';
+    const authData = MOCK_CONFIG.EXAM[currentAuthorityKey];
+    const branchKeys = Object.keys(authData.branches);
+    currentBranchKey = branchKeys[0];
+
     const titleEl = document.getElementById('activeMockDomainTitle');
     if (titleEl) titleEl.innerText = authData.title;
     renderBranchSubButtons();
@@ -370,9 +434,10 @@
   window.switchBranch = switchBranch;
 
   function selectSubjectDomain(subjKey) {
-    if (!MOCK_CONFIG.SUBJECT[subjKey]) subjKey = 'APTITUDE';
-    currentSubjectKey = subjKey;
-    const subjData = MOCK_CONFIG.SUBJECT[subjKey];
+    currentMockMode = 'SUBJECT';
+    const key = String(subjKey || 'APTITUDE').trim().toUpperCase();
+    currentSubjectKey = MOCK_CONFIG.SUBJECT[key] ? key : 'APTITUDE';
+    const subjData = MOCK_CONFIG.SUBJECT[currentSubjectKey];
     const titleEl = document.getElementById('activeMockDomainTitle');
     if (titleEl) titleEl.innerText = `${subjData.title} (${subjData.qCount} Qs • ${Math.round(subjData.timeSec / 60)} Mins)`;
     renderStageCards();
@@ -414,7 +479,6 @@
       `;
     }
 
-    // 11th Mock: Coming Soon
     const upcomingStage = maxStages + 1;
     html += `
       <div class="p-4 rounded-xl glass-card border border-amber-400/35 flex flex-col justify-between space-y-3 opacity-90">
@@ -468,6 +532,7 @@
   function returnToMockHub() {
     cbtLoadToken++;
     clearInterval(cbtTimerInterval);
+    setExamFullscreenMode(false);
     CBT_ACTIVE_QUESTIONS = [];
     CBT_SESSION_CONFIG = null;
     CBT_SESSION_STAGE = 1;
@@ -506,14 +571,32 @@
     return `exam-${cfg.zone.toLowerCase()}-${activeKey.toLowerCase()}-mock-${pad}`;
   }
 
-  async function loadBundle(signal) {
-    if (Array.isArray(bundleCache) && bundleCache.length > 0) return bundleCache;
-    const res = await fetch(BUNDLE_JSON_URL, { signal });
-    if (!res.ok) throw new Error(`HTTP ${res.status} loading ${BUNDLE_JSON_URL}`);
-    const data = await res.json();
-    if (!Array.isArray(data)) throw new Error("Bundle JSON is not an array");
-    bundleCache = data;
-    return data;
+  async function resolveMockRow(targetSlug, signal) {
+    try {
+      const endpoint = `${SUPABASE_URL}/rest/v1/mock_tests?slug=eq.${encodeURIComponent(targetSlug)}&select=*`;
+      const res = await fetch(endpoint, {
+        signal,
+        headers: {
+          apikey: SUPABASE_PUBLISHABLE_KEY,
+          Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`
+        }
+      });
+      if (res.ok) {
+        const rows = await res.json();
+        if (Array.isArray(rows) && rows.length > 0 && rows[0].status === 'ACTIVE') {
+          return rows[0];
+        }
+      }
+    } catch (_) {}
+
+    if (!Array.isArray(bundleCache) || bundleCache.length === 0) {
+      const res = await fetch(BUNDLE_JSON_URL, { signal });
+      if (!res.ok) throw new Error(`Bundle HTTP ${res.status}`);
+      const data = await res.json();
+      if (!Array.isArray(data)) throw new Error("Bundle invalid");
+      bundleCache = data;
+    }
+    return bundleCache.find(r => r && r.slug === targetSlug && r.status === 'ACTIVE') || null;
   }
 
   function tickCbtTimer() {
@@ -549,8 +632,7 @@
     const timer = setTimeout(() => controller.abort(), 20000);
 
     try {
-      const rows = await loadBundle(controller.signal);
-      const row = rows.find(r => r && r.slug === targetSlug && r.status === 'ACTIVE');
+      const row = await resolveMockRow(targetSlug, controller.signal);
       if (!row || !Array.isArray(row.questions_json) || row.questions_json.length === 0) {
         throw new Error(`Missing mock for ${targetSlug}`);
       }
@@ -572,10 +654,11 @@
         explanation: String(q.explanation || q.analysis || "")
       })).filter(x => x.en && x.options.length >= 2);
 
-      if (!CBT_ACTIVE_QUESTIONS.length) throw new Error("No valid questions found");
+      if (!CBT_ACTIVE_QUESTIONS.length) throw new Error("No valid questions");
 
       cbtSubmitted = false;
       gateScreen.classList.add('hidden');
+      setExamFullscreenMode(true);
       const liveScreen = document.getElementById('mock-live-screen');
       if (liveScreen) liveScreen.classList.remove('hidden');
 
@@ -598,7 +681,7 @@
     } catch (err) {
       if (token === cbtLoadToken) {
         console.error(err);
-        alert("Could not load mock test bundle. Verify supabase_mocks_ready.json is accessible.");
+        alert(`Could not load mock (${targetSlug}). Check Supabase mock_tests or bundle.`);
       }
     } finally {
       clearTimeout(timer);
@@ -615,8 +698,7 @@
     const picked = cbtAnswers[cbtIndex];
     const cont = document.getElementById('cbtOptionsContainer');
     if (!cont) return;
-    const cards = cont.querySelectorAll('[data-opt-idx]');
-    cards.forEach(card => {
+    cont.querySelectorAll('[data-opt-idx]').forEach(card => {
       const idx = Number(card.getAttribute('data-opt-idx'));
       const isSel = picked === idx;
       card.classList.toggle('is-selected', isSel);
@@ -711,6 +793,7 @@
 
     cbtSubmitted = true;
     clearInterval(cbtTimerInterval);
+    setExamFullscreenMode(false);
     const liveScreen = document.getElementById('mock-live-screen');
     const resScreen = document.getElementById('mock-result-screen');
     if (liveScreen) liveScreen.classList.add('hidden');
@@ -773,6 +856,7 @@
 
   document.addEventListener('DOMContentLoaded', () => {
     ensureBaseStyles();
+    ensureBankingButtonVisible();
     checkExistingStudentSession();
     selectMockDomain('SSC');
   });
