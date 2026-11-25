@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -251,7 +251,7 @@
   <!-- TOP GAMING HUD NAVIGATION -->
   <header class="sticky top-0 z-50 glass-card border-b border-white/10 px-4 py-3">
     <div class="max-w-6xl mx-auto flex items-center justify-between">
-      <div role="button" tabindex="0" class="flex items-center space-x-3 cursor-pointer" onclick="switchZone('resizer-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('resizer-zone');}">
+      <div role="button" tabindex="0" class="flex items-center space-x-3 cursor-pointer" onclick="goHomeDashboard()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();goHomeDashboard();}">
         <div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-400 to-amber-200 p-[1.5px] gold-glow flex items-center justify-center transform hover:rotate-3 transition">
           <div class="w-full h-full bg-[#05070e] rounded-[10px] flex items-center justify-center border border-amber-500/30">
             <span class="font-black text-amber-400 text-lg tracking-wider" style="font-family: 'Orbitron', sans-serif;">ER</span>
@@ -266,7 +266,7 @@
       </div>
 
       <nav class="hidden md:flex items-center space-x-1.5 text-xs">
-        <button type="button" onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition">Resizer Pro</button>
+        <button type="button" onclick="switchZone('resizer-zone')" id="nav-btn-resizer" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Resizer Pro</button>
         <button type="button" onclick="switchZone('iq-zone')" id="nav-btn-iq" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">🧠 IQ Arena</button>
         <button type="button" onclick="switchZone('pyq-zone')" id="nav-btn-pyq" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">PYQ Hub</button>
         <button type="button" onclick="switchZone('mock-zone')" id="nav-btn-mock" class="px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-bold">Mock CBT</button>
@@ -290,7 +290,7 @@
   <main class="flex-grow max-w-5xl mx-auto w-full px-4 py-6 space-y-6">
 
     <!-- 6 PREMIER PORTAL CARDS (KEYBOARD ACCESSIBLE) -->
-    <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <section id="main-dashboard-hub" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
       
       <!-- 1. PHOTO & SIGNATURE RESIZER PRO -->
       <div role="button" tabindex="0" onclick="switchZone('resizer-zone')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();switchZone('resizer-zone');}" class="glass-card gold-border shimmer-card hover:border-amber-400 p-5 rounded-2xl cursor-pointer transition-all duration-300 transform hover:-translate-y-1.5 gold-glow flex items-center space-x-4 group">
@@ -360,7 +360,14 @@
     </section>
 
     <!-- SECTION 1: PHOTO & SIGNATURE RESIZER -->
-    <section id="resizer-zone" class="block space-y-4">
+    <section id="resizer-zone" class="hidden space-y-4">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • Exam Resizer Pro</span>
+      </div>
+
       <div class="glass-card p-4 rounded-xl border border-white/10 text-xs leading-relaxed text-slate-300">
         <strong class="text-amber-400">Exam Resizer Pro</strong> formats candidate passport photographs and signatures to meet standard pixel dimensions, dpi specifications, and file size byte thresholds.
       </div>
@@ -486,9 +493,15 @@
       </article>
     </section>
 
-    
-    <!-- SECTION: SPEED APTITUDE & IQ ARENA -->
+    <!-- SECTION 2: SPEED APTITUDE & IQ ARENA -->
     <section id="iq-zone" class="hidden space-y-4">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" id="iq-workspace-back-btn" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • Speed Aptitude Arena</span>
+      </div>
+
       <div class="glass-card rounded-2xl p-6 border border-purple-500/30 space-y-6">
         
         <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-white/10 gap-3">
@@ -726,8 +739,15 @@
       </div>
     </section>
 
-    <!-- SECTION 2: QUESTION PAPERS HUB -->
+    <!-- SECTION 3: QUESTION PAPERS HUB -->
     <section id="pyq-zone" class="hidden space-y-5">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • Question Papers Hub</span>
+      </div>
+
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         <div class="flex items-center justify-between pb-4 border-b border-white/10">
           <div>
@@ -857,8 +877,15 @@
       </div>
     </section>
 
-    <!-- SECTION 3: CBT MOCK TEST ENGINE -->
+    <!-- SECTION 4: CBT MOCK TEST ENGINE -->
     <section id="mock-zone" class="hidden space-y-5">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" id="mock-workspace-back-btn" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • CBT Exam Terminal</span>
+      </div>
+
       <div class="glass-card gold-border rounded-2xl p-6 space-y-6">
         
         <!-- STUDENT PROFILE DOCK (PURE NAME-ONLY - ZERO PHONE NUMBERS) -->
@@ -1132,8 +1159,15 @@
       </div>
     </section>
 
-    <!-- SECTION 4: PDF MEGA STUDIO -->
+    <!-- SECTION 5: PDF MEGA STUDIO -->
     <section id="pdf-zone" class="hidden space-y-4">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" id="pdf-workspace-back-btn" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • PDF Mega Suite</span>
+      </div>
+
       <div id="pdf-studio-root"></div>
       <article id="pdfMegaSuiteGuide" class="glass-card p-5 rounded-2xl border border-emerald-500/30 space-y-4 text-xs leading-relaxed text-slate-300">
         <h2 class="text-base font-black text-emerald-300">PDF Mega Suite: compression, merge, A4 conversion, and page extraction</h2>
@@ -1183,8 +1217,15 @@
       </article>
     </section>
 
-    <!-- SECTION 5: RECRUITMENT ALERTS -->
+    <!-- SECTION 6: RECRUITMENT ALERTS -->
     <section id="jobs-zone" class="hidden space-y-4">
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" onclick="navBack()" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • Govt Job Alerts</span>
+      </div>
+
       <div class="glass-card rounded-2xl p-6 border border-rose-500/30 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
@@ -1233,8 +1274,6 @@
       </div>
     </section>
 
-  
-
   </main>
 
   <!-- ADSENSE COMPLIANCE FOOTER -->
@@ -1249,8 +1288,6 @@
       <a href="/terms-and-conditions.html" class="hover:text-amber-400 transition">Terms & Conditions</a>
       <span>•</span>
       <a href="/disclaimer.html" class="hover:text-amber-400 transition">Disclaimer</a>
-      <span>•</span>
-      <a href="/admin.html" class="hover:text-amber-400 transition">Admin</a>
     </div>
     <p class="text-[11px] text-slate-500">© 2026 Exam Resizer Pro. Independent candidate utility. All examination acronyms belong to their respective regulatory conducting bodies.</p>
   </footer>
@@ -1317,7 +1354,6 @@
   <script src="/js/pdf-suite.js"></script>
   <script src="/js/job-alerts.js"></script>
   <script src="/js/app.js"></script>
-  <script src="js/tool-hub-view.js"></script>
+  <script src="/js/tool-hub-view.js"></script>
 </body>
 </html>
-
