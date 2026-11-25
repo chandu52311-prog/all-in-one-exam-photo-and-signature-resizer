@@ -1,62 +1,206 @@
 /**
  * ExamResizer Pro - Master Application Controller & Navigation Orchestrator
  * Module: js/app.js
- * Architecture: Zero-Reload Workspace Routing, State Synchronization & PWA Install Lifecycle
+ * Architecture: Full-Page Workspace Routing, Navigation Stack, State Sync & PWA Lifecycle
  */
 
 let deferredInstallPrompt = null;
 
-// Global Zone Navigation Switcher (Synchronized with IQ Arena)
-window.switchZone = function(targetZoneId) {
-  const zoneIds = ['resizer-zone', 'iq-zone', 'pyq-zone', 'mock-zone', 'pdf-zone', 'jobs-zone'];
-  const navMap = {
-    'resizer-zone': 'nav-btn-resizer',
-    'iq-zone': 'nav-btn-iq',
-    'pyq-zone': 'nav-btn-pyq',
-    'mock-zone': 'nav-btn-mock',
-    'pdf-zone': 'nav-btn-pdf',
-    'jobs-zone': 'nav-btn-jobs'
-  };
+const ZONE_IDS = [
+  'resizer-zone',
+  'iq-zone',
+  'pyq-zone',
+  'mock-zone',
+  'pdf-zone',
+  'jobs-zone'
+];
 
-  // Toggle Container Visibility
-  zoneIds.forEach(id => {
-    const el = document.getElementById(id);
-    if (el) {
-      if (id === targetZoneId) {
-        el.classList.remove('hidden');
-        el.classList.add('block');
-      } else {
-        el.classList.add('hidden');
-        el.classList.remove('block');
-      }
+const NAV_MAP = {
+  'resizer-zone': 'nav-btn-resizer',
+  'iq-zone': 'nav-btn-iq',
+  'pyq-zone': 'nav-btn-pyq',
+  'mock-zone': 'nav-btn-mock',
+  'pdf-zone': 'nav-btn-pdf',
+  'jobs-zone': 'nav-btn-jobs'
+};
+
+// Navigation stack stores views like 'dashboard' or 'zone:iq-zone'
+const navStack = ['dashboard'];
+let currentView = 'dashboard';
+let isApplyingHistory = false;
+
+function getDashboardEl() {
+  return document.getElementById('main-dashboard-hub');
+}
+
+function setNavActiveState(activeZoneId) {
+  Object.keys(NAV_MAP).forEach((zoneId) => {
+    const btn = document.getElementById(NAV_MAP[zoneId]);
+    if (!btn) return;
+
+    if (zoneId === activeZoneId) {
+      btn.className =
+        'px-3 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition flex items-center space-x-1.5';
+    } else {
+      btn.className =
+        'px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5 font-bold';
     }
   });
+}
 
-  // Synchronize Top Sticky Navigation Pills Styling
-  Object.keys(navMap).forEach(zoneId => {
-    const btn = document.getElementById(navMap[zoneId]);
-    if (btn) {
-      if (zoneId === targetZoneId) {
-        btn.className = 'px-3 py-1.5 rounded-xl text-amber-400 bg-amber-500/10 border border-amber-500/40 font-extrabold shadow-sm hover:brightness-110 transition flex items-center space-x-1.5';
-      } else {
-        btn.className = 'px-3 py-1.5 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition flex items-center space-x-1.5 font-bold';
-      }
-    }
-  });
-
-  // Reset IQ Arena to its Selection Hub screen whenever switched to iq-zone
-  if (targetZoneId === 'iq-zone' && typeof returnToIQHub === 'function') {
-    returnToIQHub();
+function renderDashboardView() {
+  const dash = getDashboardEl();
+  if (dash) {
+    dash.classList.remove('hidden');
   }
 
-  // Smooth scroll to top of workspace
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  ZONE_IDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.classList.add('hidden');
+      el.classList.remove('block');
+    }
+  });
 
-  // Refresh Lucide Icons in dynamically displayed zones
+  setNavActiveState(null);
+  currentView = 'dashboard';
+
   if (window.lucide) {
     lucide.createIcons();
   }
+}
+
+function renderZoneView(targetZoneId) {
+  if (!ZONE_IDS.includes(targetZoneId)) {
+    renderDashboardView();
+    return;
+  }
+
+  const dash = getDashboardEl();
+  if (dash) {
+    dash.classList.add('hidden');
+  }
+
+  ZONE_IDS.forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    if (id === targetZoneId) {
+      el.classList.remove('hidden');
+      el.classList.add('block');
+    } else {
+      el.classList.add('hidden');
+      el.classList.remove('block');
+    }
+  });
+
+  setNavActiveState(targetZoneId);
+  currentView = `zone:${targetZoneId}`;
+
+  if (targetZoneId === 'iq-zone' && typeof window.returnToIQHub === 'function') {
+    window.returnToIQHub();
+  }
+
+  if (window.lucide) {
+    lucide.createIcons();
+  }
+}
+
+function pushViewState(viewToken) {
+  if (isApplyingHistory) return;
+  if (navStack[navStack.length - 1] !== viewToken) {
+    navStack.push(viewToken);
+  }
+  try {
+    window.history.pushState({ view: viewToken }, '', window.location.pathname + window.location.search);
+  } catch (_) {
+    // Ignore history restrictions in restricted environments
+  }
+}
+
+// Global Zone Navigation Switcher (Opens selected tool as a full-page workspace)
+window.switchZone = function (targetZoneId) {
+  if (!ZONE_IDS.includes(targetZoneId)) return;
+
+  const nextToken = `zone:${targetZoneId}`;
+  renderZoneView(targetZoneId);
+  pushViewState(nextToken);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+// Return cleanly to Main 6-Card Dashboard
+window.goHomeDashboard = function () {
+  renderDashboardView();
+  pushViewState('dashboard');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+// Nested / One-Step Back Handler
+// If inside a sub-screen (PYQ modal, IQ arena/scorecard, Mock sub-screens), go 1 level back first
+window.navBack = function () {
+  const pyqModal = document.getElementById('pyqReaderModal');
+  if (pyqModal && !pyqModal.classList.contains('hidden') && typeof window.closePyqReader === 'function') {
+    window.closePyqReader();
+    return;
+  }
+
+  if (currentView === 'zone:iq-zone') {
+    const arenaEl = document.getElementById('iq-arena-screen');
+    const scoreEl = document.getElementById('iq-scorecard-screen');
+    const inSubScreen =
+      (arenaEl && !arenaEl.classList.contains('hidden')) ||
+      (scoreEl && !scoreEl.classList.contains('hidden'));
+
+    if (inSubScreen && typeof window.returnToIQHub === 'function') {
+      window.returnToIQHub();
+      return;
+    }
+  }
+
+  if (currentView === 'zone:mock-zone') {
+    const gateEl = document.getElementById('mock-gatekeeper-screen');
+    const liveEl = document.getElementById('mock-live-screen');
+    const resEl = document.getElementById('mock-result-screen');
+    const inSubScreen =
+      (gateEl && !gateEl.classList.contains('hidden')) ||
+      (liveEl && !liveEl.classList.contains('hidden')) ||
+      (resEl && !resEl.classList.contains('hidden'));
+
+    if (inSubScreen && typeof window.returnToMockHub === 'function') {
+      window.returnToMockHub();
+      return;
+    }
+  }
+
+  if (navStack.length > 1) {
+    navStack.pop();
+    const prevToken = navStack[navStack.length - 1] || 'dashboard';
+    if (prevToken === 'dashboard') {
+      renderDashboardView();
+    } else if (prevToken.startsWith('zone:')) {
+      renderZoneView(prevToken.replace('zone:', ''));
+    }
+  } else {
+    renderDashboardView();
+  }
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+window.addEventListener('popstate', (event) => {
+  isApplyingHistory = true;
+  try {
+    const stateView = event.state && event.state.view;
+    if (stateView && stateView.startsWith('zone:')) {
+      const zId = stateView.replace('zone:', '');
+      renderZoneView(zId);
+    } else {
+      renderDashboardView();
+    }
+  } finally {
+    isApplyingHistory = false;
+  }
+});
 
 // Progressive Web App (PWA) Lifecycle Management
 window.addEventListener('beforeinstallprompt', (e) => {
@@ -108,6 +252,13 @@ function registerServiceWorker() {
 document.addEventListener('DOMContentLoaded', () => {
   setupPWAInstaller();
   registerServiceWorker();
+  renderDashboardView();
+
+  try {
+    window.history.replaceState({ view: 'dashboard' }, '', window.location.pathname + window.location.search);
+  } catch (_) {
+    // Ignore history restrictions in restricted environments
+  }
 
   if (window.lucide) {
     lucide.createIcons();
