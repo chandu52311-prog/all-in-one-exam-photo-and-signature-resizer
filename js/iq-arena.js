@@ -1,7 +1,7 @@
 /**
  * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 4.0
  * Architecture: Full-Page Single Game Workspace, Unlimited Levels (20 Qs/Level),
- * Progressive Timer (300s -> 120s Floor), Zero-Repeat Pool, Coins & Continue/New State
+ * Progressive Timer (300s -> 120s Floor), Persistent Zero-Repeat Pool, Coins & Continue/New State
  */
 
 const QUESTIONS_PER_LEVEL = 20;
@@ -53,35 +53,31 @@ const MASTER_ENGLISH_BANK = [
 
 // Curated tough exam/PYQ-style simplification & quantitative problems
 const TOUGH_PYQ_QUANT_BANK = [
-  { display: '√(1444) + ∛(17576) - 18 = ?', answer: '46' },       // 38 + 26 - 18 = 46
-  { display: '24 × 19 - 14² + 125 = ?', answer: '385' },       // 456 - 196 + 125 = 385
-  { display: '18³ ÷ 36 + 27 × 14 = ?', answer: '540' },       // 5832/36 = 162; 162 + 378 = 540
-  { display: '35% of 840 + 45% of 620 = ?', answer: '573' },   // 294 + 279 = 573
-  { display: '19² + 23² - 17² = ?', answer: '601' },          // 361 + 529 - 289 = 601
-  { display: '∛(32768) × 26 - 198 = ?', answer: '634' },      // 32 * 26 = 832; 832 - 198 = 634
-  { display: '42 × 18 - (15² - 85) = ?', answer: '616' },      // 756 - (225 - 85) = 756 - 140 = 616
-  { display: '√(2916) + 16³ ÷ 64 - 44 = ?', answer: '74' },   // 54 + (4096/64=64) - 44 = 74
-  { display: '28 × 25 - 17 × 18 + 94 = ?', answer: '488' },    // 700 - 306 + 94 = 488
-  { display: '75% of 1280 - 29² + 340 = ?', answer: '451' },   // 960 - 841 + 340 = 459 -> fix: 960 - 849 + 340 = 451 -> let's use exact: 75% of 1200 - 28² + 250 = 900 - 784 + 250 = 366
-  { display: '14³ - 19 × 16 × 7 + 820 = ?', answer: '1436' },  // 2744 - 2128 + 820 = 1436
-  { display: '√(4096) + ∛(19683) + 15² = ?', answer: '316' }, // 64 + 27 + 225 = 316
-  { display: '36 × 24 - 18 × 19 + 110 = ?', answer: '632' },    // 864 - 342 + 110 = 632
-  { display: '125% of 480 + 21² - 185 = ?', answer: '856' },   // 600 + 441 - 185 = 856
-  { display: '27 × 18 + ∛(13824) - 146 = ?', answer: '364' },  // 486 + 24 - 146 = 364
-  { display: '31² - 29² + 18 × 15 = ?', answer: '390' },       // (60*2) + 270 = 120 + 270 = 390
-  { display: '√(2304) × 15 - 26 × 14 = ?', answer: '356' },    // 48 * 15 = 720; 720 - 364 = 356
-  { display: '17³ - 24 × 19 × 9 + 120 = ?', answer: '2819' },  // 4913 - 4104 + 120 = 929 -> fix answer to '929'
-  { display: '64% of 750 + 25³ ÷ 125 - 115 = ?', answer: '490' },// 480 + (15625/125=125) - 115 = 490
-  { display: '29 × 17 + 16² - ∛(2197) = ?', answer: '736' },   // 493 + 256 - 13 = 736
-  { display: '√(3600) + 22 × 19 - 138 = ?', answer: '340' },   // 60 + 418 - 138 = 340
-  { display: '45 × 16 - ∛(15625) + 195 = ?', answer: '890' },  // 720 - 25 + 195 = 890
-  { display: '26² - 24² + 38 × 12 = ?', answer: '556' },       // 100 + 456 = 556
-  { display: '80% of 950 - √(1024) + 148 = ?', answer: '876' }  // 760 - 32 + 148 = 876
+  { display: '√(1444) + ∛(17576) - 18 = ?', answer: '46' },
+  { display: '24 × 19 - 14² + 125 = ?', answer: '385' },
+  { display: '18³ ÷ 36 + 27 × 14 = ?', answer: '540' },
+  { display: '35% of 840 + 45% of 620 = ?', answer: '573' },
+  { display: '19² + 23² - 17² = ?', answer: '601' },
+  { display: '∛(32768) × 26 - 198 = ?', answer: '634' },
+  { display: '42 × 18 - (15² - 85) = ?', answer: '616' },
+  { display: '√(2916) + 16³ ÷ 64 - 44 = ?', answer: '74' },
+  { display: '28 × 25 - 17 × 18 + 94 = ?', answer: '488' },
+  { display: '75% of 1200 - 28² + 250 = ?', answer: '366' },
+  { display: '14³ - 19 × 16 × 7 + 820 = ?', answer: '1436' },
+  { display: '√(4096) + ∛(19683) + 15² = ?', answer: '316' },
+  { display: '36 × 24 - 18 × 19 + 110 = ?', answer: '632' },
+  { display: '125% of 480 + 21² - 185 = ?', answer: '856' },
+  { display: '27 × 18 + ∛(13824) - 146 = ?', answer: '364' },
+  { display: '31² - 29² + 18 × 15 = ?', answer: '390' },
+  { display: '√(2304) × 15 - 26 × 14 = ?', answer: '356' },
+  { display: '17³ - 24 × 19 × 9 + 120 = ?', answer: '929' },
+  { display: '64% of 750 + 25³ ÷ 125 - 115 = ?', answer: '490' },
+  { display: '29 × 17 + 16² - ∛(2197) = ?', answer: '736' },
+  { display: '√(3600) + 22 × 19 - 138 = ?', answer: '340' },
+  { display: '45 × 16 - ∛(15625) + 195 = ?', answer: '890' },
+  { display: '26² - 24² + 38 × 12 = ?', answer: '556' },
+  { display: '80% of 950 - √(1024) + 148 = ?', answer: '876' }
 ];
-
-// Normalize exact numeric answers cleanly
-TOUGH_PYQ_QUANT_BANK[9] = { display: '75% of 1200 - 28² + 250 = ?', answer: '366' };
-TOUGH_PYQ_QUANT_BANK[17] = { display: '17³ - 24 × 19 × 9 + 120 = ?', answer: '929' };
 
 window.arenaSession = {
   gameId: 'tables',
@@ -141,6 +137,28 @@ function saveGameProgress(gameId, progress) {
   }
 }
 
+function getSeenStorageKey(gameId) {
+  return `${STORAGE_KEY_PREFIX}seen_qs_${gameId}`;
+}
+
+function loadSeenQuestionSet(gameId) {
+  try {
+    const raw = localStorage.getItem(getSeenStorageKey(gameId));
+    const arr = raw ? JSON.parse(raw) : [];
+    return new Set(Array.isArray(arr) ? arr : []);
+  } catch (_) {
+    return new Set();
+  }
+}
+
+function saveSeenQuestionSet(gameId, seenSet) {
+  try {
+    localStorage.setItem(getSeenStorageKey(gameId), JSON.stringify(Array.from(seenSet)));
+  } catch (_) {
+    // Ignore storage quota issues
+  }
+}
+
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -151,154 +169,151 @@ function shuffleArray(arr) {
 }
 
 function markUsedAndFilter(gameId, candidates, count) {
-  if (!window.arenaSession.usedKeysByGame[gameId]) {
-    window.arenaSession.usedKeysByGame[gameId] = new Set();
-  }
-  const usedSet = window.arenaSession.usedKeysByGame[gameId];
+  const seenSet = loadSeenQuestionSet(gameId);
 
-  // Filter out previously seen questions in this session so questions never repeat
-  let freshPool = candidates.filter((item) => {
-    const key = item.display || item.q;
-    return !usedSet.has(key);
+  const uniqueCandidates = [];
+  const seenInBatch = new Set();
+  for (const item of candidates) {
+    const key = String(item.display || item.q || '').trim();
+    if (!key || seenInBatch.has(key)) continue;
+    seenInBatch.add(key);
+    uniqueCandidates.push(item);
+  }
+
+  let unseenPool = uniqueCandidates.filter((item) => {
+    const key = String(item.display || item.q || '').trim();
+    return !seenSet.has(key);
   });
 
-  // If pool gets exhausted at very high levels, reset only when needed
-  if (freshPool.length < count) {
-    usedSet.clear();
-    freshPool = [...candidates];
+  if (unseenPool.length < count) {
+    seenSet.clear();
+    unseenPool = [...uniqueCandidates];
   }
 
-  const picked = shuffleArray(freshPool).slice(0, count);
+  const picked = shuffleArray(unseenPool).slice(0, count);
   picked.forEach((item) => {
-    usedSet.add(item.display || item.q);
+    const key = String(item.display || item.q || '').trim();
+    if (key) seenSet.add(key);
   });
 
+  saveSeenQuestionSet(gameId, seenSet);
   return picked;
 }
 
-// Tough 20-question generator with zero repeats per session
+// Tough 20-question generator with persistent zero-repeat tracking
 function getLevelQuestions(gameId, levelNum) {
   const count = QUESTIONS_PER_LEVEL;
   const lvl = Math.max(1, levelNum);
   const candidates = [];
 
-  // 1. TOUGH TABLES DRILL (Higher multipliers, dual-product & tough mental products)
   if (gameId === 'tables') {
-    const minTable = Math.min(19, 11 + Math.floor((lvl - 1) / 2));
-    const maxTable = Math.min(24, 20 + Math.floor((lvl - 1) / 3));
-    for (let t = minTable; t <= maxTable; t++) {
-      for (let m = 7; m <= 19; m++) {
-        if (lvl >= 3 && m % 2 === 1) {
-          const addVal = ((t + m + lvl) % 19) + 11;
-          candidates.push({
-            display: `${t} × ${m} + ${addVal} = ?`,
-            answer: String(t * m + addVal)
-          });
-        } else {
-          candidates.push({
-            display: `${t} × ${m} = ?`,
-            answer: String(t * m)
-          });
-        }
+    const startT = Math.min(20, 11 + ((lvl - 1) % 10));
+    const endT = startT + 6;
+    for (let t = startT; t <= endT; t++) {
+      for (let m = 6; m <= 24; m++) {
+        candidates.push({
+          display: `${t} × ${m} = ?`,
+          answer: String(t * m)
+        });
+        const addTerm = 13 + ((t * 5 + m * 3 + lvl * 7) % 47);
+        candidates.push({
+          display: `${t} × ${m} + ${addTerm} = ?`,
+          answer: String(t * m + addTerm)
+        });
       }
     }
     return markUsedAndFilter(gameId, candidates, count);
   }
 
-  // 2. TOUGH SQUARES ARENA (2-digit/3-digit squares + tough square additions/subtractions)
   if (gameId === 'squares') {
-    const startN = Math.min(55, 19 + (lvl - 1) * 4);
-    const endN = startN + 28;
-    for (let n = startN; n <= endN; n++) {
-      if (lvl >= 2) {
-        const delta = ((n * 3 + lvl) % 37) + 13;
-        candidates.push({
-          display: `${n}² - ${delta} = ?`,
-          answer: String(n * n - delta)
-        });
-      }
+    const baseN = Math.min(55, 18 + ((lvl - 1) * 3) % 38);
+    for (let n = baseN; n <= baseN + 22; n++) {
       candidates.push({
         display: `${n}² = ?`,
         answer: String(n * n)
+      });
+      const offset = 17 + ((n * 11 + lvl * 13) % 89);
+      candidates.push({
+        display: `${n}² - ${offset} = ?`,
+        answer: String(n * n - offset)
+      });
+      candidates.push({
+        display: `${n}² + ${offset} = ?`,
+        answer: String(n * n + offset)
       });
     }
     return markUsedAndFilter(gameId, candidates, count);
   }
 
-  // 3. TOUGH ROOTS EXTRACTION (Square roots, Cube roots & combined root expressions)
   if (gameId === 'roots') {
-    const baseStart = Math.min(60, 18 + (lvl - 1) * 4);
-    const baseEnd = baseStart + 26;
-    for (let n = baseStart; n <= baseEnd; n++) {
+    const sqBase = Math.min(65, 16 + ((lvl - 1) * 3) % 45);
+    for (let n = sqBase; n <= sqBase + 20; n++) {
       candidates.push({
         display: `√${n * n} = ?`,
         answer: String(n)
       });
     }
-    const cubeStart = Math.min(40, 12 + (lvl - 1) * 2);
-    const cubeEnd = cubeStart + 22;
-    for (let c = cubeStart; c <= cubeEnd; c++) {
+    const cbBase = Math.min(35, 11 + ((lvl - 1) * 2) % 24);
+    for (let c = cbBase; c <= cbBase + 16; c++) {
       candidates.push({
         display: `∛${c * c * c} = ?`,
         answer: String(c)
       });
-      const sqRootN = baseStart + (c % 20);
+      const partnerSq = sqBase + ((c * 3 + lvl) % 18);
       candidates.push({
-        display: `√${sqRootN * sqRootN} + ∛${c * c * c} = ?`,
-        answer: String(sqRootN + c)
+        display: `√${partnerSq * partnerSq} + ∛${c * c * c} = ?`,
+        answer: String(partnerSq + c)
       });
     }
     return markUsedAndFilter(gameId, candidates, count);
   }
 
-  // 4. TOUGH CUBES POWER DRILL (High cubes + combined cube expressions)
   if (gameId === 'cubes') {
-    const cStart = Math.min(35, 12 + (lvl - 1) * 3);
-    const cEnd = cStart + 22;
-    for (let c = cStart; c <= cEnd; c++) {
+    const cStart = Math.min(32, 11 + ((lvl - 1) * 2) % 22);
+    for (let c = cStart; c <= cStart + 14; c++) {
       candidates.push({
         display: `${c}³ = ?`,
         answer: String(c * c * c)
       });
-      if (lvl >= 2) {
-        const sub = ((c * 7 + lvl * 11) % 85) + 25;
-        candidates.push({
-          display: `${c}³ - ${sub} = ?`,
-          answer: String(c * c * c - sub)
-        });
-      }
+      const delta = 29 + ((c * 13 + lvl * 17) % 140);
+      candidates.push({
+        display: `${c}³ - ${delta} = ?`,
+        answer: String(c * c * c - delta)
+      });
+      candidates.push({
+        display: `${c}³ + ${delta} = ?`,
+        answer: String(c * c * c + delta)
+      });
     }
     return markUsedAndFilter(gameId, candidates, count);
   }
 
-  // 5. TOUGH BODMAS & PYQ SIMPLIFICATION (No simple additions/subtractions; multi-step order of operations)
   if (gameId === 'bodmas') {
     TOUGH_PYQ_QUANT_BANK.forEach((item) => candidates.push(item));
 
-    for (let i = 0; i < 45; i++) {
-      const a = 14 + ((lvl * 5 + i * 3) % 28);
-      const b = 8 + ((lvl * 3 + i * 2) % 16);
-      const c = 4 + ((i + lvl) % 9);
-      const d = 15 + ((i * 7 + lvl * 9) % 65);
-      const ans = a * b + c * c - d;
+    for (let idx = 0; idx < 60; idx++) {
+      const a = 15 + ((lvl * 7 + idx * 5) % 26);
+      const b = 9 + ((lvl * 3 + idx * 4) % 15);
+      const c = 6 + ((lvl * 2 + idx * 3) % 14);
+      const d = 19 + ((lvl * 11 + idx * 9) % 95);
       candidates.push({
         display: `${a} × ${b} + ${c}² - ${d} = ?`,
-        answer: String(ans)
+        answer: String(a * b + c * c - d)
       });
 
-      const pct = [15, 20, 25, 30, 40, 75][(i + lvl) % 6];
-      const base = (8 + ((i * 4 + lvl * 2) % 22)) * 50;
-      const rootBase = 12 + ((i + lvl) % 25);
-      const pctAns = (pct * base) / 100 + rootBase;
+      const pctList = [10, 20, 25, 30, 40, 50, 75];
+      const pct = pctList[(lvl + idx) % pctList.length];
+      const base = (10 + ((lvl * 5 + idx * 3) % 25)) * 100;
+      const rootN = 14 + ((lvl * 3 + idx * 2) % 28);
+      const ansVal = Math.round((pct * base) / 100) + rootN;
       candidates.push({
-        display: `${pct}% of ${base} + √${rootBase * rootBase} = ?`,
-        answer: String(pctAns)
+        display: `${pct}% of ${base} + √${rootN * rootN} = ?`,
+        answer: String(ansVal)
       });
     }
     return markUsedAndFilter(gameId, candidates, count);
   }
 
-  // 6. TOUGH RAPID ENGLISH (PYQ-grade vocabulary & tricky spellings)
   if (gameId === 'english') {
     return markUsedAndFilter(gameId, MASTER_ENGLISH_BANK, count);
   }
@@ -321,7 +336,6 @@ function updateArenaHudStats() {
   }
 }
 
-// Hide 6 game cards hub and show ONLY the single selected game workspace
 function showSingleGameFullPage() {
   const hubScreen = document.getElementById('iq-hub-screen');
   const scorecardScreen = document.getElementById('iq-scorecard-screen');
@@ -341,7 +355,6 @@ function showSingleGameFullPage() {
   }
 }
 
-// Return from single game to the 6-cards IQ Hub (NOT directly to Main Menu)
 window.returnToIQHub = function () {
   stopTimer();
   const arenaScreen = document.getElementById('iq-arena-screen');
@@ -368,7 +381,6 @@ window.startIQGame = function (gameId, title, levelIdx = 0, forceFreshStart = fa
   const resolvedTitle = title || window.arenaSession.gameTitle || 'Speed Drill';
   const saved = loadGameProgress(resolvedGameId);
 
-  // If continuing without explicit levelIdx or fresh reset, resume right after highest completed level
   let targetLevelNum = 1;
   if (forceFreshStart) {
     targetLevelNum = 1;
@@ -557,7 +569,6 @@ function submitAnswer(isCorrect) {
       window.arenaSession.bestStreak = window.arenaSession.streak;
     }
 
-    // Gold coins & score reward per correct answer + streak bonus every 5 hits
     const streakBonusCoins = window.arenaSession.streak % 5 === 0 ? 15 : 0;
     const gainedCoins = 10 + streakBonusCoins;
     window.arenaSession.coinsEarnedInLevel += gainedCoins;
