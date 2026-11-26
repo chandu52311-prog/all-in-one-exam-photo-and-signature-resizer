@@ -172,6 +172,7 @@
   let cbtTimerInterval = null;
   let cbtSubmitted = false;
   let cbtLoadToken = 0;
+  let cbtExternalWindow = null;
 
   function ensureBaseStyles() {
     if (document.getElementById('er-cbt-gold-style')) return;
@@ -212,6 +213,8 @@
       }
       body.er-exam-fullscreen header,
       body.er-exam-fullscreen nav,
+      body.er-exam-fullscreen footer,
+      body.er-exam-fullscreen #main-dashboard-hub,
       body.er-exam-fullscreen #mock-hub-dashboard,
       body.er-exam-fullscreen #mock-gatekeeper-screen {
         display: none !important;
@@ -222,6 +225,11 @@
 
   function setExamFullscreenMode(active) {
     document.body.classList.toggle('er-exam-fullscreen', Boolean(active));
+    if (active && document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {});
+    } else if (!active && document.fullscreenElement && document.exitFullscreen) {
+      document.exitFullscreen().catch(() => {});
+    }
   }
 
   function escapeHTML(str) {
@@ -526,6 +534,7 @@
 
     const chk = document.getElementById('policyAgreementCheckbox');
     if (chk) { chk.checked = false; toggleCBTReady(chk); }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   window.prepareTestStage = prepareTestStage;
 
@@ -533,6 +542,10 @@
     cbtLoadToken++;
     clearInterval(cbtTimerInterval);
     setExamFullscreenMode(false);
+    if (cbtExternalWindow && !cbtExternalWindow.closed) {
+      try { cbtExternalWindow.close(); } catch (_) {}
+    }
+    cbtExternalWindow = null;
     CBT_ACTIVE_QUESTIONS = [];
     CBT_SESSION_CONFIG = null;
     CBT_SESSION_STAGE = 1;
@@ -551,6 +564,7 @@
     if (dash) dash.classList.remove('hidden');
     renderStageCards();
     paintActiveButtons();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
   window.returnToMockHub = returnToMockHub;
 
@@ -599,19 +613,381 @@
     return bundleCache.find(r => r && r.slug === targetSlug && r.status === 'ACTIVE') || null;
   }
 
+  function formatSecondsForClock(totalSec) {
+    const safeSec = Math.max(0, Math.ceil(totalSec));
+    const h = Math.floor(safeSec / 3600);
+    const m = Math.floor((safeSec % 3600) / 60);
+    const s = safeSec % 60;
+    return h > 0
+      ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+
   function tickCbtTimer() {
     cbtTimerSeconds = Math.max(0, Math.ceil((cbtEndTime - Date.now()) / 1000));
-    const h = Math.floor(cbtTimerSeconds / 3600);
-    const m = Math.floor((cbtTimerSeconds % 3600) / 60);
-    const s = cbtTimerSeconds % 60;
+    const formatted = formatSecondsForClock(cbtTimerSeconds);
     const clock = document.getElementById('cbtClock');
-    if (clock) {
-      clock.innerText = h > 0
-        ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
-        : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    if (clock) clock.innerText = formatted;
+
+    if (cbtExternalWindow && !cbtExternalWindow.closed) {
+      try {
+        const winClock = cbtExternalWindow.document.getElementById('extCbtClock');
+        if (winClock) winClock.innerText = formatted;
+      } catch (_) {}
     }
+
     if (cbtTimerSeconds <= 0) submitCBT(true);
   }
+
+  function renderExternalCbtWindow(examTitle, candidateName, durMins) {
+    try {
+      const win = window.open('', 'ExamResizerLiveCBT', 'popup=no,width=1366,height=820,left=0,top=0,scrollbars=yes,resizable=yes');
+      if (!win || win.closed) return null;
+
+      cbtExternalWindow = win;
+      const questionsJsonStr = JSON.stringify(CBT_ACTIVE_QUESTIONS).replace(/</g, '\\u003c');
+      const safeTitle = escapeHTML(examTitle);
+      const safeCandidate = escapeHTML(candidateName || 'Guest Aspirant');
+
+      win.document.open();
+      win.document.write(`<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${safeTitle} — Live CBT Terminal</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #060a13;
+      color: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .cbt-top {
+      background: #0d1424;
+      border-bottom: 1px solid rgba(251, 191, 36, 0.35);
+      padding: 12px 20px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+    .cbt-brand { font-weight: 900; font-size: 15px; color: #fbbf24; letter-spacing: 0.4px; }
+    .cbt-sub { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+    .cbt-controls-top { display: flex; align-items: center; gap: 12px; }
+    .cbt-timer {
+      background: #050811;
+      border: 1px solid #fbbf24;
+      color: #fbbf24;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-weight: 800;
+      font-size: 16px;
+      padding: 7px 14px;
+      border-radius: 10px;
+    }
+    .btn-submit {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: #fff;
+      border: none;
+      font-weight: 800;
+      font-size: 12px;
+      padding: 9px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .cbt-main {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 310px;
+      gap: 16px;
+      padding: 18px 20px;
+      max-width: 1440px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    @media (max-width: 900px) {
+      .cbt-main { grid-template-columns: 1fr; }
+    }
+    .q-panel {
+      background: #0d1424;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 520px;
+    }
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 10px;
+      margin-bottom: 16px;
+      font-size: 12px;
+      color: #fbbf24;
+      font-weight: 700;
+    }
+    .q-text { font-size: 16px; line-height: 1.6; font-weight: 600; color: #fff; margin-bottom: 18px; }
+    .opt-list { display: flex; flex-direction: column; gap: 10px; }
+    .opt-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(15, 23, 42, 0.85);
+      color: #e2e8f0;
+      font-size: 14px;
+      cursor: pointer;
+      text-align: left;
+    }
+    .opt-item.active {
+      border-color: #fbbf24;
+      background: rgba(245, 158, 11, 0.24);
+      color: #fef3c7;
+      font-weight: 700;
+    }
+    .q-footer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding-top: 14px;
+      margin-top: 22px;
+    }
+    .btn-sec {
+      background: #1e293b;
+      color: #e2e8f0;
+      border: 1px solid rgba(255,255,255,0.16);
+      padding: 9px 14px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .btn-next {
+      background: linear-gradient(135deg, #34d399, #10b981);
+      color: #052e16;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .palette-panel {
+      background: #0d1424;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .palette-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      max-height: 360px;
+      overflow-y: auto;
+    }
+    .p-btn {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: #1e293b;
+      color: #cbd5e1;
+      font-family: monospace;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .p-btn.ans { background: #f59e0b; color: #090d16; border-color: #fde68a; }
+    .p-btn.rev { background: #7c3aed; color: #fff; }
+    .p-btn.vis { background: rgba(244, 63, 94, 0.8); color: #fff; }
+    .p-btn.curr { outline: 2px solid #fef08a; }
+    .legend { font-size: 11px; color: #94a3b8; display: grid; gap: 6px; border-top: 1px solid rgba(255,255,255,0.08); padding-top: 10px; }
+  </style>
+</head>
+<body>
+  <div class="cbt-top">
+    <div>
+      <div class="cbt-brand">${safeTitle}</div>
+      <div class="cbt-sub">Candidate: ${safeCandidate} • Duration: ${Number(durMins)} Mins • Real CBT Session</div>
+    </div>
+    <div class="cbt-controls-top">
+      <span id="extCbtClock" class="cbt-timer">00:00</span>
+      <button type="button" id="extSubmitBtn" class="btn-submit">Submit Test</button>
+    </div>
+  </div>
+
+  <div class="cbt-main">
+    <div class="q-panel">
+      <div>
+        <div class="q-meta">
+          <span id="extQNum">Question 1</span>
+          <span id="extQSec">General</span>
+        </div>
+        <div id="extQText" class="q-text"></div>
+        <div id="extOpts" class="opt-list"></div>
+      </div>
+      <div class="q-footer">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;">
+          <button type="button" id="extClearBtn" class="btn-sec">Clear Response</button>
+          <button type="button" id="extReviewBtn" class="btn-sec">Mark for Review</button>
+        </div>
+        <button type="button" id="extSaveNextBtn" class="btn-next">Save & Next ➔</button>
+      </div>
+    </div>
+
+    <div class="palette-panel">
+      <div style="display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:700;">
+        <span>Question Palette</span>
+        <span id="extAnsCount" style="color:#fbbf24;">0 Answered</span>
+      </div>
+      <div id="extPalette" class="palette-grid"></div>
+      <div class="legend">
+        <div>■ Amber = Answered</div>
+        <div>■ Purple = Marked for Review</div>
+        <div>■ Red = Not Answered (Visited)</div>
+        <div>■ Slate = Not Visited</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const Q_LIST = ${questionsJsonStr};
+    let idx = 0;
+    const ansMap = {};
+    const revSet = new Set();
+    const visSet = new Set([0]);
+
+    function syncParentState() {
+      if (window.opener && !window.opener.closed && typeof window.opener.__syncCbtFromExternal === 'function') {
+        window.opener.__syncCbtFromExternal(idx, { ...ansMap }, Array.from(revSet), Array.from(visSet));
+      }
+    }
+
+    function renderAll() {
+      const q = Q_LIST[idx];
+      if (!q) return;
+      visSet.add(idx);
+      document.getElementById('extQNum').textContent = 'Question ' + (idx + 1) + ' of ' + Q_LIST.length;
+      document.getElementById('extQSec').textContent = (q.section || 'General') + ' (+' + q.marks + ' / -' + q.negativeMarks + ')';
+      document.getElementById('extQText').textContent = q.en;
+
+      const picked = ansMap[idx];
+      const optsBox = document.getElementById('extOpts');
+      optsBox.innerHTML = '';
+      q.options.forEach((optText, oIdx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'opt-item' + (picked === oIdx ? ' active' : '');
+        const letter = String.fromCharCode(65 + oIdx);
+        btn.textContent = '(' + letter + ') ' + optText;
+        btn.onclick = () => {
+          ansMap[idx] = oIdx;
+          syncParentState();
+          renderAll();
+        };
+        optsBox.appendChild(btn);
+      });
+
+      const pal = document.getElementById('extPalette');
+      pal.innerHTML = '';
+      let answeredCount = 0;
+      Q_LIST.forEach((_, qIdx) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        const isA = ansMap[qIdx] !== undefined;
+        const isR = revSet.has(qIdx);
+        const isV = visSet.has(qIdx);
+        if (isA) answeredCount++;
+        let cls = 'p-btn';
+        if (isR) cls += ' rev';
+        else if (isA) cls += ' ans';
+        else if (isV) cls += ' vis';
+        if (qIdx === idx) cls += ' curr';
+        b.className = cls;
+        b.textContent = String(qIdx + 1);
+        b.onclick = () => {
+          idx = qIdx;
+          syncParentState();
+          renderAll();
+        };
+        pal.appendChild(b);
+      });
+
+      document.getElementById('extAnsCount').textContent = answeredCount + ' / ' + Q_LIST.length + ' Answered';
+    }
+
+    document.getElementById('extClearBtn').onclick = () => {
+      delete ansMap[idx];
+      syncParentState();
+      renderAll();
+    };
+
+    document.getElementById('extReviewBtn').onclick = () => {
+      if (revSet.has(idx)) revSet.delete(idx);
+      else revSet.add(idx);
+      syncParentState();
+      renderAll();
+    };
+
+    document.getElementById('extSaveNextBtn').onclick = () => {
+      if (idx < Q_LIST.length - 1) idx++;
+      syncParentState();
+      renderAll();
+    };
+
+    document.getElementById('extSubmitBtn').onclick = () => {
+      syncParentState();
+      if (window.opener && !window.opener.closed && typeof window.opener.submitCBT === 'function') {
+        window.opener.submitCBT(false);
+      }
+    };
+
+    renderAll();
+  <\/script>
+</body>
+</html>`);
+      win.document.close();
+      win.focus();
+      return win;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  window.__syncCbtFromExternal = function (extIdx, extAnswers, extReviewArr, extVisitedArr) {
+    if (cbtSubmitted) return;
+    if (typeof extIdx === 'number' && extIdx >= 0 && extIdx < CBT_ACTIVE_QUESTIONS.length) {
+      cbtIndex = extIdx;
+    }
+    if (extAnswers && typeof extAnswers === 'object') {
+      cbtAnswers = { ...extAnswers };
+    }
+    if (Array.isArray(extReviewArr)) {
+      cbtReview = new Set(extReviewArr);
+    }
+    if (Array.isArray(extVisitedArr)) {
+      cbtVisited = new Set(extVisitedArr);
+    }
+    renderCbtQuestion();
+    renderCbtPalette();
+  };
 
   async function startCbtSession() {
     const token = ++cbtLoadToken;
@@ -662,8 +1038,9 @@
       const liveScreen = document.getElementById('mock-live-screen');
       if (liveScreen) liveScreen.classList.remove('hidden');
 
+      const examHeaderLabel = `EXAMRESIZER.ME • ${activeTitleAtStart} • Mock #${stageAtStart}`;
       const hdr = document.getElementById('liveExamHeaderTitle');
-      if (hdr) hdr.innerText = `EXAMRESIZER.ME • ${activeTitleAtStart} • Mock #${stageAtStart}`;
+      if (hdr) hdr.innerText = examHeaderLabel;
 
       cbtIndex = 0;
       cbtAnswers = {};
@@ -674,10 +1051,13 @@
       renderCbtPalette();
 
       const durMins = getSafeNum(row.duration_mins, Math.round(cfg.timeSec / 60));
+      renderExternalCbtWindow(examHeaderLabel, currentStudent.name, durMins);
+
       cbtEndTime = Date.now() + durMins * 60 * 1000;
       tickCbtTimer();
       clearInterval(cbtTimerInterval);
       cbtTimerInterval = setInterval(tickCbtTimer, 1000);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       if (token === cbtLoadToken) {
         console.error(err);
@@ -794,6 +1174,11 @@
     cbtSubmitted = true;
     clearInterval(cbtTimerInterval);
     setExamFullscreenMode(false);
+    if (cbtExternalWindow && !cbtExternalWindow.closed) {
+      try { cbtExternalWindow.close(); } catch (_) {}
+    }
+    cbtExternalWindow = null;
+
     const liveScreen = document.getElementById('mock-live-screen');
     const resScreen = document.getElementById('mock-result-screen');
     if (liveScreen) liveScreen.classList.add('hidden');
