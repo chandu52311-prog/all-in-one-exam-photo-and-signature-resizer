@@ -1,11 +1,13 @@
-﻿// ====================================================================
-// ðŸ›ï¸ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020â€“2026)
+// ====================================================================
+// EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020-2026)
 // Generated from 367 Verified Supabase Master Papers
+// View Paper + Share Link + Full-Screen Zero-Gap Reader + Back Navigation
 // Module: js/pyq-hub.js
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
 let currentStreamKey = '';
+let activeReaderToken = 0;
 const SUPABASE_STORAGE_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers";
 
 const COMPREHENSIVE_AUTHORITY_CATALOG = {
@@ -350,8 +352,8 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
     subStreams: {
       "APPSC (CE)": [
         { exam: "Notification No 42-2011 Civil. Asst Surgeon", year: "2011", shift: "Master Paper", file: "APPSC/CE/2011/Notification_No_42-2011_Civil._Asst_Surgeon_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2049-2011 20Assistant 20Engineers Civil 20and 20Mechanical Common EA 632 2012 SERIES-C CIVILORMECHANICAL 20 COMMON -PAPER 20II", year: "2011", shift: "PAPER 20II", file: "APPSC/CE/2011/NotificationNo_2049-2011__20Assistant_20Engineers_Civil_20and_20Mechanical_Common__EA_632_2012_SERIES-C_CIVILORMECHANICAL_20_COMMON_-PAPER_20II_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Notification 20No 2006-2016-AEE-ScreeningTest Civil 20Engg EEA-STC-111-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/CE/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Civil_20Engg_EEA-STC-111-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true }
+        { exam: "NotificationNo 2049-2011 Assistant Engineers Civil and Mechanical Common EA 632 2012 SERIES-C CIVIL OR MECHANICAL COMMON PAPER II", year: "2011", shift: "Paper II", file: "APPSC/CE/2011/NotificationNo_2049-2011__20Assistant_Engineers_Civil_20and_20Mechanical_Common__EA_632_2012_SERIES-C_CIVILORMECHANICAL_20_COMMON_-PAPER_20II_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No 06-2016 AEE Screening Test Civil Engg EEA-STC-111-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/CE/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Civil_20Engg_EEA-STC-111-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true }
       ],
       "APPSC (CH)": [
         { exam: "Notification No. 02-2008 Inspector of Factories Chemical", year: "2008", shift: "Master Paper", file: "APPSC/CH/UNDATED/Notification_No._02-2008_Inspector_of_Factories__Chemical__EXAMRESIZER_CLEAN.pdf", available: true }
@@ -363,27 +365,27 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
         { exam: "Notification No. 02-2008 Inspector of Factories Electrical", year: "2008", shift: "Master Paper", file: "APPSC/EE/UNDATED/Notification_No._02-2008__Inspector_of_Factories__Electrical__EXAMRESIZER_CLEAN.pdf", available: true }
       ],
       "APPSC (GENERAL_PAPER)": [
-        { exam: "NotificationNo 2008-2010 Dental 20Assistant 20Surgeon SAD 585 2011 Series-C DentalSurgery-I PaperI", year: "2010", shift: "PaperI", file: "APPSC/GENERAL_PAPER/2010/NotificationNo_2008-2010_Dental_20Assistant_20Surgeon_SAD_585_2011_Series-C_DentalSurgery-I_PaperI_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2008-2010 Dental 20Assistant 20Surgeon SAD 586 2011 Series-C DentalSurgery-II PaperII", year: "2010", shift: "PaperII", file: "APPSC/GENERAL_PAPER/2010/NotificationNo_2008-2010_Dental_20Assistant_20Surgeon_SAD_586_2011_Series-C_DentalSurgery-II_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 08-2010 Dental Assistant Surgeon SAD 585 2011 Series-C Dental Surgery-I Paper I", year: "2010", shift: "Paper I", file: "APPSC/GENERAL_PAPER/2010/NotificationNo_2008-2010_Dental_20Assistant_20Surgeon_SAD_585_2011_Series-C_DentalSurgery-I_PaperI_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 08-2010 Dental Assistant Surgeon SAD 586 2011 Series-C Dental Surgery-II Paper II", year: "2010", shift: "Paper II", file: "APPSC/GENERAL_PAPER/2010/NotificationNo_2008-2010_Dental_20Assistant_20Surgeon_SAD_586_2011_Series-C_DentalSurgery-II_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Deputy Surveyors 27-2011", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Deputy_Surveyors_27-2011_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Notification No. 23-2011 Fisheries Devolopment Officers", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Notification_No._23-2011_Fisheries_Devolopment_Officers_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Notification No.07-2011 to 50-2008 Royalty Inspecotr in Director of Mines - Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Notification_No.07-2011_to_50-2008_Royalty_Inspecotr_in_Director_of_Mines_-_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No. 23-2011 Fisheries Development Officers", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Notification_No._23-2011_Fisheries_Devolopment_Officers_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No.07-2011 to 50-2008 Royalty Inspector in Director of Mines - Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Notification_No.07-2011_to_50-2008_Royalty_Inspecotr_in_Director_of_Mines_-_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Notification No.46-2011 Town Planning Assistant", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/Notification_No.46-2011_Town_Planning_Assistant_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2011-2012 20Assistant 20Hydrologist HA 647 2012 Series-C Geology PaperII", year: "2011", shift: "PaperII", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012__20Assistant_20Hydrologist_HA_647_2012_Series-C_Geology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2011-2012 20Assistant 20Hydrologist HA 648 2012 Series-C Hydrology PaperII", year: "2011", shift: "PaperII", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012__20Assistant_20Hydrologist_HA_648_2012_Series-C_Hydrology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2011-2012 20and 2013-2012 Zilla 20Sainik 20WelfareOfficer OZ 556 2012 Series-C English PapeII 1", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012_20and_2013-2012_Zilla_20Sainik_20WelfareOfficer_OZ_556_2012_Series-C_English_PapeII_1_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2011-2012 20and 2013-2015 Zilla 20Sainik 20WelfareOfficer OZ 557-2012 Series-C ElementaryMathematics", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012_20and_2013-2015_Zilla_20Sainik_20WelfareOfficer_OZ_557-2012_Series-C_ElementaryMathematics_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2052-2008 Technical 20Assistant 20Hydrology HDAT 649 2011 Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2052-2008_Technical_20Assistant_20Hydrology_HDAT_649_2011_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2052-2008 Technical 20Assistant 20Hydrology HDAT 650-2011-Hydrology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2052-2008_Technical_20Assistant_20Hydrology_HDAT_650-2011-Hydrology_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2053-2008 20Assistant 20Hydrogeologist GHA 656 2011 Series-D Geology PaperII", year: "2011", shift: "PaperII", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2053-2008__20Assistant_20Hydrogeologist_GHA_656_2011_Series-D_Geology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2054-2008 Technical 20Assistant 20Hydrogeologist HGAT 651 2011 Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2054-2008_Technical_20Assistant_20Hydrogeologist_HGAT_651_2011_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Notification No.11-2012 Tech Asst.in Geophysics", year: "2012", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2012/Notification_No.11-2012_Tech_Asst.in_Geophysics_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2012-2012 20Assistant 20Hydrologist GAT 637 2012 Series-C GeoPhysics PaperII", year: "2012", shift: "PaperII", file: "APPSC/GENERAL_PAPER/2012/NotificationNo_2012-2012__20Assistant_20Hydrologist_GAT_637_2012_Series-C_GeoPhysics_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2030-2008 GeneralScience 20and 20Mental 20Ability CommontoAll GS 500 2012 SERIES-B GS 20and 20MA", year: "2012", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2012/NotificationNo_2030-2008_GeneralScience_20and_20Mental_20Ability_CommontoAll_GS_500_2012_SERIES-B_GS_20and_20MA_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2015-2011 20and 2018-2011 PAPER 20III-Indian 20Economy 20and 20AP 20Economy- 20SAE 20- 20104 20- 202016", year: "2015", shift: "PAPER 20III", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20III-Indian_20Economy_20and_20AP_20Economy-_20SAE_20-_20104_20-_202016_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2015-2011 20and 2018-2011 PAPER 20IV-Science 20and 20Technology- 20SAE 20- 20105 20- 202016", year: "2015", shift: "PAPER 20IV", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20IV-Science_20and_20Technology-_20SAE_20-_20105_20-_202016_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "NotificationNo 2015-2011 20and 2018-2011 PAPER 20V-Data 20Appreciation 20and 20Interpretation- 20SAE-106-2016", year: "2015", shift: "PAPER 20V", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20V-Data_20Appreciation_20and_20Interpretation-_20SAE-106-2016_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Notification 20No 2006-2016-AEE-ScreeningTest Agricutural 20Engg EEA-STA-113-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Agricutural_20Engg_EEA-STA-113-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 11-2012 Assistant Hydrologist HA 647 2012 Series-C Geology Paper II", year: "2011", shift: "Paper II", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012__20Assistant_20Hydrologist_HA_647_2012_Series-C_Geology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 11-2012 Assistant Hydrologist HA 648 2012 Series-C Hydrology Paper II", year: "2011", shift: "Paper II", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012__20Assistant_20Hydrologist_HA_648_2012_Series-C_Hydrology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 11-2012 and 13-2012 Zilla Sainik Welfare Officer OZ 556 2012 Series-C English Paper II", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012_20and_2013-2012_Zilla_20Sainik_20WelfareOfficer_OZ_556_2012_Series-C_English_PapeII_1_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 11-2012 and 13-2015 Zilla Sainik Welfare Officer OZ 557-2012 Series-C Elementary Mathematics", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2011-2012_20and_2013-2015_Zilla_20Sainik_20WelfareOfficer_OZ_557-2012_Series-C_ElementaryMathematics_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 52-2008 Technical Assistant Hydrology HDAT 649 2011 Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2052-2008_Technical_20Assistant_20Hydrology_HDAT_649_2011_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 52-2008 Technical Assistant Hydrology HDAT 650-2011-Hydrology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2052-2008_Technical_20Assistant_20Hydrology_HDAT_650-2011-Hydrology_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 53-2008 Assistant Hydrogeologist GHA 656 2011 Series-D Geology Paper II", year: "2011", shift: "Paper II", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2053-2008__20Assistant_20Hydrogeologist_GHA_656_2011_Series-D_Geology_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 54-2008 Technical Assistant Hydrogeologist HGAT 651 2011 Geology", year: "2011", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2011/NotificationNo_2054-2008_Technical_20Assistant_20Hydrogeologist_HGAT_651_2011_Geology_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No.11-2012 Tech Asst. in Geophysics", year: "2012", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2012/Notification_No.11-2012_Tech_Asst.in_Geophysics_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 12-2012 Assistant Hydrologist GAT 637 2012 Series-C GeoPhysics Paper II", year: "2012", shift: "Paper II", file: "APPSC/GENERAL_PAPER/2012/NotificationNo_2012-2012__20Assistant_20Hydrologist_GAT_637_2012_Series-C_GeoPhysics_PaperII_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 30-2008 General Science and Mental Ability Common to All GS 500 2012 SERIES-B GS and MA", year: "2012", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2012/NotificationNo_2030-2008_GeneralScience_20and_20Mental_20Ability_CommontoAll_GS_500_2012_SERIES-B_GS_20and_20MA_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 15-2011 and 18-2011 PAPER III Indian Economy and AP Economy SAE 104 2016", year: "2015", shift: "Paper III", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20III-Indian_20Economy_20and_20AP_20Economy-_20SAE_20-_20104_20-_202016_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 15-2011 and 18-2011 PAPER IV Science and Technology SAE 105 2016", year: "2015", shift: "Paper IV", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20IV-Science_20and_20Technology-_20SAE_20-_20105_20-_202016_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "NotificationNo 15-2011 and 18-2011 PAPER V Data Appreciation and Interpretation SAE 106 2016", year: "2015", shift: "Paper V", file: "APPSC/GENERAL_PAPER/2015/NotificationNo_2015-2011_20and_2018-2011_PAPER_20V-Data_20Appreciation_20and_20Interpretation-_20SAE-106-2016_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No 06-2016 AEE Screening Test Agricultural Engg EEA-STA-113-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Agricutural_20Engg_EEA-STA-113-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "BOTANY", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/BOTANY_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "CHEMISTRY", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/CHEMISTRY_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "COMMERCE", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/COMMERCE_EXAMRESIZER_CLEAN.pdf", available: true },
@@ -409,18 +411,18 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
         { exam: "Lecturers in GDC Political Science Notification no.05-2008", year: "2008", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Political_Science__Notification_no.05-2008_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Lecturers in GDC Public Administration Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Public_Administration__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Lecturers in GDC Sanskrit Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Sanskrit__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Lecturers in GDC statistics Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_statistics__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Lecturers in GDC Statistics Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_statistics__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Lecturers in GDC Telugu Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Telugu__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Lecturers in GDC Urdu Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Urdu__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Lecturers in GDC Zoology Notification no.43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_in_GDC_Zoology__Notification_no.43-11_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "Lecturers inGDC Computer Applications Notification no 43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_inGDC__Computer_Applications__Notification_no_43-11_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Lecturers in GDC Computer Applications Notification no 43-11", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Lecturers_inGDC__Computer_Applications__Notification_no_43-11_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "MATHEMATICS", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/MATHEMATICS_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Notification No. 48-2008", year: "2008", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Notification_No._48-2008_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Notification No.44-2008 Town Planning Assistant", year: "2008", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/Notification_No.44-2008_Town_Planning_Assistant_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "ORIA", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/ORIA_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "PHYSICS", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/PHYSICS_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "POLITICAL 20SCIENCE", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/POLITICAL_20SCIENCE_EXAMRESIZER_CLEAN.pdf", available: true },
-        { exam: "PUBLIC 20ADMINISTRATION", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/PUBLIC_20ADMINISTRATION_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "POLITICAL SCIENCE", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/POLITICAL_20SCIENCE_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "PUBLIC ADMINISTRATION", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/PUBLIC_20ADMINISTRATION_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "SANSKRIT", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/SANSKRIT_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "TELUGU", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/TELUGU_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "URDU", year: "Archive", shift: "Master Paper", file: "APPSC/GENERAL_PAPER/UNDATED/URDU_EXAMRESIZER_CLEAN.pdf", available: true },
@@ -430,7 +432,7 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
         { exam: "Top 20 PYPs of APPSC Group I Services Exam 2024 7fa3c8", year: "2024", shift: "Master Paper", file: "APPSC/GROUP_1/2024/Top_20_PYPs_of_APPSC_Group_I_Services_Exam_2024_7fa3c8_EXAMRESIZER_CLEAN.pdf", available: true }
       ],
       "APPSC (ME)": [
-        { exam: "Notification 20No 2006-2016-AEE-ScreeningTest Mechanical 20Engg EEA-STM-112-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/ME/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Mechanical_20Engg_EEA-STM-112-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true },
+        { exam: "Notification No 06-2016 AEE Screening Test Mechanical Engg EEA-STM-112-2016-Series-D", year: "2016", shift: "Master Paper", file: "APPSC/ME/2016/Notification_20No_2006-2016-AEE-ScreeningTest_Mechanical_20Engg_EEA-STM-112-2016-Series-D_EXAMRESIZER_CLEAN.pdf", available: true },
         { exam: "Notification No. 02-2008 Inspector of Factories Mechanical", year: "2008", shift: "Master Paper", file: "APPSC/ME/UNDATED/Notification_No._02-2008_Inspector_of_Factories__Mechanical__EXAMRESIZER_CLEAN.pdf", available: true }
       ],
       "TSPSC (CE)": [
@@ -570,20 +572,131 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
   }
 };
 
+function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function encodeStoragePath(filePath) {
+  return String(filePath || '')
+    .split('/')
+    .map(function (seg) { return encodeURIComponent(seg); })
+    .join('/');
+}
+
+function sanitizeId(str) {
+  return String(str || '').replace(/[^a-zA-Z0-9]/g, '_');
+}
+
+function buildDistinctPaperHeading(examTitle, shiftText, filePath) {
+  const cleanExam = String(examTitle || '').trim();
+  const cleanShift = String(shiftText || '').trim();
+  const fileBase = String(filePath || '').split('/').pop().replace(/\.pdf$/i, '');
+
+  if (cleanShift && !cleanExam.toLowerCase().includes(cleanShift.toLowerCase())) {
+    return `${cleanExam} - ${cleanShift}`;
+  }
+  if (fileBase && !cleanExam) {
+    return fileBase;
+  }
+  return cleanExam;
+}
+
+function resolvePdfCandidates(filePath) {
+  const raw = String(filePath || '').trim();
+  if (!raw) return [];
+  if (raw.startsWith('http')) return [raw];
+
+  const candidates = [
+    raw,
+    raw.replace(/_S(\d+)\.pdf$/i, '_Set$1_EXAMRESIZER_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_EXAMRESIZER_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_Standardized_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_CLEAN.pdf')
+  ];
+
+  const unique = [...new Set(candidates)];
+  return unique.map(function (rel) {
+    return SUPABASE_STORAGE_BASE + "/pyq/" + encodeStoragePath(rel);
+  });
+}
+
+async function resolveFirstAvailableUrl(candidates) {
+  if (!candidates || candidates.length === 0) return '';
+  if (candidates.length === 1) return candidates[0];
+
+  const checks = candidates.map(function (url) {
+    return fetch(url, { method: 'HEAD' }).then(function (res) {
+      if (res.ok) return url;
+      throw new Error('Not found');
+    });
+  });
+
+  try {
+    return await Promise.any(checks);
+  } catch (_) {
+    return candidates[0];
+  }
+}
+
+function getCatalogStats() {
+  let totalCataloged = 0;
+  let totalAvailable = 0;
+  let sectorCataloged = 0;
+  let sectorAvailable = 0;
+
+  Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG).forEach(function (authKey) {
+    const authObj = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
+    let authTotal = 0;
+    let authAvail = 0;
+    Object.values(authObj.subStreams || {}).forEach(function (list) {
+      (list || []).forEach(function (p) {
+        if (p && p.file) {
+          authTotal++;
+          totalCataloged++;
+          if (p.available === true) {
+            authAvail++;
+            totalAvailable++;
+          }
+        }
+      });
+    });
+    if (authKey === currentAuthorityKey) {
+      sectorCataloged = authTotal;
+      sectorAvailable = authAvail;
+    }
+  });
+
+  return { totalCataloged, totalAvailable, sectorCataloged, sectorAvailable };
+}
+
 // ----------------------------------------------------
-// CONTROLLER: TIER-1 AUTHORITY SWITCHER (BANNER SYNC)
+// CONTROLLER: TIER-1 AUTHORITY SWITCHER (GOLD BANNER & BUTTON SYNC)
 // ----------------------------------------------------
 function switchAuthority(authKey) {
+  if (!COMPREHENSIVE_AUTHORITY_CATALOG[authKey]) {
+    authKey = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)[0] || 'GATE';
+  }
   currentAuthorityKey = authKey;
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
 
   const titleEl = document.getElementById('activeAuthorityTitle');
   const descEl = document.getElementById('activeAuthorityDesc');
+  const countEl = document.getElementById('activeAuthorityCount');
+  const stats = getCatalogStats();
+
   if (data && titleEl) titleEl.innerText = data.title;
   if (data && descEl) descEl.innerText = data.desc;
+  if (countEl) {
+    countEl.innerText = `Sector: ${stats.sectorCataloged} Papers (${stats.sectorAvailable} Live) | Total: ${stats.totalCataloged} Papers (${stats.totalAvailable} Live)`;
+  }
 
   const allKeys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
-  allKeys.forEach(k => {
+  allKeys.forEach(function (k) {
     const btn = document.getElementById('auth-btn-' + k);
     if (btn) {
       if (k === authKey) {
@@ -641,19 +754,19 @@ function getPyqSectorGuide(authKey) {
       answer: 'Use the official key after a complete timed attempt. Review why correct options are valid and why alternatives are incorrect.',
       subjects: 'Notes should cover polity, economy, environment, geography, history, science, and current-affairs connections with sources and dates.'
     },
-    BTECH: {
-      title: 'B.Tech paper guide: university pattern and subject revision',
-      pattern: 'Check semester regulations, branch, subject code, internal/external divisions, question type, and section instructions from the paper.',
-      strategy: 'Classify questions by unit and derive each formula. Solve unit-wise PYQs before full timed papers so missing prerequisites are identified early.',
-      answer: 'Compare only with prescribed textbooks, laboratory records, or faculty solution standards. University papers do not always publish a universal final key.',
-      subjects: 'Build compact formula and theorem notes with units, assumptions, derivation steps, and common numerical traps.'
+    BANKING: {
+      title: 'Banking paper guide: speed, accuracy, and sectional timing',
+      pattern: 'Review Prelims sectional cutoffs, Mains reasoning/data analysis depth, and General/Financial Awareness coverage across IBPS and SBI notifications.',
+      strategy: 'Practise strict 20-minute sectional sprints for Prelims and focus on high-accuracy puzzle and DI selection in Mains.',
+      answer: 'Review memory-based and official shifts to identify topic weightage and recurring question formats.',
+      subjects: 'Maintain daily banking awareness notes, simplification/approximation drills, and reading comprehension practice sets.'
     },
-    ENTRANCE: {
-      title: 'JEE/entrance paper guide: attempt planning and topic review',
-      pattern: 'Review the subject balance, section rules, integer or multiple-choice format, optional attempt limits, and marking method applicable to that NTA or state entrance session.',
-      strategy: 'Use subject rotations, preserve short accuracy checks, and leave difficult calculation blocks for a planned second pass.',
-      answer: 'Score with the official answer key and challenge windows rather than informal solution channels. Preserve response evidence and the exact question version.',
-      subjects: 'Use concept maps for Physics, Chemistry, and Mathematics, with formula cards, reaction mechanisms, common approximations, and solved standard problem types.'
+    PSU: {
+      title: 'PSU & Power paper guide: core technical and aptitude split',
+      pattern: 'Check organization-specific discipline weightage (Technical vs General Aptitude) for PGCIL, DRDO, and core engineering PSU recruitments.',
+      strategy: 'Prioritize standard core engineering numericals and previous PSU question patterns alongside quick aptitude accuracy.',
+      answer: 'Verify standard formula conventions and unit conversions against official master keys.',
+      subjects: 'Keep concise discipline formula handbooks for Electrical, Electronics, Mechanical, and Civil core subjects.'
     }
   };
   return guides[authKey] || guides.GATE;
@@ -667,7 +780,7 @@ function renderPyqSectorGuide() {
   const overviewEl = document.getElementById('pyqSectorGuideOverview');
   if (titleEl) titleEl.textContent = guide.title;
   if (overviewEl) {
-    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${guide.pattern}`;
+    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${escHtml(guide.pattern)}`;
   }
 }
 
@@ -682,24 +795,29 @@ function renderSubButtons() {
   const streams = Object.keys(data.subStreams);
   currentStreamKey = streams[0] || '';
 
-  let html = '';
-  streams.forEach(st => {
+  container.innerHTML = streams.map(function (st) {
     const isDefault = st === currentStreamKey;
-    html += `
-      <button 
+    const count = (data.subStreams[st] || []).length;
+    return `
+      <button
+        type="button"
+        data-stream-name="${escHtml(st)}"
         id="sub-btn-${sanitizeId(st)}"
-        onclick="switchStream('${st.replace(/'/g, "\\'")}')" 
         class="sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
-          isDefault 
-            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
+          isDefault
+            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
             : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20'
         }">
-        ${st}
+        ${escHtml(st)} <span class="opacity-75">(${count})</span>
       </button>
     `;
-  });
+  }).join('');
 
-  container.innerHTML = html;
+  container.onclick = function (e) {
+    const btn = e.target.closest('[data-stream-name]');
+    if (btn) switchStream(btn.getAttribute('data-stream-name'));
+  };
+
   renderPyqSectorGuide();
   renderPaperCards();
 }
@@ -709,14 +827,13 @@ function switchStream(streamName) {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
   if (!data) return;
 
-  Object.keys(data.subStreams).forEach(st => {
+  Object.keys(data.subStreams).forEach(function (st) {
     const btn = document.getElementById('sub-btn-' + sanitizeId(st));
     if (btn) {
-      if (st === streamName) {
-        btn.className = "sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border bg-amber-500/20 text-amber-300 border-amber-500/40";
-      } else {
-        btn.className = "sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20";
-      }
+      btn.className = "sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border " +
+        (st === streamName
+          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+          : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20');
     }
   });
 
@@ -724,12 +841,8 @@ function switchStream(streamName) {
 }
 window.switchStream = switchStream;
 
-function sanitizeId(str) {
-  return str.replace(/[^a-zA-Z0-9]/g, '_');
-}
-
 // ----------------------------------------------------
-// CARD GENERATOR (VIEW / DOWNLOAD & STRICT AVAILABILITY)
+// CARD GENERATOR (RICH GLASS CARD + VIEW PAPER + SHARE LINK)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
@@ -747,99 +860,245 @@ function renderPaperCards() {
     return;
   }
 
-  let html = '';
-  papers.forEach(p => {
+  container.innerHTML = papers.map(function (p, idx) {
     const hasOriginal = p.available === true;
-    const safeStream = currentStreamKey.replace(/'/g, "\\'");
-    const safeTitle = data.title.replace(/'/g, "\\'");
+    const examTitle = p.exam || currentStreamKey;
+    const shiftText = p.shift || p.session || 'Master Paper';
+    const distinctHeading = buildDistinctPaperHeading(examTitle, shiftText, p.file);
 
-    html += `
+    return `
       <div class="p-4 rounded-xl glass-card border ${hasOriginal ? 'border-white/10 hover:border-amber-500/40' : 'border-white/5 opacity-60'} transition flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div class="space-y-1">
-          <div class="flex items-center space-x-2">
+          <div class="flex flex-wrap items-center gap-2">
             <span class="px-2.5 py-0.5 rounded ${hasOriginal ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-500 border border-white/5'} text-[10px] font-extrabold uppercase">
-              ${p.year} Examination
+              ${escHtml(p.year)} Examination
             </span>
-            <span class="text-xs text-slate-400 font-medium">${p.session}</span>
+            <span class="text-xs text-slate-300 font-semibold">${escHtml(shiftText)}</span>
             <span class="text-[10px] ${hasOriginal ? 'text-emerald-400' : 'text-amber-500'} font-semibold">
-              â€¢ ${hasOriginal ? 'Official Master Key Verified' : 'File Updating Shortly'}
+              &bull; ${hasOriginal ? 'Official Master Key Verified' : 'File Updating Shortly'}
             </span>
           </div>
-          <h4 class="font-bold text-white text-sm md:text-base">${currentStreamKey}</h4>
-          <p class="text-[11px] text-slate-400">Authentic Government Master Question Paper</p>
+          <h4 class="font-bold text-white text-sm md:text-base">${escHtml(distinctHeading)}</h4>
+          <p class="text-[11px] text-slate-400">Exam: ${escHtml(examTitle)} &bull; Year: ${escHtml(p.year)} &bull; Shift/Set: ${escHtml(shiftText)}</p>
         </div>
-        
+
         ${hasOriginal ? `
-          <button onclick="openPyqReader('${safeStream}', '${p.year}', '${safeTitle}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
-            <span>ðŸ‘ï¸ View / Download</span>
-          </button>
+          <div class="flex items-center gap-2 flex-shrink-0">
+            <button type="button" data-view-idx="${idx}" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center shadow-lg cursor-pointer">
+              View Paper
+            </button>
+            <button type="button" data-share-idx="${idx}" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-bold text-xs transition cursor-pointer">
+              Share Link
+            </button>
+          </div>
         ` : `
-          <button disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center space-x-1.5 flex-shrink-0 cursor-not-allowed border border-white/5">
-            <span>ðŸ”’ File Updating Shortly</span>
+          <button type="button" disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center flex-shrink-0 cursor-not-allowed border border-white/5">
+            File Updating Shortly
           </button>
         `}
       </div>
     `;
-  });
+  }).join('');
 
-  container.innerHTML = html;
+  container.onclick = function (e) {
+    const viewBtn = e.target.closest('[data-view-idx]');
+    if (viewBtn) {
+      const idx = Number(viewBtn.getAttribute('data-view-idx'));
+      const paper = papers[idx];
+      if (!paper || paper.available !== true) return;
+      openPyqReader(
+        paper.exam || currentStreamKey,
+        paper.year,
+        paper.shift || paper.session || 'Master Paper',
+        data.title,
+        paper.file
+      );
+      return;
+    }
+
+    const shareBtn = e.target.closest('[data-share-idx]');
+    if (shareBtn) {
+      const idx = Number(shareBtn.getAttribute('data-share-idx'));
+      const paper = papers[idx];
+      if (!paper || paper.available !== true) return;
+      sharePyqLink(
+        paper.exam || currentStreamKey,
+        paper.year,
+        paper.shift || paper.session || 'Master Paper',
+        paper.file,
+        shareBtn
+      );
+    }
+  };
 }
 
-// ----------------------------------------------------
-// IN-APP EMBEDDED READER (REAL SUPABASE PDF ONLY)
-// ----------------------------------------------------
-function openPyqReader(title, year, body, filePath) {
-  document.getElementById('readerPaperTitle').innerText = `${title} (${year})`;
-  document.getElementById('readerPaperTag').innerText = body.toUpperCase();
-  document.getElementById('readerMainSubject').innerText = title;
-  document.getElementById('readerSessionInfo').innerText = `${body} â€¢ Official Session ${year}`;
+function buildShareablePaperUrl(filePath) {
+  const url = new URL(window.location.origin + window.location.pathname);
+  url.searchParams.set('pyq', filePath);
+  return url.toString();
+}
 
-  const targetUrl = filePath.startsWith('http') 
-    ? filePath 
-    : `${SUPABASE_STORAGE_BASE}/pyq/${filePath}`;
+function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
+  const shareUrl = buildShareablePaperUrl(filePath);
+  const shareTitle = `${examName} (${year} - ${shiftName}) - ExamResizer.me`;
+
+  if (navigator.share) {
+    navigator.share({
+      title: shareTitle,
+      text: `View ${shareTitle} Question Paper on ExamResizer.me`,
+      url: shareUrl
+    }).catch(function () {});
+    return;
+  }
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(shareUrl).then(function () {
+      if (btnEl) {
+        const oldHtml = btnEl.innerHTML;
+        btnEl.innerHTML = 'Link Copied';
+        setTimeout(function () { btnEl.innerHTML = oldHtml; }, 2000);
+      }
+    }).catch(function () {
+      window.prompt('Copy this PYQ link to share:', shareUrl);
+    });
+  } else {
+    window.prompt('Copy this PYQ link to share:', shareUrl);
+  }
+}
+window.sharePyqLink = sharePyqLink;
+
+// ----------------------------------------------------
+// FULL-PAGE PYQ READER (ZERO RIGHT GAP + VIEW ONLY + SHARE + BACK)
+// ----------------------------------------------------
+function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
+  const modal = document.getElementById('pyqReaderModal');
+  if (!modal) return;
+
+  const token = ++activeReaderToken;
+  document.body.style.overflow = 'hidden';
+  modal.className = 'fixed inset-0 z-[70] bg-[#070a12] flex flex-col w-screen h-screen overflow-hidden';
+
+  const innerCard = modal.firstElementChild;
+  if (innerCard) {
+    innerCard.className = 'w-full h-full max-w-none flex flex-col bg-[#090d16] overflow-hidden';
+  }
+
+  const distinctTitle = buildDistinctPaperHeading(examName, shiftName, filePath);
+  const titleEl = document.getElementById('readerPaperTitle');
+  const tagEl = document.getElementById('readerPaperTag');
+  const subjEl = document.getElementById('readerMainSubject');
+  const sessEl = document.getElementById('readerSessionInfo');
+
+  if (titleEl) titleEl.innerText = `${distinctTitle} (${year})`;
+  if (tagEl) tagEl.innerText = `${year} - ${String(shiftName).toUpperCase()}`;
+  if (subjEl) subjEl.innerText = `${distinctTitle} - ${year}`;
+  if (sessEl) sessEl.innerText = `${bodyTitle} - Read-Only Official Question Paper View`;
+
+  const candidates = resolvePdfCandidates(filePath);
+
+  const shareBtn = document.getElementById('readerTopDownloadBtn');
+  if (shareBtn) {
+    shareBtn.innerHTML = 'Share Link';
+    shareBtn.disabled = false;
+    shareBtn.className = 'px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition cursor-pointer';
+    shareBtn.setAttribute('aria-label', 'Share Question Paper Link');
+    shareBtn.onclick = function () {
+      sharePyqLink(examName, year, shiftName, filePath, shareBtn);
+    };
+  }
+
+  const closeBtn = modal.querySelector('button[onclick*="closePyqReader"]');
+  if (closeBtn) {
+    closeBtn.className = 'px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-extrabold text-xs transition cursor-pointer';
+    closeBtn.innerHTML = '&larr; Back to PYQ Hub';
+    closeBtn.onclick = function () {
+      closePyqReader();
+    };
+  }
 
   const qBody = document.getElementById('readerQuestionsBody');
-  qBody.innerHTML = `
-    <div class="rounded-xl border border-white/10 bg-black/40 overflow-hidden flex flex-col items-center justify-center min-h-[70vh] w-full">
-      <iframe src="${targetUrl}#toolbar=1" class="w-full h-[70vh] border-none rounded-xl" title="Official Question Paper Preview">
-        <p class="p-6 text-center text-slate-400 text-sm">
-          Browser preview unavailable. 
-          <a href="${targetUrl}" target="_blank" class="text-amber-400 underline font-bold ml-1">Click here to open directly</a>.
-        </p>
-      </iframe>
-    </div>
-  `;
+  if (qBody) {
+    qBody.className = 'flex-1 w-full max-w-none px-4 md:px-6 pb-6 overflow-y-auto';
+    qBody.innerHTML = `
+      <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col w-full">
+        <div id="pyqReaderStatusBar" class="px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-amber-300">
+          <span>Loading verified question paper...</span>
+          <span class="text-slate-400">${escHtml(String(filePath).split('/').pop())}</span>
+        </div>
+        <iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-[80vh] border-none" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>
+      </div>
+    `;
 
-  const dlBtn = document.getElementById('readerTopDownloadBtn');
-  dlBtn.innerText = 'Download PDF';
-  dlBtn.disabled = false;
-  dlBtn.onclick = function() {
-    triggerDirectDownload(targetUrl, filePath);
-  };
+    const iframe = document.getElementById('pyqPdfIframe');
+    const statusBar = document.getElementById('pyqReaderStatusBar');
 
-  document.getElementById('pyqReaderModal').classList.remove('hidden');
+    (async function () {
+      const matchedUrl = await resolveFirstAvailableUrl(candidates);
+      if (token !== activeReaderToken) return;
+
+      if (matchedUrl) {
+        if (iframe) iframe.src = matchedUrl + '#toolbar=0&navpanes=0';
+        if (statusBar) {
+          statusBar.className = 'px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-emerald-400';
+          statusBar.innerHTML = `<span>Official Archive PDF Ready (Read-Only)</span><span class="text-slate-400">${escHtml(decodeURIComponent(matchedUrl.split('/').pop()))}</span>`;
+        }
+        return;
+      }
+
+      if (iframe && candidates[0]) iframe.src = candidates[0] + '#toolbar=0&navpanes=0';
+      if (statusBar) {
+        statusBar.className = 'px-4 py-2 bg-rose-500/10 border-b border-rose-500/20 flex flex-wrap items-center justify-between gap-2 text-[11px] text-rose-300';
+        statusBar.innerHTML = `<span>Paper file path pending sync in storage.</span>`;
+      }
+    })();
+  }
+
+  try {
+    const nextUrl = buildShareablePaperUrl(filePath);
+    window.history.replaceState({ pyqFile: filePath }, '', nextUrl);
+  } catch (_) {}
+
+  modal.classList.remove('hidden');
 }
 window.openPyqReader = openPyqReader;
 
 function closePyqReader() {
+  activeReaderToken++;
   const modal = document.getElementById('pyqReaderModal');
   if (modal) modal.classList.add('hidden');
+  document.body.style.overflow = '';
+  try {
+    const cleanUrl = window.location.origin + window.location.pathname;
+    window.history.replaceState({}, '', cleanUrl);
+  } catch (_) {}
 }
 window.closePyqReader = closePyqReader;
 
-function triggerDirectDownload(url, filePath) {
-  const safeName = filePath.split('/').pop();
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `ExamResizer_${safeName}`;
-  a.target = '_blank';
-  document.body.appendChild(a);
-  a.click();
-  setTimeout(() => document.body.removeChild(a), 500);
+function openSharedPyqFromUrl() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const sharedFile = params.get('pyq');
+    if (!sharedFile) return;
+
+    for (const authKey of Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)) {
+      const auth = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
+      for (const streamName of Object.keys(auth.subStreams)) {
+        const match = (auth.subStreams[streamName] || []).find(function (p) { return p.file === sharedFile; });
+        if (match) {
+          if (typeof window.switchZone === 'function') {
+            window.switchZone('pyq-zone');
+          }
+          switchAuthority(authKey);
+          switchStream(streamName);
+          openPyqReader(match.exam || streamName, match.year, match.shift || match.session || 'Master Paper', auth.title, match.file);
+          return;
+        }
+      }
+    }
+  } catch (_) {}
 }
 
-// Initialize on DOM Load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', function () {
   switchAuthority('GATE');
+  openSharedPyqFromUrl();
 });
-
