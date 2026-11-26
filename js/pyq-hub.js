@@ -1,11 +1,12 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Distinct Paper Titles • Full-Screen Reader (Zero Gap) • View-Only + Share + Back
+// Distinct Paper Titles • Instant Full-Screen Reader (Zero Gap) • View-Only + Share + Back
 // Module: js/pyq-hub.js
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
 let currentStreamKey = '';
+let activeReaderToken = 0;
 const SUPABASE_STORAGE_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers";
 
 const COMPREHENSIVE_AUTHORITY_CATALOG = {
@@ -295,17 +296,36 @@ function resolvePdfCandidates(filePath) {
   if (!raw) return [];
   if (raw.startsWith('http')) return [raw];
 
-  const candidates = [raw];
-  if (!raw.endsWith('_EXAMRESIZER_CLEAN.pdf')) {
-    candidates.push(raw.replace(/\.pdf$/i, '_EXAMRESIZER_CLEAN.pdf'));
-  }
-  if (!raw.endsWith('_Standardized_CLEAN.pdf')) {
-    candidates.push(raw.replace(/\.pdf$/i, '_Standardized_CLEAN.pdf'));
-  }
-  candidates.push(raw.replace(/_S(\d+)\.pdf$/i, '_Set$1_EXAMRESIZER_CLEAN.pdf'));
+  const candidates = [
+    raw,
+    raw.replace(/_S(\d+)\.pdf$/i, '_Set$1_EXAMRESIZER_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_EXAMRESIZER_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_Standardized_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_Prelims_Tier1_Shift1_Standardized_CLEAN.pdf'),
+    raw.replace(/\.pdf$/i, '_CBT1_Shift1_Standardized_CLEAN.pdf')
+  ];
 
   const unique = [...new Set(candidates)];
   return unique.map(rel => `${SUPABASE_STORAGE_BASE}/pyq/${encodeStorageRelativePath(rel)}`);
+}
+
+async function resolveFirstAvailableUrl(candidates) {
+  if (!candidates || candidates.length === 0) return '';
+  if (candidates.length === 1) return candidates[0];
+
+  const checks = candidates.map((url, idx) =>
+    fetch(url, { method: 'HEAD' }).then(res => {
+      if (res.ok) return { url, idx };
+      throw new Error('Not found');
+    })
+  );
+
+  try {
+    const firstOk = await Promise.any(checks);
+    return firstOk.url;
+  } catch (_) {
+    return '';
+  }
 }
 
 function getCatalogStats() {
@@ -625,14 +645,14 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
 window.sharePyqLink = sharePyqLink;
 
 // ----------------------------------------------------
-// FULL-PAGE PYQ READER (ZERO RIGHT-SIDE GAP + VIEW ONLY + SHARE + BACK)
+// INSTANT FULL-PAGE PYQ READER (ZERO RIGHT GAP + VIEW ONLY + SHARE + BACK)
 // ----------------------------------------------------
 function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const modal = document.getElementById('pyqReaderModal');
   if (!modal) return;
 
+  const token = ++activeReaderToken;
   document.body.style.overflow = 'hidden';
-
   modal.className = 'fixed inset-0 z-[70] bg-[#070a12] flex flex-col w-screen h-screen overflow-hidden';
 
   const innerCard = modal.firstElementChild;
@@ -652,7 +672,6 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   if (sessEl) sessEl.innerText = `${bodyTitle} • Read-Only Official Question Paper View`;
 
   const candidates = resolvePdfCandidates(filePath);
-  const primaryUrl = candidates[0] || '';
 
   const shareBtn = document.getElementById('readerTopDownloadBtn');
   if (shareBtn) {
@@ -675,19 +694,39 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
 
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
-    const altLinksHtml = candidates.slice(1).map((altUrl, i) =>
-      `<a href="${altUrl}#toolbar=0&navpanes=0" target="pyqFrame" class="text-xs text-amber-400 underline mr-3">Alternate Path ${i + 2}</a>`
-    ).join('');
-
+    qBody.className = 'flex-1 w-full max-w-none px-4 md:px-6 pb-6 overflow-y-auto';
     qBody.innerHTML = `
       <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col w-full">
-        <div class="px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
-          <span>Read-Only Archive Preview • ${escHtml(String(filePath).split('/').pop())}</span>
-          <div>${altLinksHtml}</div>
+        <div id="pyqReaderStatusBar" class="px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-amber-300">
+          <span>⏳ Opening verified paper...</span>
+          <span class="text-slate-400">${escHtml(String(filePath).split('/').pop())}</span>
         </div>
-        <iframe name="pyqFrame" src="${primaryUrl}#toolbar=0&navpanes=0" class="w-full h-[76vh] border-none" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>
+        <iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-[78vh] border-none" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>
       </div>
     `;
+
+    const iframe = document.getElementById('pyqPdfIframe');
+    const statusBar = document.getElementById('pyqReaderStatusBar');
+
+    (async () => {
+      const matchedUrl = await resolveFirstAvailableUrl(candidates);
+      if (token !== activeReaderToken) return;
+
+      if (matchedUrl) {
+        if (iframe) iframe.src = `${matchedUrl}#toolbar=0&navpanes=0`;
+        if (statusBar) {
+          statusBar.className = 'px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-emerald-400';
+          statusBar.innerHTML = `<span>✓ Official Archive PDF Ready (Read-Only)</span><span class="text-slate-400">${escHtml(decodeURIComponent(matchedUrl.split('/').pop()))}</span>`;
+        }
+        return;
+      }
+
+      if (iframe && candidates[0]) iframe.src = `${candidates[0]}#toolbar=0&navpanes=0`;
+      if (statusBar) {
+        statusBar.className = 'px-4 py-2 bg-rose-500/10 border-b border-rose-500/20 flex flex-wrap items-center justify-between gap-2 text-[11px] text-rose-300';
+        statusBar.innerHTML = `<span>⚠ File not found in bucket yet. Sync 407 manifest catalog or check storage path.</span>`;
+      }
+    })();
   }
 
   try {
@@ -700,6 +739,7 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
 window.openPyqReader = openPyqReader;
 
 function closePyqReader() {
+  activeReaderToken++;
   const modal = document.getElementById('pyqReaderModal');
   if (modal) modal.classList.add('hidden');
   document.body.style.overflow = '';
