@@ -1,7 +1,6 @@
 // ====================================================================
 // EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020-2026)
-// Generated from 367 Verified Supabase Master Papers
-// View Paper + Share Link + Full-Screen Zero-Gap Reader + Back Navigation
+// Instant Full-Screen Reader + View + Share + Back
 // Module: js/pyq-hub.js
 // ====================================================================
 
@@ -721,52 +720,31 @@ function getPyqSectorGuide(authKey) {
   const guides = {
     GATE: {
       title: 'GATE paper guide: pattern, strategy, and review',
-      pattern: 'Check the year, paper code, question types, marking scheme, and General Aptitude weight. Cross-check the current syllabus and qualifying rules because an older paper is a pattern reference, not a current notification.',
-      strategy: 'Time each subject attempt, separate recall errors from calculation errors, and revise weak units from a formula and concept sheet.',
-      answer: 'Use an official answer key or response sheet to score honestly. Recheck numerical tolerance, units, and negative marking rather than changing answers merely to match a memory.',
-      subjects: 'Maintain subject notes for core theory, standard formulas, assumptions, and solved PYQ patterns; include both direct and application-level questions.'
+      pattern: 'Check the year, paper code, question types, marking scheme, and General Aptitude weight. Cross-check the current syllabus and qualifying rules because an older paper is a pattern reference, not a current notification.'
     },
     SSC: {
       title: 'SSC paper guide: sections, revision, and answer-key review',
-      pattern: 'Review the split among Quantitative Aptitude, Reasoning, General Awareness, and English, plus shift and tier-specific instructions. Verify the latest exam notice before planning.',
-      strategy: 'Attempt quick sections first, follow a section-wise time target, and keep a separate log for calculation and reading errors.',
-      answer: 'Match responses only against an authentic key or response sheet. Question objections should be supported by the notice, syllabus, and reliable source.',
-      subjects: 'Make concise notes for arithmetic shortcuts, vocabulary, grammar rules, one-liner polity/history/geography, and recent-current-affairs sources.'
+      pattern: 'Review the split among Quantitative Aptitude, Reasoning, General Awareness, and English, plus shift and tier-specific instructions. Verify the latest exam notice before planning.'
     },
     RRB: {
       title: 'RRB paper guide: CBT pattern and post-specific preparation',
-      pattern: 'Identify CBT stage, post, subject weight, time allocation, language, and negative marking. Technical subjects vary significantly across NTPC, JE, ALP, Group D, and paramedical posts.',
-      strategy: 'Practise with the exact number of questions and use early screening questions to reserve time for technical or general-knowledge sections.',
-      answer: 'Use the official key or response link for scoring; distinguish options due to missing concepts from mistakes caused by speed.',
-      subjects: 'Create separate notes for the selected post: technical basics, railway awareness, arithmetic, reasoning, science, and general current affairs.'
+      pattern: 'Identify CBT stage, post, subject weight, time allocation, language, and negative marking. Technical subjects vary significantly across NTPC, JE, ALP, Group D, and paramedical posts.'
     },
     STATE_PSC: {
       title: 'APPSC/TGPSC paper guide: syllabus and state-awareness review',
-      pattern: 'Confirm paper number, optional or technical subject, screening stage, language, and official marks. APPSC and TGPSC post patterns are different and may change by recruitment.',
-      strategy: 'Study state geography, economy, polity, history, schemes, and core subject notes in weekly cycles; practise writing and comprehension as required.',
-      answer: 'Cross-check every doubtful answer with the official final key and notification syllabus. Do not reuse an unofficial key as proof for objections.',
-      subjects: 'Maintain bilingual terminology, Andhra Pradesh/Telangana facts, constitutional provisions, public administration concepts, and technical formulas for selected posts.'
+      pattern: 'Confirm paper number, optional or technical subject, screening stage, language, and official marks. APPSC and TGPSC post patterns are different and may change by recruitment.'
     },
     UPSC: {
       title: 'UPSC Prelims paper guide: elimination and revision method',
-      pattern: 'Separate GS-1 scope, CSAT nature, number of questions, and official negative marking. Earlier papers help identify themes but do not replace the current syllabus.',
-      strategy: 'Build elimination discipline, track confidence, and limit speculative attempts. In CSAT, practise reading comprehension and basic quantitative speed separately.',
-      answer: 'Use the official key after a complete timed attempt. Review why correct options are valid and why alternatives are incorrect.',
-      subjects: 'Notes should cover polity, economy, environment, geography, history, science, and current-affairs connections with sources and dates.'
+      pattern: 'Separate GS-1 scope, CSAT nature, number of questions, and official negative marking. Earlier papers help identify themes but do not replace the current syllabus.'
     },
     BANKING: {
       title: 'Banking paper guide: speed, accuracy, and sectional timing',
-      pattern: 'Review Prelims sectional cutoffs, Mains reasoning/data analysis depth, and General/Financial Awareness coverage across IBPS and SBI notifications.',
-      strategy: 'Practise strict 20-minute sectional sprints for Prelims and focus on high-accuracy puzzle and DI selection in Mains.',
-      answer: 'Review memory-based and official shifts to identify topic weightage and recurring question formats.',
-      subjects: 'Maintain daily banking awareness notes, simplification/approximation drills, and reading comprehension practice sets.'
+      pattern: 'Review Prelims sectional cutoffs, Mains reasoning/data analysis depth, and General/Financial Awareness coverage across IBPS and SBI notifications.'
     },
     PSU: {
       title: 'PSU & Power paper guide: core technical and aptitude split',
-      pattern: 'Check organization-specific discipline weightage (Technical vs General Aptitude) for PGCIL, DRDO, and core engineering PSU recruitments.',
-      strategy: 'Prioritize standard core engineering numericals and previous PSU question patterns alongside quick aptitude accuracy.',
-      answer: 'Verify standard formula conventions and unit conversions against official master keys.',
-      subjects: 'Keep concise discipline formula handbooks for Electrical, Electronics, Mechanical, and Civil core subjects.'
+      pattern: 'Check organization-specific discipline weightage (Technical vs General Aptitude) for PGCIL, DRDO, and core engineering PSU recruitments.'
     }
   };
   return guides[authKey] || guides.GATE;
@@ -842,7 +820,7 @@ function switchStream(streamName) {
 window.switchStream = switchStream;
 
 // ----------------------------------------------------
-// CARD GENERATOR (RICH GLASS CARD + VIEW PAPER + SHARE LINK)
+// CARD GENERATOR (RICH GLASS CARD + VIEW BUTTON ONLY)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
@@ -883,14 +861,9 @@ function renderPaperCards() {
         </div>
 
         ${hasOriginal ? `
-          <div class="flex items-center gap-2 flex-shrink-0">
-            <button type="button" data-view-idx="${idx}" class="px-4 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center shadow-lg cursor-pointer">
-              View Paper
-            </button>
-            <button type="button" data-share-idx="${idx}" class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-bold text-xs transition cursor-pointer">
-              Share Link
-            </button>
-          </div>
+          <button type="button" data-view-idx="${idx}" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center shadow-lg flex-shrink-0 cursor-pointer">
+            View
+          </button>
         ` : `
           <button type="button" disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center flex-shrink-0 cursor-not-allowed border border-white/5">
             File Updating Shortly
@@ -902,33 +875,17 @@ function renderPaperCards() {
 
   container.onclick = function (e) {
     const viewBtn = e.target.closest('[data-view-idx]');
-    if (viewBtn) {
-      const idx = Number(viewBtn.getAttribute('data-view-idx'));
-      const paper = papers[idx];
-      if (!paper || paper.available !== true) return;
-      openPyqReader(
-        paper.exam || currentStreamKey,
-        paper.year,
-        paper.shift || paper.session || 'Master Paper',
-        data.title,
-        paper.file
-      );
-      return;
-    }
-
-    const shareBtn = e.target.closest('[data-share-idx]');
-    if (shareBtn) {
-      const idx = Number(shareBtn.getAttribute('data-share-idx'));
-      const paper = papers[idx];
-      if (!paper || paper.available !== true) return;
-      sharePyqLink(
-        paper.exam || currentStreamKey,
-        paper.year,
-        paper.shift || paper.session || 'Master Paper',
-        paper.file,
-        shareBtn
-      );
-    }
+    if (!viewBtn) return;
+    const idx = Number(viewBtn.getAttribute('data-view-idx'));
+    const paper = papers[idx];
+    if (!paper || paper.available !== true) return;
+    openPyqReader(
+      paper.exam || currentStreamKey,
+      paper.year,
+      paper.shift || paper.session || 'Master Paper',
+      data.title,
+      paper.file
+    );
   };
 }
 
@@ -937,6 +894,8 @@ function buildShareablePaperUrl(filePath) {
   url.searchParams.set('pyq', filePath);
   return url.toString();
 }
+
+const SHARE_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
 
 function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
   const shareUrl = buildShareablePaperUrl(filePath);
@@ -954,9 +913,10 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(shareUrl).then(function () {
       if (btnEl) {
-        const oldHtml = btnEl.innerHTML;
-        btnEl.innerHTML = 'Link Copied';
-        setTimeout(function () { btnEl.innerHTML = oldHtml; }, 2000);
+        btnEl.innerHTML = SHARE_ICON_SVG + '<span>Link Copied</span>';
+        setTimeout(function () {
+          btnEl.innerHTML = SHARE_ICON_SVG + '<span>Share</span>';
+        }, 2000);
       }
     }).catch(function () {
       window.prompt('Copy this PYQ link to share:', shareUrl);
@@ -968,7 +928,7 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
 window.sharePyqLink = sharePyqLink;
 
 // ----------------------------------------------------
-// FULL-PAGE PYQ READER (ZERO RIGHT GAP + VIEW ONLY + SHARE + BACK)
+// INSTANT FULL-SCREEN PYQ READER (PAPER ONLY + TOP SHARE ICON + BACK)
 // ----------------------------------------------------
 function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const modal = document.getElementById('pyqReaderModal');
@@ -980,7 +940,7 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
 
   const innerCard = modal.firstElementChild;
   if (innerCard) {
-    innerCard.className = 'w-full h-full max-w-none flex flex-col bg-[#090d16] overflow-hidden';
+    innerCard.className = 'w-full h-full max-w-none flex flex-col bg-[#070a12] overflow-hidden';
   }
 
   const distinctTitle = buildDistinctPaperHeading(examName, shiftName, filePath);
@@ -992,16 +952,14 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   if (titleEl) titleEl.innerText = `${distinctTitle} (${year})`;
   if (tagEl) tagEl.innerText = `${year} - ${String(shiftName).toUpperCase()}`;
   if (subjEl) subjEl.innerText = `${distinctTitle} - ${year}`;
-  if (sessEl) sessEl.innerText = `${bodyTitle} - Read-Only Official Question Paper View`;
-
-  const candidates = resolvePdfCandidates(filePath);
+  if (sessEl) sessEl.innerText = `${bodyTitle} - Official Question Paper`;
 
   const shareBtn = document.getElementById('readerTopDownloadBtn');
   if (shareBtn) {
-    shareBtn.innerHTML = 'Share Link';
+    shareBtn.innerHTML = SHARE_ICON_SVG + '<span>Share</span>';
     shareBtn.disabled = false;
-    shareBtn.className = 'px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition cursor-pointer';
-    shareBtn.setAttribute('aria-label', 'Share Question Paper Link');
+    shareBtn.className = 'px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition inline-flex items-center cursor-pointer';
+    shareBtn.setAttribute('aria-label', 'Share Question Paper');
     shareBtn.onclick = function () {
       sharePyqLink(examName, year, shiftName, filePath, shareBtn);
     };
@@ -1010,45 +968,25 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const closeBtn = modal.querySelector('button[onclick*="closePyqReader"]');
   if (closeBtn) {
     closeBtn.className = 'px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-extrabold text-xs transition cursor-pointer';
-    closeBtn.innerHTML = '&larr; Back to PYQ Hub';
+    closeBtn.innerHTML = '&larr; Back';
     closeBtn.onclick = function () {
       closePyqReader();
     };
   }
 
+  const candidates = resolvePdfCandidates(filePath);
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
-    qBody.className = 'flex-1 w-full max-w-none px-4 md:px-6 pb-6 overflow-y-auto';
-    qBody.innerHTML = `
-      <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col w-full">
-        <div id="pyqReaderStatusBar" class="px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-amber-300">
-          <span>Loading verified question paper...</span>
-          <span class="text-slate-400">${escHtml(String(filePath).split('/').pop())}</span>
-        </div>
-        <iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-[80vh] border-none" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>
-      </div>
-    `;
+    qBody.className = 'flex-1 w-full h-full max-w-none p-0 m-0 overflow-hidden';
+    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-full border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
 
     const iframe = document.getElementById('pyqPdfIframe');
-    const statusBar = document.getElementById('pyqReaderStatusBar');
-
     (async function () {
       const matchedUrl = await resolveFirstAvailableUrl(candidates);
       if (token !== activeReaderToken) return;
-
-      if (matchedUrl) {
-        if (iframe) iframe.src = matchedUrl + '#toolbar=0&navpanes=0';
-        if (statusBar) {
-          statusBar.className = 'px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-emerald-400';
-          statusBar.innerHTML = `<span>Official Archive PDF Ready (Read-Only)</span><span class="text-slate-400">${escHtml(decodeURIComponent(matchedUrl.split('/').pop()))}</span>`;
-        }
-        return;
-      }
-
-      if (iframe && candidates[0]) iframe.src = candidates[0] + '#toolbar=0&navpanes=0';
-      if (statusBar) {
-        statusBar.className = 'px-4 py-2 bg-rose-500/10 border-b border-rose-500/20 flex flex-wrap items-center justify-between gap-2 text-[11px] text-rose-300';
-        statusBar.innerHTML = `<span>Paper file path pending sync in storage.</span>`;
+      const finalUrl = matchedUrl || candidates[0] || '';
+      if (iframe && finalUrl) {
+        iframe.src = finalUrl + '#toolbar=0&navpanes=0&view=FitH';
       }
     })();
   }
@@ -1074,20 +1012,35 @@ function closePyqReader() {
 }
 window.closePyqReader = closePyqReader;
 
+function activatePyqZoneOnLoad() {
+  if (typeof window.switchZone === 'function') {
+    window.switchZone('pyq-zone');
+    return;
+  }
+  if (typeof window.switchToolTab === 'function') {
+    window.switchToolTab('pyq-zone');
+    return;
+  }
+  const pyqNavBtn = document.querySelector('[data-zone="pyq-zone"], [onclick*="pyq-zone"]');
+  if (pyqNavBtn) pyqNavBtn.click();
+}
+
 function openSharedPyqFromUrl() {
   try {
     const params = new URLSearchParams(window.location.search);
     const sharedFile = params.get('pyq');
     if (!sharedFile) return;
 
+    const normalizedShared = decodeURIComponent(sharedFile).trim();
+
     for (const authKey of Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)) {
       const auth = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
       for (const streamName of Object.keys(auth.subStreams)) {
-        const match = (auth.subStreams[streamName] || []).find(function (p) { return p.file === sharedFile; });
+        const match = (auth.subStreams[streamName] || []).find(function (p) {
+          return p.file === sharedFile || p.file === normalizedShared;
+        });
         if (match) {
-          if (typeof window.switchZone === 'function') {
-            window.switchZone('pyq-zone');
-          }
+          activatePyqZoneOnLoad();
           switchAuthority(authKey);
           switchStream(streamName);
           openPyqReader(match.exam || streamName, match.year, match.shift || match.session || 'Master Paper', auth.title, match.file);
@@ -1097,6 +1050,15 @@ function openSharedPyqFromUrl() {
     }
   } catch (_) {}
 }
+
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    const modal = document.getElementById('pyqReaderModal');
+    if (modal && !modal.classList.contains('hidden')) {
+      closePyqReader();
+    }
+  }
+});
 
 document.addEventListener('DOMContentLoaded', function () {
   switchAuthority('GATE');
