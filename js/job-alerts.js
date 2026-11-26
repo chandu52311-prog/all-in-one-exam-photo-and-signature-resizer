@@ -157,13 +157,20 @@ const JobAlertsRegistry = {
     const guideHtml = staticGuide ? staticGuide.outerHTML : "";
 
     root.innerHTML = `
+      <div class="flex items-center justify-between gap-3 pb-2 border-b border-white/10">
+        <button type="button" onclick="if(typeof goHomeDashboard==='function'){goHomeDashboard();}else{switchZone('resizer-zone');}" class="exam-btn px-4 py-2 text-xs text-amber-400 border-amber-500/40 flex items-center gap-1.5">
+          <span>← Back to Main Menu</span>
+        </button>
+        <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400">Workspace • Govt Job Alerts</span>
+      </div>
+
       <div class="glass-card rounded-2xl p-4 sm:p-5 border border-rose-500/30 space-y-4">
         <div class="flex items-center justify-between pb-3 border-b border-white/10">
           <div>
             <h2 class="font-black text-lg sm:text-xl text-white">Live Government Jobs</h2>
             <p class="text-xs text-slate-400">Official verified records • Asia/Kolkata deadline handling</p>
           </div>
-          <button type="button" onclick="switchZone('resizer-zone')" class="text-xs text-slate-400 hover:text-white">← Resizer</button>
+          <button type="button" onclick="window.scrollTo({top: 0, behavior: 'smooth'})" class="text-xs text-amber-400 hover:underline">↑ Top of Alerts</button>
         </div>
 
         <div id="organizationCategoryTabs" class="grid grid-cols-2 md:grid-cols-4 gap-2">
