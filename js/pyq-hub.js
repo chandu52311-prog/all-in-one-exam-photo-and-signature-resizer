@@ -1,6 +1,6 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Full-Screen Reader (Zero Gap) • View-Only + Share + Back • Safe Event Binding
+// Distinct Paper Titles • Full-Screen Reader (Zero Gap) • View-Only + Share + Back
 // Module: js/pyq-hub.js
 // ====================================================================
 
@@ -276,6 +276,38 @@ function encodeStorageRelativePath(filePath) {
     .join('/');
 }
 
+function buildDistinctPaperHeading(examTitle, shiftText, filePath) {
+  const cleanExam = String(examTitle || '').trim();
+  const cleanShift = String(shiftText || '').trim();
+  const fileBase = String(filePath || '').split('/').pop().replace(/\.pdf$/i, '');
+
+  if (cleanShift && !cleanExam.toLowerCase().includes(cleanShift.toLowerCase())) {
+    return `${cleanExam} • ${cleanShift}`;
+  }
+  if (fileBase) {
+    return `${cleanExam} • ${fileBase}`;
+  }
+  return cleanExam;
+}
+
+function resolvePdfCandidates(filePath) {
+  const raw = String(filePath || '').trim();
+  if (!raw) return [];
+  if (raw.startsWith('http')) return [raw];
+
+  const candidates = [raw];
+  if (!raw.endsWith('_EXAMRESIZER_CLEAN.pdf')) {
+    candidates.push(raw.replace(/\.pdf$/i, '_EXAMRESIZER_CLEAN.pdf'));
+  }
+  if (!raw.endsWith('_Standardized_CLEAN.pdf')) {
+    candidates.push(raw.replace(/\.pdf$/i, '_Standardized_CLEAN.pdf'));
+  }
+  candidates.push(raw.replace(/_S(\d+)\.pdf$/i, '_Set$1_EXAMRESIZER_CLEAN.pdf'));
+
+  const unique = [...new Set(candidates)];
+  return unique.map(rel => `${SUPABASE_STORAGE_BASE}/pyq/${encodeStorageRelativePath(rel)}`);
+}
+
 function getCatalogStats() {
   let totalCataloged = 0;
   let totalAvailable = 0;
@@ -488,7 +520,7 @@ function sanitizeId(str) {
 }
 
 // ----------------------------------------------------
-// CARD GENERATOR (VIEW ONLY — ZERO INLINE QUOTE BUGS)
+// CARD GENERATOR (DISTINCT HEADINGS + VIEW ONLY)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
@@ -510,6 +542,7 @@ function renderPaperCards() {
     const hasOriginal = p.available === true;
     const examTitle = p.exam || currentStreamKey;
     const shiftText = p.shift || p.session || 'Master Paper';
+    const distinctHeading = buildDistinctPaperHeading(examTitle, shiftText, p.file);
 
     return `
       <div class="p-4 rounded-xl glass-card border ${hasOriginal ? 'border-white/10 hover:border-amber-500/40' : 'border-white/5 opacity-70'} transition flex flex-col md:flex-row md:items-center justify-between gap-3">
@@ -523,8 +556,8 @@ function renderPaperCards() {
               ${hasOriginal ? 'Verified Master Key' : 'File Updating Shortly'}
             </span>
           </div>
-          <h4 class="font-bold text-white text-sm md:text-base">${escHtml(examTitle)}</h4>
-          <p class="text-[11px] text-slate-400">Exam: ${escHtml(examTitle)} • Year: ${escHtml(p.year)} • Shift: ${escHtml(shiftText)}</p>
+          <h4 class="font-bold text-white text-sm md:text-base">${escHtml(distinctHeading)}</h4>
+          <p class="text-[11px] text-slate-400">Exam: ${escHtml(examTitle)} • Year: ${escHtml(p.year)} • Shift/Set: ${escHtml(shiftText)}</p>
         </div>
         
         ${hasOriginal ? `
@@ -607,19 +640,19 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
     innerCard.className = 'w-full h-full max-w-none flex flex-col bg-[#090d16] overflow-hidden';
   }
 
+  const distinctTitle = buildDistinctPaperHeading(examName, shiftName, filePath);
   const titleEl = document.getElementById('readerPaperTitle');
   const tagEl = document.getElementById('readerPaperTag');
   const subjEl = document.getElementById('readerMainSubject');
   const sessEl = document.getElementById('readerSessionInfo');
 
-  if (titleEl) titleEl.innerText = `${examName} (${year} • ${shiftName})`;
+  if (titleEl) titleEl.innerText = `${distinctTitle} (${year})`;
   if (tagEl) tagEl.innerText = `${year} • ${String(shiftName).toUpperCase()}`;
-  if (subjEl) subjEl.innerText = `${examName} — ${year} (${shiftName})`;
+  if (subjEl) subjEl.innerText = `${distinctTitle} — ${year}`;
   if (sessEl) sessEl.innerText = `${bodyTitle} • Read-Only Official Question Paper View`;
 
-  const targetUrl = String(filePath).startsWith('http')
-    ? filePath
-    : `${SUPABASE_STORAGE_BASE}/pyq/${encodeStorageRelativePath(filePath)}`;
+  const candidates = resolvePdfCandidates(filePath);
+  const primaryUrl = candidates[0] || '';
 
   const shareBtn = document.getElementById('readerTopDownloadBtn');
   if (shareBtn) {
@@ -642,13 +675,17 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
 
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
+    const altLinksHtml = candidates.slice(1).map((altUrl, i) =>
+      `<a href="${altUrl}#toolbar=0&navpanes=0" target="pyqFrame" class="text-xs text-amber-400 underline mr-3">Alternate Path ${i + 2}</a>`
+    ).join('');
+
     qBody.innerHTML = `
-      <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col items-center justify-center min-h-[78vh] w-full">
-        <iframe src="${targetUrl}#toolbar=0&navpanes=0" class="w-full h-[78vh] border-none rounded-xl" title="${escHtml(examName)} (${escHtml(year)}) Question Paper">
-          <p class="p-6 text-center text-slate-400 text-sm">
-            Browser PDF preview unavailable.
-          </p>
-        </iframe>
+      <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col w-full">
+        <div class="px-4 py-2 bg-white/[0.03] border-b border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-400">
+          <span>Read-Only Archive Preview • ${escHtml(String(filePath).split('/').pop())}</span>
+          <div>${altLinksHtml}</div>
+        </div>
+        <iframe name="pyqFrame" src="${primaryUrl}#toolbar=0&navpanes=0" class="w-full h-[76vh] border-none" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>
       </div>
     `;
   }
