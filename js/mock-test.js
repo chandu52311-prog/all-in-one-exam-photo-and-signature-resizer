@@ -6,7 +6,7 @@
   'use strict';
 
   const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh8g_tQbN_";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh0g_tQbM_zE9";
   const BUNDLE_JSON_URL = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/supabase_mocks_ready.json";
 
   const GOLD_ACTIVE_BTN = "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-amber-500/25 text-amber-300 shadow-md cursor-pointer";
@@ -639,6 +639,119 @@
     if (cbtTimerSeconds <= 0) submitCBT(true);
   }
 
+  function buildResultAnalysisMarkup(activeTitle, stageNum, netScore, maxMarks, pct, correctCount, wrongCount, pendingKeyCount, nextStageNum, maxStages) {
+    const itemsHtml = CBT_ACTIVE_QUESTIONS.map((q, idx) => {
+      const picked = cbtAnswers[idx];
+      const hasKey = q.answer_verified && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length;
+      const isRight = hasKey && picked === q.correct;
+      const userStr = picked !== undefined ? `(${String.fromCharCode(65 + picked)}) ${escapeHTML(q.options[picked])}` : "Not Attempted";
+      const ansStr = hasKey ? `(${String.fromCharCode(65 + q.correct)}) ${escapeHTML(q.options[q.correct])}` : "Pending Authentic Key Verification";
+      return `
+        <div style="background:#0d1424;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-bottom:10px;font-size:13px;">
+          <div style="font-weight:800;color:#fbbf24;margin-bottom:4px;">EXAMRESIZER.ME • Q${idx + 1} (${escapeHTML(q.section)})</div>
+          <div style="color:#fff;font-weight:600;margin-bottom:6px;">${escapeHTML(q.en)}</div>
+          <div style="color:${isRight ? '#34d399' : '#fb7185'};font-weight:700;margin-bottom:3px;">Your Answer: ${userStr}</div>
+          <div style="color:${hasKey ? '#34d399' : '#fbbf24'};font-weight:700;margin-bottom:4px;">Answer Key: ${ansStr}</div>
+          <div style="color:#cbd5e1;"><strong>Analysis:</strong> ${escapeHTML(q.explanation)}</div>
+        </div>
+      `;
+    }).join('');
+
+    const canGoNext = nextStageNum <= maxStages;
+
+    return `
+      <div style="max-width:1160px;margin:0 auto;padding:20px;">
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:22px;margin-bottom:18px;">
+          <h2 style="margin:0 0 14px 0;font-size:20px;font-weight:900;color:#fff;">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Result & Analysis</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;text-align:center;">
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Net Score</div>
+              <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-top:4px;">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Accuracy / %</div>
+              <div style="font-size:18px;font-weight:900;color:#34d399;margin-top:4px;">${pct.toFixed(1)}%</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Correct</div>
+              <div style="font-size:18px;font-weight:900;color:#34d399;margin-top:4px;">${correctCount}</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+              <div style="font-size:12px;color:#94a3b8;">Wrong / Key Pending</div>
+              <div style="font-size:18px;font-weight:900;color:#fb7185;margin-top:4px;">${wrongCount} / ${pendingKeyCount}</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom:22px;">${itemsHtml}</div>
+
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+          <div style="display:flex;flex-wrap:wrap;gap:10px;">
+            ${canGoNext
+              ? `<button type="button" id="cbtNextMockBtn" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#090d16;border:none;border-radius:10px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;">Next Mock Test (#${nextStageNum}) ➔</button>`
+              : `<span style="color:#fbbf24;font-weight:800;font-size:13px;padding:10px 4px;">All Available Mocks Completed</span>`}
+            <button type="button" id="cbtRetrySameBtn" style="background:#1e293b;color:#fde68a;border:1px solid rgba(251,191,36,0.45);border-radius:10px;padding:11px 18px;font-weight:800;font-size:13px;cursor:pointer;">Retry Same Exam (Mock #${stageNum}) 🔁</button>
+          </div>
+          <button type="button" id="cbtBackToHubBtn" style="background:rgba(255,255,255,0.06);color:#f8fafc;border:1px solid rgba(255,255,255,0.18);border-radius:10px;padding:11px 16px;font-weight:800;font-size:13px;cursor:pointer;">Back to Mock Hub</button>
+        </div>
+      </div>
+    `;
+  }
+
+  function renderResultInExternalWindow(markup, nextStageNum, sameStageNum) {
+    if (!cbtExternalWindow || cbtExternalWindow.closed) return false;
+    try {
+      const doc = cbtExternalWindow.document;
+      doc.body.innerHTML = markup;
+      doc.title = `Result & Analysis • Mock #${sameStageNum}`;
+
+      const nextBtn = doc.getElementById('cbtNextMockBtn');
+      if (nextBtn) {
+        nextBtn.onclick = () => {
+          if (window.opener && !window.opener.closed && typeof window.opener.__launchMockStageFromResult === 'function') {
+            window.opener.__launchMockStageFromResult(nextStageNum);
+          }
+        };
+      }
+
+      const retryBtn = doc.getElementById('cbtRetrySameBtn');
+      if (retryBtn) {
+        retryBtn.onclick = () => {
+          if (window.opener && !window.opener.closed && typeof window.opener.__launchMockStageFromResult === 'function') {
+            window.opener.__launchMockStageFromResult(sameStageNum);
+          }
+        };
+      }
+
+      const hubBtn = doc.getElementById('cbtBackToHubBtn');
+      if (hubBtn) {
+        hubBtn.onclick = () => {
+          if (window.opener && !window.opener.closed && typeof window.opener.returnToMockHub === 'function') {
+            window.opener.returnToMockHub();
+          }
+          try { cbtExternalWindow.close(); } catch (_) {}
+        };
+      }
+
+      cbtExternalWindow.scrollTo({ top: 0, behavior: 'smooth' });
+      cbtExternalWindow.focus();
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  window.__launchMockStageFromResult = function (targetStage) {
+    const cfg = CBT_SESSION_CONFIG || getActiveConfig();
+    const maxStages = cfg ? cfg.stages : 10;
+    const bounded = Math.max(1, Math.min(Number(targetStage) || 1, maxStages));
+    currentTestStage = bounded;
+    cbtSubmitted = false;
+    const gate = document.getElementById('mock-gatekeeper-screen');
+    if (gate) gate.classList.remove('hidden');
+    startCbtSession();
+  };
+
   function renderExternalCbtWindow(examTitle, candidateName, durMins) {
     try {
       const win = window.open('', 'ExamResizerLiveCBT', 'popup=no,width=1366,height=820,left=0,top=0,scrollbars=yes,resizable=yes');
@@ -955,7 +1068,7 @@
     document.getElementById('extSubmitBtn').onclick = () => {
       syncParentState();
       if (window.opener && !window.opener.closed && typeof window.opener.submitCBT === 'function') {
-        window.opener.submitCBT(false);
+        window.opener.submitCBT(true);
       }
     };
 
@@ -1174,16 +1287,6 @@
     cbtSubmitted = true;
     clearInterval(cbtTimerInterval);
     setExamFullscreenMode(false);
-    if (cbtExternalWindow && !cbtExternalWindow.closed) {
-      try { cbtExternalWindow.close(); } catch (_) {}
-    }
-    cbtExternalWindow = null;
-
-    const liveScreen = document.getElementById('mock-live-screen');
-    const resScreen = document.getElementById('mock-result-screen');
-    if (liveScreen) liveScreen.classList.add('hidden');
-    if (!resScreen) return;
-    resScreen.classList.remove('hidden');
 
     const cfg = CBT_SESSION_CONFIG || getActiveConfig();
     const stageNum = CBT_SESSION_STAGE || currentTestStage;
@@ -1206,36 +1309,34 @@
     const passed = maxMarks > 0 && pct >= 35.0;
     if (passed && stageNum < cfg.stages) saveUserProgress(activeKey, stageNum + 1, cfg.stages);
 
-    resScreen.innerHTML = `
-      <div class="glass-card p-6 rounded-2xl space-y-4">
-        <h3 class="text-xl font-black text-white">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Analysis</h3>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Net Score</div><div class="text-lg font-black text-amber-400">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div></div>
-          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Accuracy / %</div><div class="text-lg font-black text-emerald-400">${pct.toFixed(1)}%</div></div>
-          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Correct</div><div class="text-lg font-black text-emerald-400">${correctCount}</div></div>
-          <div class="p-3 bg-white/5 rounded-xl border border-amber-400/20"><div class="text-xs text-slate-300">Wrong / Key Pending</div><div class="text-lg font-black text-rose-400">${wrongCount} / ${pendingKeyCount}</div></div>
+    const nextStageNum = Math.min(stageNum + 1, cfg.stages);
+    const analysisHtml = buildResultAnalysisMarkup(
+      activeTitle,
+      stageNum,
+      netScore,
+      maxMarks,
+      pct,
+      correctCount,
+      wrongCount,
+      pendingKeyCount,
+      nextStageNum,
+      cfg.stages
+    );
+
+    const renderedInNewWin = renderResultInExternalWindow(analysisHtml, nextStageNum, stageNum);
+
+    const liveScreen = document.getElementById('mock-live-screen');
+    const resScreen = document.getElementById('mock-result-screen');
+    if (liveScreen) liveScreen.classList.add('hidden');
+    if (resScreen && !renderedInNewWin) {
+      resScreen.classList.remove('hidden');
+      resScreen.innerHTML = `
+        ${analysisHtml}
+        <div class="pt-2">
+          <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer">Back to Mocks</button>
         </div>
-        <button type="button" onclick="returnToMockHub()" class="px-5 py-2.5 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer">Back to Mocks</button>
-      </div>
-      <div class="space-y-3 pt-3">
-        ${CBT_ACTIVE_QUESTIONS.map((q, idx) => {
-          const picked = cbtAnswers[idx];
-          const hasKey = q.answer_verified && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length;
-          const isRight = hasKey && picked === q.correct;
-          const userStr = picked !== undefined ? `(${String.fromCharCode(65 + picked)}) ${escapeHTML(q.options[picked])}` : "Not Attempted";
-          const ansStr = hasKey ? `(${String.fromCharCode(65 + q.correct)}) ${escapeHTML(q.options[q.correct])}` : "Pending Authentic Key Verification";
-          return `
-            <div class="p-4 rounded-xl glass-card space-y-1.5 text-xs">
-              <div class="font-bold text-amber-400">EXAMRESIZER.ME • Q${idx + 1} (${escapeHTML(q.section)})</div>
-              <p class="text-white font-medium">${escapeHTML(q.en)}</p>
-              <p class="${isRight ? 'text-emerald-400 font-bold' : 'text-rose-400'}">Your Answer: ${userStr}</p>
-              <p class="${hasKey ? 'text-emerald-400 font-bold' : 'text-amber-300'}">Answer Key: ${ansStr}</p>
-              <p class="text-slate-200"><strong>Analysis:</strong> ${escapeHTML(q.explanation)}</p>
-            </div>
-          `;
-        }).join('')}
-      </div>
-    `;
+      `;
+    }
   }
   window.submitCBT = submitCBT;
 
