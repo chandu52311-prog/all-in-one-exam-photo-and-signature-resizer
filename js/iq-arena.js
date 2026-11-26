@@ -1,65 +1,146 @@
 /**
- * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 3.0 (Blazing Fast & Zero-Hang)
- * Architecture: Deterministic Shuffled Pools (Zero Infinite Loops), Instant Event Execution
+ * ExamResizer Pro - Speed Aptitude & IQ Arena Engine 4.0
+ * Architecture: Full-Page Single Game Workspace, Unlimited Levels (20 Qs/Level),
+ * Progressive Timer (300s -> 120s Floor), Zero-Repeat Pool, Coins & Continue/New State
  */
 
+const QUESTIONS_PER_LEVEL = 20;
+const PASS_REQUIRED_COUNT = 10; // At least 10 out of 20 required to clear level
+const STORAGE_KEY_PREFIX = 'er_iq_arena_v4_';
+
 const LEVEL_RULES = [
-  { level: 1, name: "Cadet Warmup", questions: 10, timeLimit: 60, passScore: 8 },
-  { level: 2, name: "Speed Aspirant", questions: 10, timeLimit: 50, passScore: 8 },
-  { level: 3, name: "Officer Sprint", questions: 10, timeLimit: 40, passScore: 9 },
-  { level: 4, name: "Commander Drill", questions: 10, timeLimit: 35, passScore: 9 },
-  { level: 5, name: "God Mode (Boss)", questions: 10, timeLimit: 25, passScore: 10 }
+  { level: 1, name: "Cadet Warmup", questions: 20, timeLimit: 300, passScore: 10 },
+  { level: 2, name: "Speed Aspirant", questions: 20, timeLimit: 290, passScore: 10 },
+  { level: 3, name: "Officer Sprint", questions: 20, timeLimit: 280, passScore: 10 },
+  { level: 4, name: "Commander Drill", questions: 20, timeLimit: 270, passScore: 10 },
+  { level: 5, name: "Apex Challenge", questions: 20, timeLimit: 260, passScore: 10 }
 ];
 
 const MASTER_ENGLISH_BANK = [
-  { q: 'Synonym of "CANDID"', o: ['Secretive', 'Frank', 'Biased', 'False'], a: 1 },
-  { q: 'Antonym of "TRANSIENT"', o: ['Fleeting', 'Brief', 'Permanent', 'Short'], a: 2 },
-  { q: 'Correct Spelling:', o: ['Accomodate', 'Accommodate', 'Acommodate', 'Accomadate'], a: 1 },
-  { q: 'Synonym of "DILIGENT"', o: ['Lazy', 'Careless', 'Hardworking', 'Slow'], a: 2 },
-  { q: 'Antonym of "OBSOLETE"', o: ['Contemporary', 'Antique', 'Old', 'Historic'], a: 0 },
-  { q: 'Correct Spelling:', o: ['Maintenance', 'Maintainance', 'Maintenence', 'Mantenance'], a: 0 },
-  { q: 'Synonym of "PRAGMATIC"', o: ['Ideal', 'Practical', 'Imaginary', 'Wild'], a: 1 },
-  { q: 'Antonym of "FRUGAL"', o: ['Thrifty', 'Extravagant', 'Cheap', 'Saving'], a: 1 },
-  { q: 'Correct Spelling:', o: ['Occurrence', 'Occurence', 'Ocurrence', 'Occurrance'], a: 0 },
-  { q: 'Synonym of "LUCID"', o: ['Cloudy', 'Clear', 'Dark', 'Confusing'], a: 1 },
-  { q: 'Synonym of "ABUNDANT"', o: ['Scarce', 'Plentiful', 'Meager', 'Rare'], a: 1 },
-  { q: 'Antonym of "HOSTILE"', o: ['Friendly', 'Aggressive', 'Cold', 'Bitter'], a: 0 },
-  { q: 'Correct Spelling:', o: ['Privilege', 'Privelege', 'Priviledge', 'Privledge'], a: 0 },
-  { q: 'Synonym of "METICULOUS"', o: ['Careless', 'Detailed', 'Rough', 'Quick'], a: 1 },
-  { q: 'Antonym of "AMBIGUOUS"', o: ['Obscure', 'Vague', 'Definite', 'Hidden'], a: 2 },
-  { q: 'Correct Spelling:', o: ['Questionnaire', 'Questionaire', 'Questionair', 'Questionnare'], a: 0 },
-  { q: 'Synonym of "ZEALOUS"', o: ['Apathetic', 'Passionate', 'Lazy', 'Dull'], a: 1 },
-  { q: 'Antonym of "OPTIMISTIC"', o: ['Hopeful', 'Confident', 'Pessimistic', 'Cheerful'], a: 2 },
-  { q: 'Correct Spelling:', o: ['Definitely', 'Definately', 'Definitly', 'Definetly'], a: 0 },
-  { q: 'Synonym of "BENEVOLENT"', o: ['Kind', 'Cruel', 'Greedy', 'Harsh'], a: 0 },
-  { q: 'Antonym of "AFFLUENT"', o: ['Wealthy', 'Poor', 'Rich', 'Prosperous'], a: 1 },
-  { q: 'Correct Spelling:', o: ['Hierarchy', 'Heirarchy', 'Hierarcy', 'Heirarcy'], a: 0 },
-  { q: 'Synonym of "TENACIOUS"', o: ['Persistent', 'Weak', 'Yielding', 'Soft'], a: 0 },
-  { q: 'Antonym of "RIGID"', o: ['Hard', 'Flexible', 'Firm', 'Stiff'], a: 1 },
-  { q: 'Correct Spelling:', o: ['Separate', 'Seperate', 'Seprate', 'Sepparate'], a: 0 },
-  { q: 'Synonym of "VERBOSE"', o: ['Wordy', 'Brief', 'Short', 'Silent'], a: 0 },
-  { q: 'Antonym of "SCARCITY"', o: ['Deficit', 'Plenitude', 'Poverty', 'Lack'], a: 1 },
-  { q: 'Correct Spelling:', o: ['Bureaucracy', 'Burocracy', 'Beurocracy', 'Bureaucrasy'], a: 0 },
-  { q: 'Synonym of "ADVERSITY"', o: ['Hardship', 'Prosperity', 'Joy', 'Luck'], a: 0 },
-  { q: 'Antonym of "PLACID"', o: ['Quiet', 'Agitated', 'Calm', 'Peaceful'], a: 1 }
+  { q: '[PYQ / SSC] Synonym of "PERSPICACIOUS":', o: ['Dull-witted', 'Astute & insightful', 'Hesitant', 'Verbose'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "EPHEMERAL":', o: ['Transient', 'Fleeting', 'Perpetual', 'Momentary'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Surveillance', 'Surveilance', 'Surveillence', 'Survaillance'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "OBSEQUIOUS":', o: ['Defiant', 'Servile & sycophantic', 'Candid', 'Indifferent'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "PRODIGAL":', o: ['Extravagant', 'Lavish', 'Parsimonious', 'Generous'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Conscientious', 'Consciencious', 'Conscientous', 'Consceintious'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "RECALCITRANT":', o: ['Compliant', 'Obstinately defiant', 'Docile', 'Submissive'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "PUSILLANIMOUS":', o: ['Timid', 'Cowardly', 'Magnanimous', 'Fearful'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Mellifluous', 'Melifluous', 'Mellifluus', 'Mellifluos'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "INTRANSIGENT":', o: ['Flexible', 'Uncompromising', 'Amiable', 'Pliant'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "IGNOMINIOUS":', o: ['Disgraceful', 'Shameful', 'Glorious', 'Inglorious'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Supersede', 'Supercede', 'Superseed', 'Supersceed'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "PEJORATIVE":', o: ['Complimentary', 'Derogatory', 'Laudatory', 'Benign'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "LOQUACIOUS":', o: ['Talkative', 'Garrulous', 'Taciturn', 'Voluble'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Camaraderie', 'Camaradarie', 'Camraderie', 'Camaradery'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "ESOTERIC":', o: ['Commonplace', 'Obscure & specialized', 'Overt', 'Public'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "PERFIDIOUS":', o: ['Treacherous', 'Disloyal', 'Steadfast & loyal', 'Deceitful'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Sesquipedalian', 'Sesquipidelian', 'Sesquipedallian', 'Sesquepedalian'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "SYCOPHANT":', o: ['Critic', 'Obsequious flatterer', 'Rival', 'Stoic'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "INVETERATE":', o: ['Habitual', 'Chronic', 'Occasional / novice', 'Entrenched'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Pharaoh', 'Pharoah', 'Pharao', 'Pharraoh'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "CONTUMACIOUS":', o: ['Obedient', 'Rebellious & stubborn', 'Meek', 'Biddable'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "PELLUCID":', o: ['Limped', 'Lucid', 'Turbid & opaque', 'Transparent'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Onomatopoeia', 'Onomatopeia', 'Onomatepoeia', 'Onomatopoesia'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "VERISIMILITUDE":', o: ['Fabrication', 'Appearance of truth', 'Absurdity', 'Fallacy'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "ACRIMONIOUS":', o: ['Bitter', 'Caustic', 'Cordial & conciliatory', 'Acerbic'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Bivouac', 'Bivouack', 'Bivouaq', 'Bivoauc'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "PROPITIOUS":', o: ['Ominous', 'Auspicious & favorable', 'Sinister', 'Dire'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "INIMICAL":', o: ['Adverse', 'Hostile', 'Conducive & friendly', 'Antagonistic'], a: 2 },
+  { q: '[PYQ / SSC] Choose the CORRECTLY spelt word:', o: ['Effervescent', 'Efervescent', 'Effervesent', 'Efforvescent'], a: 0 },
+  { q: '[PYQ / PSC] Synonym of "IMPECUNIOUS":', o: ['Affluent', 'Penniless / destitute', 'Opulent', 'Flush'], a: 1 },
+  { q: '[PYQ / Bank] Antonym of "NEFARIOUS":', o: ['Vile', 'Atrocious', 'Virtuous & honorable', 'Heinous'], a: 2 }
 ];
+
+// Curated tough exam/PYQ-style simplification & quantitative problems
+const TOUGH_PYQ_QUANT_BANK = [
+  { display: '√(1444) + ∛(17576) - 18 = ?', answer: '46' },       // 38 + 26 - 18 = 46
+  { display: '24 × 19 - 14² + 125 = ?', answer: '385' },       // 456 - 196 + 125 = 385
+  { display: '18³ ÷ 36 + 27 × 14 = ?', answer: '540' },       // 5832/36 = 162; 162 + 378 = 540
+  { display: '35% of 840 + 45% of 620 = ?', answer: '573' },   // 294 + 279 = 573
+  { display: '19² + 23² - 17² = ?', answer: '601' },          // 361 + 529 - 289 = 601
+  { display: '∛(32768) × 26 - 198 = ?', answer: '634' },      // 32 * 26 = 832; 832 - 198 = 634
+  { display: '42 × 18 - (15² - 85) = ?', answer: '616' },      // 756 - (225 - 85) = 756 - 140 = 616
+  { display: '√(2916) + 16³ ÷ 64 - 44 = ?', answer: '74' },   // 54 + (4096/64=64) - 44 = 74
+  { display: '28 × 25 - 17 × 18 + 94 = ?', answer: '488' },    // 700 - 306 + 94 = 488
+  { display: '75% of 1280 - 29² + 340 = ?', answer: '451' },   // 960 - 841 + 340 = 459 -> fix: 960 - 849 + 340 = 451 -> let's use exact: 75% of 1200 - 28² + 250 = 900 - 784 + 250 = 366
+  { display: '14³ - 19 × 16 × 7 + 820 = ?', answer: '1436' },  // 2744 - 2128 + 820 = 1436
+  { display: '√(4096) + ∛(19683) + 15² = ?', answer: '316' }, // 64 + 27 + 225 = 316
+  { display: '36 × 24 - 18 × 19 + 110 = ?', answer: '632' },    // 864 - 342 + 110 = 632
+  { display: '125% of 480 + 21² - 185 = ?', answer: '856' },   // 600 + 441 - 185 = 856
+  { display: '27 × 18 + ∛(13824) - 146 = ?', answer: '364' },  // 486 + 24 - 146 = 364
+  { display: '31² - 29² + 18 × 15 = ?', answer: '390' },       // (60*2) + 270 = 120 + 270 = 390
+  { display: '√(2304) × 15 - 26 × 14 = ?', answer: '356' },    // 48 * 15 = 720; 720 - 364 = 356
+  { display: '17³ - 24 × 19 × 9 + 120 = ?', answer: '2819' },  // 4913 - 4104 + 120 = 929 -> fix answer to '929'
+  { display: '64% of 750 + 25³ ÷ 125 - 115 = ?', answer: '490' },// 480 + (15625/125=125) - 115 = 490
+  { display: '29 × 17 + 16² - ∛(2197) = ?', answer: '736' },   // 493 + 256 - 13 = 736
+  { display: '√(3600) + 22 × 19 - 138 = ?', answer: '340' },   // 60 + 418 - 138 = 340
+  { display: '45 × 16 - ∛(15625) + 195 = ?', answer: '890' },  // 720 - 25 + 195 = 890
+  { display: '26² - 24² + 38 × 12 = ?', answer: '556' },       // 100 + 456 = 556
+  { display: '80% of 950 - √(1024) + 148 = ?', answer: '876' }  // 760 - 32 + 148 = 876
+];
+
+// Normalize exact numeric answers cleanly
+TOUGH_PYQ_QUANT_BANK[9] = { display: '75% of 1200 - 28² + 250 = ?', answer: '366' };
+TOUGH_PYQ_QUANT_BANK[17] = { display: '17³ - 24 × 19 × 9 + 120 = ?', answer: '929' };
 
 window.arenaSession = {
   gameId: 'tables',
   gameTitle: 'Tables Speed Drill (1-20)',
   currentLevelIdx: 0,
+  levelNumber: 1,
   levelQuestions: [],
   qIndex: 0,
-  timerSeconds: 60,
+  timerSeconds: 300,
   timerInterval: null,
   correct: 0,
   wrong: 0,
+  score: 0,
+  coinsEarnedInLevel: 0,
   streak: 0,
   bestStreak: 0,
-  isLocked: false
+  isLocked: false,
+  usedKeysByGame: {}
 };
 
-// High-speed array randomizer
+function getLevelRule(levelNum) {
+  const safeLevel = Math.max(1, parseInt(levelNum, 10) || 1);
+  // 300s on Level 1, decreases by 10s per level, floored at 120s (2 minutes)
+  const timeLimit = Math.max(120, 300 - (safeLevel - 1) * 10);
+  const preset = LEVEL_RULES[Math.min(safeLevel - 1, LEVEL_RULES.length - 1)];
+  return {
+    level: safeLevel,
+    name: preset ? preset.name : (timeLimit === 120 ? `Apex Blitz Lv.${safeLevel}` : `Rank Stage Lv.${safeLevel}`),
+    questions: QUESTIONS_PER_LEVEL,
+    timeLimit,
+    passScore: PASS_REQUIRED_COUNT
+  };
+}
+
+function loadGameProgress(gameId) {
+  try {
+    const raw = localStorage.getItem(`${STORAGE_KEY_PREFIX}${gameId}`);
+    if (!raw) {
+      return { highestCompletedLevel: 0, totalCoins: 0, totalScore: 0 };
+    }
+    const parsed = JSON.parse(raw);
+    return {
+      highestCompletedLevel: Math.max(0, parseInt(parsed.highestCompletedLevel, 10) || 0),
+      totalCoins: Math.max(0, parseInt(parsed.totalCoins, 10) || 0),
+      totalScore: Math.max(0, parseInt(parsed.totalScore, 10) || 0)
+    };
+  } catch (_) {
+    return { highestCompletedLevel: 0, totalCoins: 0, totalScore: 0 };
+  }
+}
+
+function saveGameProgress(gameId, progress) {
+  try {
+    localStorage.setItem(`${STORAGE_KEY_PREFIX}${gameId}`, JSON.stringify(progress));
+  } catch (_) {
+    // Ignore storage quota errors
+  }
+}
+
 function shuffleArray(arr) {
   const a = [...arr];
   for (let i = a.length - 1; i > 0; i--) {
@@ -69,124 +150,199 @@ function shuffleArray(arr) {
   return a;
 }
 
-// 100% Deterministic Generator (Zero While Loops, Zero Freezing)
-function getLevelQuestions(gameId, levelNum) {
-  const count = 10;
-  const items = [];
+function markUsedAndFilter(gameId, candidates, count) {
+  if (!window.arenaSession.usedKeysByGame[gameId]) {
+    window.arenaSession.usedKeysByGame[gameId] = new Set();
+  }
+  const usedSet = window.arenaSession.usedKeysByGame[gameId];
 
-  // 1. TABLES SPEED DRILL (1-20)
-  if (gameId === 'tables') {
-    const tableConfigs = [
-      { tMin: 2, tMax: 10, mMin: 2, mMax: 10 },
-      { tMin: 6, tMax: 13, mMin: 3, mMax: 12 },
-      { tMin: 11, tMax: 16, mMin: 4, mMax: 14 },
-      { tMin: 13, tMax: 19, mMin: 5, mMax: 16 },
-      { tMin: 15, tMax: 20, mMin: 6, mMax: 19 }
-    ];
-    const cfg = tableConfigs[Math.min(levelNum - 1, 4)];
-    for (let t = cfg.tMin; t <= cfg.tMax; t++) {
-      for (let m = cfg.mMin; m <= cfg.mMax; m++) {
-        items.push({ display: `${t} × ${m} = ?`, answer: String(t * m) });
-      }
-    }
+  // Filter out previously seen questions in this session so questions never repeat
+  let freshPool = candidates.filter((item) => {
+    const key = item.display || item.q;
+    return !usedSet.has(key);
+  });
+
+  // If pool gets exhausted at very high levels, reset only when needed
+  if (freshPool.length < count) {
+    usedSet.clear();
+    freshPool = [...candidates];
   }
 
-  // 2. SQUARES CHALLENGE (1-50)
-  else if (gameId === 'squares') {
-    const squareConfigs = [
-      { min: 2, max: 20 },
-      { min: 11, max: 30 },
-      { min: 21, max: 40 },
-      { min: 31, max: 50 },
-      { min: 15, max: 50 }
-    ];
-    const cfg = squareConfigs[Math.min(levelNum - 1, 4)];
-    for (let n = cfg.min; n <= cfg.max; n++) {
-      items.push({ display: `${n}² = ?`, answer: String(n * n) });
-    }
-  }
+  const picked = shuffleArray(freshPool).slice(0, count);
+  picked.forEach((item) => {
+    usedSet.add(item.display || item.q);
+  });
 
-  // 3. ROOTS EXTRACTION DRILL (Square & Cube Roots)
-  else if (gameId === 'roots') {
-    if (levelNum <= 2) {
-      for (let n = 2; n <= 25; n++) {
-        items.push({ display: `√${n * n} = ?`, answer: String(n) });
-      }
-    } else if (levelNum === 3) {
-      for (let n = 20; n <= 50; n++) {
-        items.push({ display: `√${n * n} = ?`, answer: String(n) });
-      }
-    } else if (levelNum === 4) {
-      for (let n = 2; n <= 20; n++) {
-        items.push({ display: `∛${n * n * n} = ?`, answer: String(n) });
-      }
-    } else {
-      for (let n = 25; n <= 50; n++) {
-        items.push({ display: `√${n * n} = ?`, answer: String(n) });
-      }
-      for (let n = 11; n <= 30; n++) {
-        items.push({ display: `∛${n * n * n} = ?`, answer: String(n) });
-      }
-    }
-  }
-
-  // 4. CUBES POWER DRILL (1-30) - (FIXED BUG: Wide deterministic pool)
-  else if (gameId === 'cubes') {
-    const cubeConfigs = [
-      { min: 1, max: 15 },
-      { min: 6, max: 20 },
-      { min: 11, max: 25 },
-      { min: 15, max: 30 },
-      { min: 1, max: 30 }
-    ];
-    const cfg = cubeConfigs[Math.min(levelNum - 1, 4)];
-    for (let c = cfg.min; c <= cfg.max; c++) {
-      items.push({ display: `${c}³ = ?`, answer: String(c * c * c) });
-    }
-  }
-
-  // 5. FAST BODMAS & SIMPLIFICATION (Strict Positive Answers)
-  else if (gameId === 'bodmas') {
-    for (let i = 0; i < 30; i++) {
-      if (levelNum === 1) {
-        const a = Math.floor(Math.random() * 50) + 10;
-        const b = Math.floor(Math.random() * 50) + 10;
-        items.push({ display: `${a} + ${b} = ?`, answer: String(a + b) });
-      } else if (levelNum === 2) {
-        const n1 = Math.floor(Math.random() * 60) + 40;
-        const n2 = Math.floor(Math.random() * 35) + 10;
-        const big = Math.max(n1, n2);
-        const sm = Math.min(n1, n2);
-        items.push({ display: `${big} - ${sm} = ?`, answer: String(big - sm) });
-      } else if (levelNum === 3) {
-        const m1 = Math.floor(Math.random() * 12) + 4;
-        const m2 = Math.floor(Math.random() * 9) + 3;
-        items.push({ display: `${m1} × ${m2} = ?`, answer: String(m1 * m2) });
-      } else if (levelNum === 4) {
-        const base = (Math.floor(Math.random() * 7) + 2) * 100;
-        const p = [10, 20, 25, 50][i % 4];
-        items.push({ display: `${p}% of ${base} = ?`, answer: String((p * base) / 100) });
-      } else {
-        const a = Math.floor(Math.random() * 30) + 25;
-        const b = Math.floor(Math.random() * 20) + 15;
-        const c = Math.floor(Math.random() * 15) + 5;
-        items.push({ display: `${a} + ${b} - ${c} = ?`, answer: String(a + b - c) });
-      }
-    }
-  }
-
-  // 6. RAPID ENGLISH VOCAB
-  else if (gameId === 'english') {
-    const shuffled = shuffleArray(MASTER_ENGLISH_BANK);
-    const startIdx = ((levelNum - 1) * 6) % Math.max(1, MASTER_ENGLISH_BANK.length - 10);
-    return shuffled.slice(startIdx, startIdx + count);
-  }
-
-  // Instant Fisher-Yates Shuffle & Cut exactly 10 Qs
-  return shuffleArray(items).slice(0, count);
+  return picked;
 }
 
-window.returnToIQHub = function() {
+// Tough 20-question generator with zero repeats per session
+function getLevelQuestions(gameId, levelNum) {
+  const count = QUESTIONS_PER_LEVEL;
+  const lvl = Math.max(1, levelNum);
+  const candidates = [];
+
+  // 1. TOUGH TABLES DRILL (Higher multipliers, dual-product & tough mental products)
+  if (gameId === 'tables') {
+    const minTable = Math.min(19, 11 + Math.floor((lvl - 1) / 2));
+    const maxTable = Math.min(24, 20 + Math.floor((lvl - 1) / 3));
+    for (let t = minTable; t <= maxTable; t++) {
+      for (let m = 7; m <= 19; m++) {
+        if (lvl >= 3 && m % 2 === 1) {
+          const addVal = ((t + m + lvl) % 19) + 11;
+          candidates.push({
+            display: `${t} × ${m} + ${addVal} = ?`,
+            answer: String(t * m + addVal)
+          });
+        } else {
+          candidates.push({
+            display: `${t} × ${m} = ?`,
+            answer: String(t * m)
+          });
+        }
+      }
+    }
+    return markUsedAndFilter(gameId, candidates, count);
+  }
+
+  // 2. TOUGH SQUARES ARENA (2-digit/3-digit squares + tough square additions/subtractions)
+  if (gameId === 'squares') {
+    const startN = Math.min(55, 19 + (lvl - 1) * 4);
+    const endN = startN + 28;
+    for (let n = startN; n <= endN; n++) {
+      if (lvl >= 2) {
+        const delta = ((n * 3 + lvl) % 37) + 13;
+        candidates.push({
+          display: `${n}² - ${delta} = ?`,
+          answer: String(n * n - delta)
+        });
+      }
+      candidates.push({
+        display: `${n}² = ?`,
+        answer: String(n * n)
+      });
+    }
+    return markUsedAndFilter(gameId, candidates, count);
+  }
+
+  // 3. TOUGH ROOTS EXTRACTION (Square roots, Cube roots & combined root expressions)
+  if (gameId === 'roots') {
+    const baseStart = Math.min(60, 18 + (lvl - 1) * 4);
+    const baseEnd = baseStart + 26;
+    for (let n = baseStart; n <= baseEnd; n++) {
+      candidates.push({
+        display: `√${n * n} = ?`,
+        answer: String(n)
+      });
+    }
+    const cubeStart = Math.min(40, 12 + (lvl - 1) * 2);
+    const cubeEnd = cubeStart + 22;
+    for (let c = cubeStart; c <= cubeEnd; c++) {
+      candidates.push({
+        display: `∛${c * c * c} = ?`,
+        answer: String(c)
+      });
+      const sqRootN = baseStart + (c % 20);
+      candidates.push({
+        display: `√${sqRootN * sqRootN} + ∛${c * c * c} = ?`,
+        answer: String(sqRootN + c)
+      });
+    }
+    return markUsedAndFilter(gameId, candidates, count);
+  }
+
+  // 4. TOUGH CUBES POWER DRILL (High cubes + combined cube expressions)
+  if (gameId === 'cubes') {
+    const cStart = Math.min(35, 12 + (lvl - 1) * 3);
+    const cEnd = cStart + 22;
+    for (let c = cStart; c <= cEnd; c++) {
+      candidates.push({
+        display: `${c}³ = ?`,
+        answer: String(c * c * c)
+      });
+      if (lvl >= 2) {
+        const sub = ((c * 7 + lvl * 11) % 85) + 25;
+        candidates.push({
+          display: `${c}³ - ${sub} = ?`,
+          answer: String(c * c * c - sub)
+        });
+      }
+    }
+    return markUsedAndFilter(gameId, candidates, count);
+  }
+
+  // 5. TOUGH BODMAS & PYQ SIMPLIFICATION (No simple additions/subtractions; multi-step order of operations)
+  if (gameId === 'bodmas') {
+    TOUGH_PYQ_QUANT_BANK.forEach((item) => candidates.push(item));
+
+    for (let i = 0; i < 45; i++) {
+      const a = 14 + ((lvl * 5 + i * 3) % 28);
+      const b = 8 + ((lvl * 3 + i * 2) % 16);
+      const c = 4 + ((i + lvl) % 9);
+      const d = 15 + ((i * 7 + lvl * 9) % 65);
+      const ans = a * b + c * c - d;
+      candidates.push({
+        display: `${a} × ${b} + ${c}² - ${d} = ?`,
+        answer: String(ans)
+      });
+
+      const pct = [15, 20, 25, 30, 40, 75][(i + lvl) % 6];
+      const base = (8 + ((i * 4 + lvl * 2) % 22)) * 50;
+      const rootBase = 12 + ((i + lvl) % 25);
+      const pctAns = (pct * base) / 100 + rootBase;
+      candidates.push({
+        display: `${pct}% of ${base} + √${rootBase * rootBase} = ?`,
+        answer: String(pctAns)
+      });
+    }
+    return markUsedAndFilter(gameId, candidates, count);
+  }
+
+  // 6. TOUGH RAPID ENGLISH (PYQ-grade vocabulary & tricky spellings)
+  if (gameId === 'english') {
+    return markUsedAndFilter(gameId, MASTER_ENGLISH_BANK, count);
+  }
+
+  return markUsedAndFilter(gameId, TOUGH_PYQ_QUANT_BANK, count);
+}
+
+function updateArenaHudStats() {
+  const streakBadge = document.getElementById('arena-streak-badge');
+  const progText = document.getElementById('arena-progress-text');
+  const totalQ = window.arenaSession.levelQuestions.length || QUESTIONS_PER_LEVEL;
+
+  if (progText) {
+    progText.innerText = `Q ${Math.min(window.arenaSession.qIndex + 1, totalQ)} / ${totalQ}`;
+  }
+
+  if (streakBadge) {
+    streakBadge.innerHTML =
+      `🔥 Streak: ${window.arenaSession.streak} • ⭐ Score: ${window.arenaSession.score} • 🪙 Coins: ${window.arenaSession.coinsEarnedInLevel}`;
+  }
+}
+
+// Hide 6 game cards hub and show ONLY the single selected game workspace
+function showSingleGameFullPage() {
+  const hubScreen = document.getElementById('iq-hub-screen');
+  const scorecardScreen = document.getElementById('iq-scorecard-screen');
+  const arenaScreen = document.getElementById('iq-arena-screen');
+  const iqZone = document.getElementById('iq-zone');
+
+  if (iqZone) {
+    iqZone.classList.remove('hidden');
+    iqZone.classList.add('block');
+  }
+  if (hubScreen) hubScreen.classList.add('hidden');
+  if (scorecardScreen) scorecardScreen.classList.add('hidden');
+  if (arenaScreen) {
+    arenaScreen.classList.remove('hidden');
+    arenaScreen.classList.remove('max-w-xl', 'mx-auto');
+    arenaScreen.classList.add('w-full', 'max-w-none');
+  }
+}
+
+// Return from single game to the 6-cards IQ Hub (NOT directly to Main Menu)
+window.returnToIQHub = function () {
   stopTimer();
   const arenaScreen = document.getElementById('iq-arena-screen');
   const scorecardScreen = document.getElementById('iq-scorecard-screen');
@@ -205,38 +361,55 @@ window.returnToIQHub = function() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-window.startIQGame = function(gameId, title, levelIdx = 0) {
+window.startIQGame = function (gameId, title, levelIdx = 0, forceFreshStart = false) {
   stopTimer();
 
-  window.arenaSession.gameId = gameId || window.arenaSession.gameId || 'tables';
-  window.arenaSession.gameTitle = title || window.arenaSession.gameTitle || 'Speed Drill';
-  window.arenaSession.currentLevelIdx = Math.max(0, Math.min(levelIdx, LEVEL_RULES.length - 1));
+  const resolvedGameId = gameId || window.arenaSession.gameId || 'tables';
+  const resolvedTitle = title || window.arenaSession.gameTitle || 'Speed Drill';
+  const saved = loadGameProgress(resolvedGameId);
+
+  // If continuing without explicit levelIdx or fresh reset, resume right after highest completed level
+  let targetLevelNum = 1;
+  if (forceFreshStart) {
+    targetLevelNum = 1;
+    window.arenaSession.usedKeysByGame[resolvedGameId] = new Set();
+  } else if (typeof levelIdx === 'number' && levelIdx > 0) {
+    targetLevelNum = levelIdx;
+  } else if (saved.highestCompletedLevel > 0) {
+    targetLevelNum = saved.highestCompletedLevel + 1;
+  } else {
+    targetLevelNum = 1;
+  }
+
+  const currentRule = getLevelRule(targetLevelNum);
+
+  window.arenaSession.gameId = resolvedGameId;
+  window.arenaSession.gameTitle = resolvedTitle;
+  window.arenaSession.levelNumber = currentRule.level;
+  window.arenaSession.currentLevelIdx = currentRule.level - 1;
   window.arenaSession.correct = 0;
   window.arenaSession.wrong = 0;
+  window.arenaSession.score = 0;
+  window.arenaSession.coinsEarnedInLevel = 0;
   window.arenaSession.qIndex = 0;
   window.arenaSession.streak = 0;
+  window.arenaSession.bestStreak = 0;
   window.arenaSession.isLocked = false;
-
-  const currentRule = LEVEL_RULES[window.arenaSession.currentLevelIdx];
   window.arenaSession.timerSeconds = currentRule.timeLimit;
-  window.arenaSession.levelQuestions = getLevelQuestions(window.arenaSession.gameId, window.arenaSession.currentLevelIdx + 1);
+  window.arenaSession.levelQuestions = getLevelQuestions(resolvedGameId, currentRule.level);
 
-  const hubScreen = document.getElementById('iq-hub-screen');
-  const scorecardScreen = document.getElementById('iq-scorecard-screen');
-  const arenaScreen = document.getElementById('iq-arena-screen');
-
-  if (hubScreen) hubScreen.classList.add('hidden');
-  if (scorecardScreen) scorecardScreen.classList.add('hidden');
-  if (arenaScreen) arenaScreen.classList.remove('hidden');
+  showSingleGameFullPage();
 
   const titleEl = document.getElementById('arena-game-title');
   if (titleEl) {
-    titleEl.innerText = `${window.arenaSession.gameTitle} • Lv.${currentRule.level} (${currentRule.name})`;
+    titleEl.innerText =
+      `${resolvedTitle} • Lv.${currentRule.level} (${currentRule.name}) • Pass: ${currentRule.passScore}/${currentRule.questions} • Saved Coins: ${saved.totalCoins}`;
   }
 
   startTimer();
   renderQuestion();
   setupScrollWheel();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
 function startTimer() {
@@ -260,20 +433,20 @@ function stopTimer() {
 }
 
 function updateTimerUI() {
-  const currentRule = LEVEL_RULES[window.arenaSession.currentLevelIdx];
+  const currentRule = getLevelRule(window.arenaSession.levelNumber);
   const sec = Math.max(0, window.arenaSession.timerSeconds);
   const timerText = document.getElementById('arena-timer-text');
   const timerBar = document.getElementById('arena-timer-bar');
 
   if (timerText) timerText.innerText = `${String(sec).padStart(2, '0')}s`;
   if (timerBar) {
-    const pct = (sec / currentRule.timeLimit) * 100;
+    const pct = Math.min(100, Math.max(0, (sec / currentRule.timeLimit) * 100));
     timerBar.style.width = `${pct}%`;
 
-    if (sec <= 8) {
+    if (sec <= 15) {
       if (timerText) timerText.className = 'text-rose-500 font-mono font-black text-2xl animate-ping';
       timerBar.className = 'h-full bg-rose-500 transition-all duration-200';
-    } else if (sec <= 18) {
+    } else if (sec <= 45) {
       if (timerText) timerText.className = 'text-amber-400 font-mono font-black text-2xl';
       timerBar.className = 'h-full bg-amber-500 transition-all duration-200';
     } else {
@@ -284,17 +457,14 @@ function updateTimerUI() {
 }
 
 function renderQuestion() {
-  if (window.arenaSession.qIndex >= window.arenaSession.levelQuestions.length) {
+  const totalQ = window.arenaSession.levelQuestions.length;
+  if (window.arenaSession.qIndex >= totalQ) {
     finishLevel(true);
     return;
   }
 
   const q = window.arenaSession.levelQuestions[window.arenaSession.qIndex];
-  const progText = document.getElementById('arena-progress-text');
-  const streakBadge = document.getElementById('arena-streak-badge');
-
-  if (progText) progText.innerText = `Q ${window.arenaSession.qIndex + 1} / 10`;
-  if (streakBadge) streakBadge.innerText = `🔥 Streak: ${window.arenaSession.streak}`;
+  updateArenaHudStats();
 
   const mathBox = document.getElementById('arena-math-interface');
   const engBox = document.getElementById('arena-english-interface');
@@ -312,7 +482,9 @@ function renderQuestion() {
       optBox.innerHTML = '';
       q.o.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'w-full py-3 px-4 rounded-xl bg-black/60 border border-white/10 text-white font-bold text-sm hover:border-amber-400 active:scale-95 transition text-left flex justify-between';
+        btn.type = 'button';
+        btn.className =
+          'w-full py-3 px-4 rounded-xl bg-black/60 border border-white/10 text-white font-bold text-sm hover:border-amber-400 active:scale-95 transition text-left flex justify-between';
         btn.innerHTML = `<span>${opt}</span><span class="text-xs text-slate-500">Tap</span>`;
         btn.onclick = () => submitAnswer(idx === q.a);
         optBox.appendChild(btn);
@@ -356,8 +528,11 @@ function setupScrollWheel() {
     let currentVal = parseInt(input.value || '0', 10);
     if (isNaN(currentVal)) currentVal = 0;
 
-    const step = e.shiftKey ? 10 : (e.deltaY < 0 ? 1 : -1);
-    currentVal = Math.max(0, currentVal + (e.deltaY < 0 ? Math.abs(step) : -Math.abs(step)));
+    const step = e.shiftKey ? 10 : 1;
+    currentVal =
+      e.deltaY < 0
+        ? currentVal + step
+        : Math.max(0, currentVal - step);
     input.value = currentVal;
 
     const currentQ = window.arenaSession.levelQuestions[window.arenaSession.qIndex];
@@ -373,6 +548,7 @@ function submitAnswer(isCorrect) {
 
   const fb = document.getElementById('arena-feedback-indicator');
   const input = document.getElementById('arena-math-input');
+  const currentQ = window.arenaSession.levelQuestions[window.arenaSession.qIndex];
 
   if (isCorrect) {
     window.arenaSession.correct++;
@@ -380,28 +556,45 @@ function submitAnswer(isCorrect) {
     if (window.arenaSession.streak > window.arenaSession.bestStreak) {
       window.arenaSession.bestStreak = window.arenaSession.streak;
     }
+
+    // Gold coins & score reward per correct answer + streak bonus every 5 hits
+    const streakBonusCoins = window.arenaSession.streak % 5 === 0 ? 15 : 0;
+    const gainedCoins = 10 + streakBonusCoins;
+    window.arenaSession.coinsEarnedInLevel += gainedCoins;
+    window.arenaSession.score += 10 + streakBonusCoins;
+
+    updateArenaHudStats();
+
     if (fb) {
-      fb.innerText = '🎯 Perfect! Fast Hit.';
+      fb.innerText =
+        streakBonusCoins > 0
+          ? `🎯 +${gainedCoins} Gold Coins (Streak Bonus!)`
+          : `🎯 +10 Gold Coins!`;
       fb.className = 'h-6 text-xs font-bold text-emerald-400 opacity-100 transition-opacity';
     }
     if (input) input.classList.add('border-emerald-500', 'bg-emerald-500/10');
   } else {
     window.arenaSession.wrong++;
     window.arenaSession.streak = 0;
+    updateArenaHudStats();
+
+    const expectedAns = currentQ ? (currentQ.answer || (currentQ.o ? currentQ.o[currentQ.a] : '')) : '';
     if (fb) {
-      fb.innerText = '❌ Missed! Time is ticking!';
+      fb.innerText = expectedAns ? `❌ Wrong! Ans: ${expectedAns}` : '❌ Wrong Answer!';
       fb.className = 'h-6 text-xs font-bold text-rose-400 opacity-100 transition-opacity';
     }
     if (input) input.classList.add('border-rose-500', 'bg-rose-500/10');
   }
 
   setTimeout(() => {
-    if (input) input.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-500/10', 'bg-rose-500/10');
+    if (input) {
+      input.classList.remove('border-emerald-500', 'border-rose-500', 'bg-emerald-500/10', 'bg-rose-500/10');
+    }
     if (fb) fb.className = 'h-6 text-xs font-bold opacity-0 transition-opacity';
     window.arenaSession.qIndex++;
     window.arenaSession.isLocked = false;
     renderQuestion();
-  }, isCorrect ? 200 : 500);
+  }, isCorrect ? 220 : 650);
 }
 
 function finishLevel(completedQuestions) {
@@ -412,15 +605,35 @@ function finishLevel(completedQuestions) {
   if (arenaScreen) arenaScreen.classList.add('hidden');
   if (scorecardScreen) scorecardScreen.classList.remove('hidden');
 
-  const rule = LEVEL_RULES[window.arenaSession.currentLevelIdx];
+  const rule = getLevelRule(window.arenaSession.levelNumber);
+  const totalQ = window.arenaSession.levelQuestions.length || QUESTIONS_PER_LEVEL;
   const isPassed = completedQuestions && window.arenaSession.correct >= rule.passScore;
-  const isFinalLevel = window.arenaSession.currentLevelIdx === LEVEL_RULES.length - 1;
+
+  const progress = loadGameProgress(window.arenaSession.gameId);
+  let levelClearBonus = 0;
+
+  if (isPassed) {
+    levelClearBonus = 50;
+    window.arenaSession.coinsEarnedInLevel += levelClearBonus;
+    window.arenaSession.score += levelClearBonus;
+
+    if (rule.level > progress.highestCompletedLevel) {
+      progress.highestCompletedLevel = rule.level;
+    }
+  }
+
+  progress.totalCoins += window.arenaSession.coinsEarnedInLevel;
+  progress.totalScore += window.arenaSession.score;
+  saveGameProgress(window.arenaSession.gameId, progress);
 
   const titleEl = document.getElementById('score-game-name');
-  if (titleEl) titleEl.innerText = `${window.arenaSession.gameTitle} • Level ${rule.level}`;
+  if (titleEl) {
+    titleEl.innerText =
+      `${window.arenaSession.gameTitle} • Level ${rule.level} • Score: ${window.arenaSession.score} • Coins: +${window.arenaSession.coinsEarnedInLevel} (Wallet: ${progress.totalCoins})`;
+  }
 
   const attEl = document.getElementById('score-attempted');
-  if (attEl) attEl.innerText = `${window.arenaSession.correct + window.arenaSession.wrong} / 10`;
+  if (attEl) attEl.innerText = `${window.arenaSession.correct + window.arenaSession.wrong} / ${totalQ}`;
 
   const corrEl = document.getElementById('score-correct');
   if (corrEl) corrEl.innerText = window.arenaSession.correct;
@@ -428,17 +641,19 @@ function finishLevel(completedQuestions) {
   const wrgEl = document.getElementById('score-wrong');
   if (wrgEl) wrgEl.innerText = window.arenaSession.wrong;
 
-  const acc = (window.arenaSession.correct / 10) * 100;
+  const acc = (window.arenaSession.correct / totalQ) * 100;
   const accEl = document.getElementById('score-accuracy');
   if (accEl) accEl.innerText = `${acc.toFixed(0)}%`;
 
-  const timeUsed = rule.timeLimit - window.arenaSession.timerSeconds;
+  const timeUsed = Math.max(1, rule.timeLimit - window.arenaSession.timerSeconds);
   const totalAttempted = Math.max(1, window.arenaSession.correct + window.arenaSession.wrong);
   const spdEl = document.getElementById('score-speed');
   if (spdEl) spdEl.innerText = `${(timeUsed / totalAttempted).toFixed(1)}s / Q`;
 
   const strkEl = document.getElementById('score-streak');
-  if (strkEl) strkEl.innerText = `${window.arenaSession.bestStreak} Hit Streak`;
+  if (strkEl) {
+    strkEl.innerText = `${window.arenaSession.bestStreak} Streak • Cleared Lv.${progress.highestCompletedLevel}`;
+  }
 
   const badge = document.getElementById('score-rank-badge');
   const actionsContainer = document.getElementById('scorecard-dynamic-actions');
@@ -446,47 +661,39 @@ function finishLevel(completedQuestions) {
   if (!actionsContainer) return;
 
   if (isPassed) {
-    if (isFinalLevel) {
-      if (badge) {
-        badge.innerText = '👑 CANDY-CRUSH APEX MASTER: ALL 5 LEVELS CONQUERED!';
-        badge.className = 'inline-block px-4 py-1.5 rounded-full bg-amber-400 text-black font-black text-xs shadow-lg animate-bounce';
-      }
-      actionsContainer.innerHTML = `
-        <button onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, 4)" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-black text-xs transition">
-          Replay Boss Level 5 🔁
-        </button>
-        <button onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
-          ← All 6 Game Cards
-        </button>
-      `;
-    } else {
-      if (badge) {
-        badge.innerText = `🎉 LEVEL ${rule.level} CLEARED! UNLOCKED LEVEL ${rule.level + 1}`;
-        badge.className = 'inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black';
-      }
-      actionsContainer.innerHTML = `
-        <button onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, ${window.arenaSession.currentLevelIdx + 1})" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-black text-xs transition shadow-lg">
-          Advance to Level ${rule.level + 1} ➔
-        </button>
-        <button onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, ${window.arenaSession.currentLevelIdx})" class="py-3 px-4 rounded-xl bg-white/10 text-amber-300 font-bold text-xs transition">
-          Replay Level ${rule.level}
-        </button>
-        <button onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
-          Cards Hub
-        </button>
-      `;
-    }
-  } else {
+    const nextLevelNum = rule.level + 1;
     if (badge) {
-      badge.innerText = `💀 FAILED (Required: ${rule.passScore}/10 Correct). RETRY WITH RAGE!`;
-      badge.className = 'inline-block px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-black animate-pulse';
+      badge.innerText = `🎉 LEVEL ${rule.level} CLEARED (${window.arenaSession.correct}/${totalQ})! +${levelClearBonus} BONUS COINS • NEXT: LV.${nextLevelNum}`;
+      badge.className =
+        'inline-block px-4 py-1.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black';
     }
     actionsContainer.innerHTML = `
-      <button onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, ${window.arenaSession.currentLevelIdx})" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:brightness-110 text-white font-black text-xs transition shadow-lg">
+      <button type="button" onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, ${nextLevelNum}, false)" class="flex-1 py-3 px-4 rounded-xl luxury-action-btn text-black font-black text-xs transition shadow-lg">
+        Continue to Level ${nextLevelNum} ➔
+      </button>
+      <button type="button" onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, 1, true)" class="py-3 px-4 rounded-xl bg-white/10 text-amber-300 font-bold text-xs transition">
+        Start New (Lv.1)
+      </button>
+      <button type="button" onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
+        ← 6 Game Cards
+      </button>
+    `;
+  } else {
+    const resumeLevelNum = Math.max(1, progress.highestCompletedLevel + 1);
+    if (badge) {
+      badge.innerText = `💀 FAILED (${window.arenaSession.correct}/${totalQ}; Need ${rule.passScore}/${totalQ}). RETRY LEVEL ${rule.level}!`;
+      badge.className =
+        'inline-block px-4 py-1.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 text-xs font-black animate-pulse';
+    }
+    actionsContainer.innerHTML = `
+      <button type="button" onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, ${rule.level}, false)" class="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-rose-600 hover:brightness-110 text-white font-black text-xs transition shadow-lg">
         Retry Level ${rule.level} 🔁
       </button>
-      <button onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
-        ← All 6 Game Cards
+      <button type="button" onclick="window.startIQGame(window.arenaSession.gameId, window.arenaSession.gameTitle, 1, true)" class="py-3 px-4 rounded-xl bg-white/10 text-amber-300 font-bold text-xs transition">
+        Start New (Lv.1 • From Lv.${resumeLevelNum} saved)
+      </button>
+      <button type="button" onclick="window.returnToIQHub()" class="py-3 px-4 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white font-bold text-xs transition">
+        ← 6 Game Cards
       </button>
     `;
   }
