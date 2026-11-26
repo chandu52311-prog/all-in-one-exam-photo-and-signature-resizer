@@ -1,7 +1,7 @@
 /**
  * ExamResizer Pro - Master Application Controller & Navigation Orchestrator
  * Module: js/app.js
- * Architecture: Full-Page Workspace Routing, Navigation Stack, State Sync & PWA Lifecycle
+ * Architecture: Full-Page Workspace Routing, Nested Back Stack, State Sync & PWA Lifecycle
  */
 
 let deferredInstallPrompt = null;
@@ -24,7 +24,6 @@ const NAV_MAP = {
   'jobs-zone': 'nav-btn-jobs'
 };
 
-// Navigation stack stores views like 'dashboard' or 'zone:iq-zone'
 const navStack = ['dashboard'];
 let currentView = 'dashboard';
 let isApplyingHistory = false;
@@ -114,13 +113,18 @@ function pushViewState(viewToken) {
   try {
     window.history.pushState({ view: viewToken }, '', window.location.pathname + window.location.search);
   } catch (_) {
-    // Ignore history restrictions in restricted environments
+    // Ignore history restrictions
   }
 }
 
-// Global Zone Navigation Switcher (Opens selected tool as a full-page workspace)
+// Open selected tool as a separate full-page workspace
 window.switchZone = function (targetZoneId) {
   if (!ZONE_IDS.includes(targetZoneId)) return;
+
+  const pyqModal = document.getElementById('pyqReaderModal');
+  if (pyqModal && !pyqModal.classList.contains('hidden') && typeof window.closePyqReader === 'function') {
+    window.closePyqReader();
+  }
 
   const nextToken = `zone:${targetZoneId}`;
   renderZoneView(targetZoneId);
@@ -128,15 +132,19 @@ window.switchZone = function (targetZoneId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// Return cleanly to Main 6-Card Dashboard
+// Return directly to the 6-card Main Dashboard
 window.goHomeDashboard = function () {
+  const pyqModal = document.getElementById('pyqReaderModal');
+  if (pyqModal && !pyqModal.classList.contains('hidden') && typeof window.closePyqReader === 'function') {
+    window.closePyqReader();
+  }
+
   renderDashboardView();
   pushViewState('dashboard');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// Nested / One-Step Back Handler
-// If inside a sub-screen (PYQ modal, IQ arena/scorecard, Mock sub-screens), go 1 level back first
+// One-step / history-aware back handler
 window.navBack = function () {
   const pyqModal = document.getElementById('pyqReaderModal');
   if (pyqModal && !pyqModal.classList.contains('hidden') && typeof window.closePyqReader === 'function') {
@@ -257,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     window.history.replaceState({ view: 'dashboard' }, '', window.location.pathname + window.location.search);
   } catch (_) {
-    // Ignore history restrictions in restricted environments
+    // Ignore history restrictions
   }
 
   if (window.lucide) {
