@@ -1,6 +1,6 @@
 // ====================================================================
 // 🏛️ EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020–2026)
-// Verified Supabase Master Papers • Full-Page View + Share Link Mode
+// Full-Screen Reader (Zero Gap) • View-Only + Share + Back • Safe Event Binding
 // Module: js/pyq-hub.js
 // ====================================================================
 
@@ -225,30 +225,86 @@ const COMPREHENSIVE_AUTHORITY_CATALOG = {
         { exam: "UPSC Civil Services CSAT", year: "2023", shift: "Paper-II Series A", file: "UPSC/CSAT/2023/UPSC_CSAT_2023.pdf", available: true }
       ]
     }
+  },
+  BTECH: {
+    title: "Undergraduate Engineering (B.Tech JNTU Regulations)",
+    desc: "Autonomous & University Semester Final Examination Question Papers.",
+    folder: "pyq/BTECH",
+    subStreams: {
+      "B.Tech EEE": [
+        { exam: "B.Tech EEE (JNTU)", year: "2024", shift: "Power Systems & Machines", file: "BTECH/EEE/2024/BTECH_EEE_2024.pdf", available: false }
+      ],
+      "B.Tech CSE": [
+        { exam: "B.Tech CSE (JNTU)", year: "2024", shift: "Data Structures & DBMS", file: "BTECH/CSE/2024/BTECH_CSE_2024.pdf", available: false }
+      ],
+      "B.Tech ECE": [
+        { exam: "B.Tech ECE (JNTU)", year: "2024", shift: "Signals & Core Electronics", file: "BTECH/ECE/2024/BTECH_ECE_2024.pdf", available: false }
+      ],
+      "B.Tech CIVIL": [
+        { exam: "B.Tech CIVIL (JNTU)", year: "2024", shift: "Structural Analysis & Mechanics", file: "BTECH/CIVIL/2024/BTECH_CIVIL_2024.pdf", available: false }
+      ]
+    }
+  },
+  ENTRANCE: {
+    title: "National & State Entrance (JEE & EAMCET)",
+    desc: "NTA JEE Main and AP/TG EAPCET Entrance Papers with Official Final Keys.",
+    folder: "pyq/ENTRANCE",
+    subStreams: {
+      "JEE Main": [
+        { exam: "NTA JEE Main", year: "2024", shift: "Session-1 Morning Shift (PCM)", file: "ENTRANCE/JEE/2024/JEE_MAIN_2024.pdf", available: false }
+      ],
+      "AP & TS EAMCET / EAPCET": [
+        { exam: "AP & TS EAPCET / EAMCET", year: "2024", shift: "Engineering Stream Morning Shift", file: "ENTRANCE/EAMCET/2024/EAPCET_2024.pdf", available: false }
+      ]
+    }
   }
 };
 
-function getVerifiedPaperCounts() {
-  let totalVerified = 0;
-  let sectorVerified = 0;
+function escHtml(str) {
+  return String(str ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function encodeStorageRelativePath(filePath) {
+  return String(filePath || '')
+    .split('/')
+    .map(seg => encodeURIComponent(seg))
+    .join('/');
+}
+
+function getCatalogStats() {
+  let totalCataloged = 0;
+  let totalAvailable = 0;
+  let sectorCataloged = 0;
+  let sectorAvailable = 0;
 
   Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG).forEach(authKey => {
     const authObj = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
-    let authCount = 0;
+    let authTotal = 0;
+    let authAvail = 0;
     Object.values(authObj.subStreams || {}).forEach(list => {
       list.forEach(p => {
-        if (p && p.available === true && p.file) {
-          authCount++;
-          totalVerified++;
+        if (p && p.file) {
+          authTotal++;
+          totalCataloged++;
+          if (p.available === true) {
+            authAvail++;
+            totalAvailable++;
+          }
         }
       });
     });
     if (authKey === currentAuthorityKey) {
-      sectorVerified = authCount;
+      sectorCataloged = authTotal;
+      sectorAvailable = authAvail;
     }
   });
 
-  return { totalVerified, sectorVerified };
+  return { totalCataloged, totalAvailable, sectorCataloged, sectorAvailable };
 }
 
 function renderAvailableAuthorityTabs() {
@@ -256,26 +312,34 @@ function renderAvailableAuthorityTabs() {
   if (!nav) return;
 
   const keys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
-  nav.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2";
+  nav.className = "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2";
+  const labelMap = {
+    GATE: 'GATE',
+    SSC: 'SSC',
+    RRB: 'RRB',
+    STATE_PSC: 'APPSC / TSPSC',
+    BTECH: 'B.Tech (JNTU)',
+    UPSC: 'UPSC',
+    ENTRANCE: 'NEET / JEE',
+    BANKING: 'Banking',
+    PSU: 'PSU & Power',
+    GENERAL: 'More PYQs'
+  };
+
   nav.innerHTML = keys.map(k => {
-    const labelMap = {
-      GATE: 'GATE',
-      SSC: 'SSC',
-      RRB: 'RRB',
-      STATE_PSC: 'APPSC / TSPSC',
-      UPSC: 'UPSC'
-    };
     const active = k === currentAuthorityKey;
-    return `<button type="button" onclick="switchAuthority('${k}')" id="auth-btn-${k}" class="exam-btn ${active ? 'active' : ''} p-2.5 text-xs text-center">${labelMap[k] || k}</button>`;
+    return `<button type="button" data-auth-key="${escHtml(k)}" id="auth-btn-${escHtml(k)}" class="exam-btn ${active ? 'active' : ''} p-2.5 text-xs text-center">${escHtml(labelMap[k] || k)}</button>`;
   }).join('');
+
+  nav.onclick = (e) => {
+    const btn = e.target.closest('[data-auth-key]');
+    if (btn) switchAuthority(btn.getAttribute('data-auth-key'));
+  };
 }
 
-// ----------------------------------------------------
-// CONTROLLER: TIER-1 AUTHORITY SWITCHER (BANNER SYNC)
-// ----------------------------------------------------
 function switchAuthority(authKey) {
   if (!COMPREHENSIVE_AUTHORITY_CATALOG[authKey]) {
-    authKey = 'GATE';
+    authKey = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)[0] || 'GATE';
   }
   currentAuthorityKey = authKey;
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
@@ -285,12 +349,12 @@ function switchAuthority(authKey) {
   const titleEl = document.getElementById('activeAuthorityTitle');
   const descEl = document.getElementById('activeAuthorityDesc');
   const countEl = document.getElementById('activeAuthorityCount');
-  const counts = getVerifiedPaperCounts();
+  const stats = getCatalogStats();
 
   if (data && titleEl) titleEl.innerText = data.title;
   if (data && descEl) descEl.innerText = data.desc;
   if (countEl) {
-    countEl.innerText = `${counts.sectorVerified} Papers in Sector • ${counts.totalVerified} Total Verified (2020–2025)`;
+    countEl.innerText = `Sector: ${stats.sectorCataloged} Papers (${stats.sectorAvailable} Live) • Total: ${stats.totalCataloged} Papers (${stats.totalAvailable} Live)`;
   }
 
   renderSubButtons();
@@ -333,6 +397,20 @@ function getPyqSectorGuide(authKey) {
       strategy: 'Build elimination discipline, track confidence, and limit speculative attempts. In CSAT, practise reading comprehension and basic quantitative speed separately.',
       answer: 'Use the official key after a complete timed attempt. Review why correct options are valid and why alternatives are incorrect.',
       subjects: 'Notes should cover polity, economy, environment, geography, history, science, and current-affairs connections with sources and dates.'
+    },
+    BTECH: {
+      title: 'B.Tech paper guide: university pattern and subject revision',
+      pattern: 'Check semester regulations, branch, subject code, internal/external divisions, question type, and section instructions from the paper.',
+      strategy: 'Classify questions by unit and derive each formula. Solve unit-wise PYQs before full timed papers so missing prerequisites are identified early.',
+      answer: 'Compare only with prescribed textbooks, laboratory records, or faculty solution standards. University papers do not always publish a universal final key.',
+      subjects: 'Build compact formula and theorem notes with units, assumptions, derivation steps, and common numerical traps.'
+    },
+    ENTRANCE: {
+      title: 'JEE/entrance paper guide: attempt planning and topic review',
+      pattern: 'Review the subject balance, section rules, integer or multiple-choice format, optional attempt limits, and marking method applicable to that NTA or state entrance session.',
+      strategy: 'Use subject rotations, preserve short accuracy checks, and leave difficult calculation blocks for a planned second pass.',
+      answer: 'Score with the official answer key and challenge windows rather than informal solution channels. Preserve response evidence and the exact question version.',
+      subjects: 'Use concept maps for Physics, Chemistry, and Mathematics, with formula cards, reaction mechanisms, common approximations, and solved standard problem types.'
     }
   };
   return guides[authKey] || guides.GATE;
@@ -346,13 +424,10 @@ function renderPyqSectorGuide() {
   const overviewEl = document.getElementById('pyqSectorGuideOverview');
   if (titleEl) titleEl.textContent = guide.title;
   if (overviewEl) {
-    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${guide.pattern}`;
+    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${escHtml(guide.pattern)}`;
   }
 }
 
-// ----------------------------------------------------
-// CONTROLLER: TIER-2 SUB-BUTTONS RENDERER
-// ----------------------------------------------------
 function renderSubButtons() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
   const container = document.getElementById('streamSubButtonsContainer');
@@ -361,26 +436,29 @@ function renderSubButtons() {
   const streams = Object.keys(data.subStreams);
   currentStreamKey = streams[0] || '';
 
-  let html = '';
-  streams.forEach(st => {
+  container.innerHTML = streams.map(st => {
     const isDefault = st === currentStreamKey;
-    const count = (data.subStreams[st] || []).filter(p => p.available === true).length;
-    html += `
+    const count = (data.subStreams[st] || []).length;
+    return `
       <button 
         type="button"
+        data-stream-name="${escHtml(st)}"
         id="sub-btn-${sanitizeId(st)}"
-        onclick="switchStream('${st.replace(/'/g, "\\'")}')" 
         class="sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
           isDefault 
             ? 'bg-amber-500/20 text-amber-300 border-amber-500/40' 
             : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20'
         }">
-        ${st} <span class="opacity-75">(${count})</span>
+        ${escHtml(st)} <span class="opacity-75">(${count})</span>
       </button>
     `;
-  });
+  }).join('');
 
-  container.innerHTML = html;
+  container.onclick = (e) => {
+    const btn = e.target.closest('[data-stream-name]');
+    if (btn) switchStream(btn.getAttribute('data-stream-name'));
+  };
+
   renderPyqSectorGuide();
   renderPaperCards();
 }
@@ -406,58 +484,76 @@ function switchStream(streamName) {
 window.switchStream = switchStream;
 
 function sanitizeId(str) {
-  return str.replace(/[^a-zA-Z0-9]/g, '_');
+  return String(str || '').replace(/[^a-zA-Z0-9]/g, '_');
 }
 
 // ----------------------------------------------------
-// CARD GENERATOR (VIEW ONLY — NO DOWNLOAD BUTTONS)
+// CARD GENERATOR (VIEW ONLY — ZERO INLINE QUOTE BUGS)
 // ----------------------------------------------------
 function renderPaperCards() {
   const data = COMPREHENSIVE_AUTHORITY_CATALOG[currentAuthorityKey];
   const container = document.getElementById('papersStackContainer');
   if (!data || !container) return;
 
-  const papers = (data.subStreams[currentStreamKey] || []).filter(p => p && p.available === true);
+  const papers = data.subStreams[currentStreamKey] || [];
 
   if (papers.length === 0) {
     container.innerHTML = `
       <div class="p-8 text-center text-xs text-slate-400 glass-card rounded-xl border border-white/10">
-        No verified question papers available in this category yet.
+        No question papers currently cataloged for this category.
       </div>
     `;
     return;
   }
 
-  let html = '';
-  papers.forEach(p => {
-    const examLabel = (p.exam || currentStreamKey).replace(/'/g, "\\'");
-    const shiftLabel = (p.shift || p.session || 'Master Paper').replace(/'/g, "\\'");
-    const safeTitle = data.title.replace(/'/g, "\\'");
+  container.innerHTML = papers.map((p, idx) => {
+    const hasOriginal = p.available === true;
+    const examTitle = p.exam || currentStreamKey;
+    const shiftText = p.shift || p.session || 'Master Paper';
 
-    html += `
-      <div class="p-4 rounded-xl glass-card border border-white/10 hover:border-amber-500/40 transition flex flex-col md:flex-row md:items-center justify-between gap-3">
+    return `
+      <div class="p-4 rounded-xl glass-card border ${hasOriginal ? 'border-white/10 hover:border-amber-500/40' : 'border-white/5 opacity-70'} transition flex flex-col md:flex-row md:items-center justify-between gap-3">
         <div class="space-y-1">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="px-2.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase">
-              ${p.year} Examination
+            <span class="px-2.5 py-0.5 rounded ${hasOriginal ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30' : 'bg-slate-800 text-slate-400 border border-white/10'} text-[10px] font-extrabold uppercase">
+              ${escHtml(p.year)} Examination
             </span>
-            <span class="text-xs text-slate-300 font-semibold">${p.shift || p.session}</span>
-            <span class="text-[10px] text-emerald-400 font-bold">
-              ✓ Verified Master Key
+            <span class="text-xs text-slate-300 font-semibold">${escHtml(shiftText)}</span>
+            <span class="text-[10px] ${hasOriginal ? 'text-emerald-400' : 'text-amber-400'} font-bold">
+              ${hasOriginal ? 'Verified Master Key' : 'File Updating Shortly'}
             </span>
           </div>
-          <h4 class="font-bold text-white text-sm md:text-base">${p.exam || currentStreamKey}</h4>
-          <p class="text-[11px] text-slate-400">Exam: ${p.exam || currentStreamKey} • Year: ${p.year} • Shift: ${p.shift || p.session}</p>
+          <h4 class="font-bold text-white text-sm md:text-base">${escHtml(examTitle)}</h4>
+          <p class="text-[11px] text-slate-400">Exam: ${escHtml(examTitle)} • Year: ${escHtml(p.year)} • Shift: ${escHtml(shiftText)}</p>
         </div>
         
-        <button type="button" onclick="openPyqReader('${examLabel}', '${p.year}', '${shiftLabel}', '${safeTitle}', '${p.file}')" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
-          <span>👁️ View Paper</span>
-        </button>
+        ${hasOriginal ? `
+          <button type="button" data-paper-idx="${idx}" class="px-5 py-2.5 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition flex items-center justify-center space-x-2 shadow-lg flex-shrink-0 cursor-pointer">
+            <span>👁️ View Paper</span>
+          </button>
+        ` : `
+          <button type="button" disabled class="px-5 py-2.5 rounded-xl bg-slate-900/80 text-slate-500 font-bold text-xs flex items-center justify-center space-x-1.5 flex-shrink-0 cursor-not-allowed border border-white/5">
+            <span>File Updating Shortly</span>
+          </button>
+        `}
       </div>
     `;
-  });
+  }).join('');
 
-  container.innerHTML = html;
+  container.onclick = (e) => {
+    const btn = e.target.closest('[data-paper-idx]');
+    if (!btn) return;
+    const idx = Number(btn.getAttribute('data-paper-idx'));
+    const paper = papers[idx];
+    if (!paper || paper.available !== true) return;
+    openPyqReader(
+      paper.exam || currentStreamKey,
+      paper.year,
+      paper.shift || paper.session || 'Master Paper',
+      data.title,
+      paper.file
+    );
+  };
 }
 
 function buildShareablePaperUrl(filePath) {
@@ -483,7 +579,7 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
     navigator.clipboard.writeText(shareUrl).then(() => {
       if (btnEl) {
         const oldHtml = btnEl.innerHTML;
-        btnEl.innerHTML = '<span>✅ Link Copied!</span>';
+        btnEl.innerHTML = '<span>✅ Link Copied</span>';
         setTimeout(() => { btnEl.innerHTML = oldHtml; }, 2000);
       }
     }).catch(() => {
@@ -496,14 +592,20 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
 window.sharePyqLink = sharePyqLink;
 
 // ----------------------------------------------------
-// FULL-PAGE PYQ READER (VIEW ONLY + SHARE + BACK)
+// FULL-PAGE PYQ READER (ZERO RIGHT-SIDE GAP + VIEW ONLY + SHARE + BACK)
 // ----------------------------------------------------
 function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const modal = document.getElementById('pyqReaderModal');
   if (!modal) return;
 
-  // Make modal cover full screen cleanly like a dedicated page
-  modal.className = 'fixed inset-0 z-[70] bg-[#04070f] flex flex-col w-screen h-screen overflow-hidden';
+  document.body.style.overflow = 'hidden';
+
+  modal.className = 'fixed inset-0 z-[70] bg-[#070a12] flex flex-col w-screen h-screen overflow-hidden';
+
+  const innerCard = modal.firstElementChild;
+  if (innerCard) {
+    innerCard.className = 'w-full h-full max-w-none flex flex-col bg-[#090d16] overflow-hidden';
+  }
 
   const titleEl = document.getElementById('readerPaperTitle');
   const tagEl = document.getElementById('readerPaperTag');
@@ -511,15 +613,14 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const sessEl = document.getElementById('readerSessionInfo');
 
   if (titleEl) titleEl.innerText = `${examName} (${year} • ${shiftName})`;
-  if (tagEl) tagEl.innerText = `${year} • ${shiftName.toUpperCase()}`;
+  if (tagEl) tagEl.innerText = `${year} • ${String(shiftName).toUpperCase()}`;
   if (subjEl) subjEl.innerText = `${examName} — ${year} (${shiftName})`;
   if (sessEl) sessEl.innerText = `${bodyTitle} • Read-Only Official Question Paper View`;
 
-  const targetUrl = filePath.startsWith('http')
+  const targetUrl = String(filePath).startsWith('http')
     ? filePath
-    : `${SUPABASE_STORAGE_BASE}/pyq/${filePath}`;
+    : `${SUPABASE_STORAGE_BASE}/pyq/${encodeStorageRelativePath(filePath)}`;
 
-  // Replace top action button with Share icon/button (No download)
   const shareBtn = document.getElementById('readerTopDownloadBtn');
   if (shareBtn) {
     shareBtn.innerHTML = '<span>🔗 Share</span>';
@@ -530,18 +631,20 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
     };
   }
 
-  // Ensure clear Back button in reader header
-  const closeBtn = modal.querySelector('button[onclick="closePyqReader()"]');
+  const closeBtn = modal.querySelector('button[onclick*="closePyqReader"]');
   if (closeBtn) {
     closeBtn.className = 'px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-extrabold text-xs transition cursor-pointer';
     closeBtn.innerHTML = '← Back to PYQ Hub';
+    closeBtn.onclick = function () {
+      closePyqReader();
+    };
   }
 
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
     qBody.innerHTML = `
       <div class="rounded-xl border border-white/10 bg-black/50 overflow-hidden flex flex-col items-center justify-center min-h-[78vh] w-full">
-        <iframe src="${targetUrl}#toolbar=0&navpanes=0" class="w-full h-[78vh] border-none rounded-xl" title="${examName} (${year}) Question Paper">
+        <iframe src="${targetUrl}#toolbar=0&navpanes=0" class="w-full h-[78vh] border-none rounded-xl" title="${escHtml(examName)} (${escHtml(year)}) Question Paper">
           <p class="p-6 text-center text-slate-400 text-sm">
             Browser PDF preview unavailable.
           </p>
@@ -562,6 +665,7 @@ window.openPyqReader = openPyqReader;
 function closePyqReader() {
   const modal = document.getElementById('pyqReaderModal');
   if (modal) modal.classList.add('hidden');
+  document.body.style.overflow = '';
   try {
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, '', cleanUrl);
@@ -578,14 +682,14 @@ function openSharedPyqFromUrl() {
     for (const authKey of Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)) {
       const auth = COMPREHENSIVE_AUTHORITY_CATALOG[authKey];
       for (const streamName of Object.keys(auth.subStreams)) {
-        const match = (auth.subStreams[streamName] || []).find(p => p.available === true && p.file === sharedFile);
+        const match = (auth.subStreams[streamName] || []).find(p => p.file === sharedFile);
         if (match) {
           if (typeof window.switchZone === 'function') {
             window.switchZone('pyq-zone');
           }
           switchAuthority(authKey);
           switchStream(streamName);
-          openPyqReader(match.exam || streamName, match.year, match.shift || 'Master Paper', auth.title, match.file);
+          openPyqReader(match.exam || streamName, match.year, match.shift || match.session || 'Master Paper', auth.title, match.file);
           return;
         }
       }
@@ -593,7 +697,6 @@ function openSharedPyqFromUrl() {
   } catch (_) {}
 }
 
-// Initialize on DOM Load
 document.addEventListener('DOMContentLoaded', () => {
   switchAuthority('GATE');
   openSharedPyqFromUrl();
