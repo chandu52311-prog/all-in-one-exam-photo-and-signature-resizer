@@ -952,7 +952,7 @@ function hideNonPaperBannerNodes(modal, qBody) {
   const scope = qBody && qBody.parentElement ? qBody.parentElement : modal;
   scope.querySelectorAll('div, section, article, p, h1, h2, h3, h4').forEach(function (el) {
     if (el === qBody || el.contains(qBody)) return;
-    if (el.querySelector('#pyqPdfIframe')) return;
+    if (el.querySelector('#pyqPdfIframe, #pyqPagesWrap')) return;
     const rawText = (el.innerText || '').trim().toUpperCase();
     if (
       rawText.includes('EXAMINATION ARCHIVE RECORD') ||
@@ -999,6 +999,112 @@ function applyPaperOnlyScreenState(modal, qBody) {
     }
     if (floatingBtn) floatingBtn.style.display = 'none';
   }
+}
+
+function renderPdfPagesIntoContainer(pdfUrl, container, token) {
+  if (!container || !pdfUrl) return;
+
+  var cleanUrl = pdfUrl.split('#')[0];
+  container.innerHTML =
+    '<div id="pyqPagesWrap" class="w-full h-full overflow-y-auto bg-[#0b0f19] px-2 py-3 space-y-3">' +
+      '<div id="pyqRenderNotice" class="text-center text-xs text-amber-300 py-2">Loading paper pages...</div>' +
+      '<div id="pyqCanvasPages" class="flex flex-col items-center space-y-3"></div>' +
+    '</div>';
+
+  var pagesBox = document.getElementById('pyqCanvasPages');
+  var noticeEl = document.getElementById('pyqRenderNotice');
+
+  function useInlineFallback() {
+    if (token !== activeReaderToken) return;
+    container.innerHTML =
+      '<embed id="pyqPdfIframe" src="' + cleanUrl + '#toolbar=0&navpanes=0&view=FitH" type="application/pdf" ' +
+      'class="w-full h-full min-h-[85vh] border-none block" />';
+  }
+
+  function startPdfJs() {
+    if (token !== activeReaderToken) return;
+    var pdfjsLib = window.pdfjsLib || window['pdfjs-dist/build/pdf'];
+    if (!pdfjsLib || !pdfjsLib.getDocument) {
+      useInlineFallback();
+      return;
+    }
+
+    if (pdfjsLib.GlobalWorkerOptions && !pdfjsLib.GlobalWorkerOptions.workerSrc) {
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    pdfjsLib.getDocument({ url: cleanUrl, withCredentials: false }).promise.then(function (pdfDoc) {
+      if (token !== activeReaderToken) return;
+      if (noticeEl) {
+        noticeEl.className = 'text-center text-[11px] text-emerald-400 py-1';
+        noticeEl.innerText = 'Total Pages: ' + pdfDoc.numPages;
+      }
+
+      var pageNum = 1;
+      function renderNextPage() {
+        if (token !== activeReaderToken || pageNum > pdfDoc.numPages) return;
+        var currentPageNum = pageNum++;
+        pdfDoc.getPage(currentPageNum).then(function (page) {
+          if (token !== activeReaderToken || !pagesBox) return;
+          var isMobile = window.innerWidth <= 768;
+          var availWidth = pagesBox.clientWidth || (window.innerWidth - 20);
+          var targetWidth = isMobile
+            ? Math.max(260, availWidth - 8)
+            : Math.min(980, Math.max(600, availWidth - 40));
+
+          var unscaledViewport = page.getViewport({ scale: 1 });
+          var scale = targetWidth / unscaledViewport.width;
+          var viewport = page.getViewport({ scale: scale });
+
+          var canvas = document.createElement('canvas');
+          canvas.width = Math.floor(viewport.width);
+          canvas.height = Math.floor(viewport.height);
+          canvas.className = 'bg-white rounded shadow max-w-full h-auto block';
+
+          pagesBox.appendChild(canvas);
+          var ctx = canvas.getContext('2d');
+          page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function () {
+            setTimeout(renderNextPage, isMobile ? 20 : 5);
+          }).catch(function () {
+            setTimeout(renderNextPage, 20);
+          });
+        }).catch(function () {
+          setTimeout(renderNextPage, 20);
+        });
+      }
+
+      renderNextPage();
+    }).catch(function () {
+      useInlineFallback();
+    });
+  }
+
+  if (window.pdfjsLib || window['pdfjs-dist/build/pdf']) {
+    startPdfJs();
+    return;
+  }
+
+  var existingScript = document.getElementById('pyqPdfJsScript');
+  if (existingScript) {
+    existingScript.addEventListener('load', startPdfJs, { once: true });
+    existingScript.addEventListener('error', useInlineFallback, { once: true });
+    return;
+  }
+
+  var hostEl = document.head || document.body || document.documentElement;
+  if (!hostEl) {
+    useInlineFallback();
+    return;
+  }
+
+  var script = document.createElement('script');
+  script.id = 'pyqPdfJsScript';
+  script.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+  script.async = true;
+  script.onload = startPdfJs;
+  script.onerror = useInlineFallback;
+  hostEl.appendChild(script);
 }
 
 // ----------------------------------------------------
@@ -1069,25 +1175,20 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   }
 
   const candidates = resolvePdfCandidates(filePath);
-  const directUrl = candidates[0] || '';
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
     qBody.className = 'flex-1 w-full h-full max-w-none p-0 m-0 overflow-hidden';
-    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="${directUrl}#toolbar=0&navpanes=0&view=FitH" loading="lazy" class="w-full h-full min-h-[82vh] border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
-
     hideNonPaperBannerNodes(modal, qBody);
     applyPaperOnlyScreenState(modal, qBody);
 
-    if (candidates.length > 1) {
-      const iframe = document.getElementById('pyqPdfIframe');
-      resolveFirstAvailableUrl(candidates).then(function (matchedUrl) {
-        if (token !== activeReaderToken || !iframe || !matchedUrl) return;
-        const nextSrc = matchedUrl + '#toolbar=0&navpanes=0&view=FitH';
-        if (iframe.src !== nextSrc) {
-          iframe.src = nextSrc;
-        }
-      }).catch(function () {});
-    }
+    (async function () {
+      const matchedUrl = await resolveFirstAvailableUrl(candidates);
+      if (token !== activeReaderToken) return;
+      const finalUrl = matchedUrl || candidates[0] || '';
+      if (finalUrl) {
+        renderPdfPagesIntoContainer(finalUrl, qBody, token);
+      }
+    })();
   }
 
   try {
