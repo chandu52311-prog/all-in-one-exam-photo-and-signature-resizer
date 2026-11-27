@@ -1007,7 +1007,7 @@ function renderPdfPagesIntoContainer(pdfUrl, container, token) {
   var cleanUrl = pdfUrl.split('#')[0];
   container.innerHTML =
     '<div id="pyqPagesWrap" class="w-full h-full overflow-y-auto bg-[#0b0f19] px-2 py-3 space-y-3">' +
-      '<div id="pyqRenderNotice" class="text-center text-xs text-amber-300 py-2">Loading paper pages...</div>' +
+      '<div id="pyqRenderNotice" class="text-center text-xs text-amber-300 py-2">Loading HD paper pages...</div>' +
       '<div id="pyqCanvasPages" class="flex flex-col items-center space-y-3"></div>' +
     '</div>';
 
@@ -1038,7 +1038,7 @@ function renderPdfPagesIntoContainer(pdfUrl, container, token) {
       if (token !== activeReaderToken) return;
       if (noticeEl) {
         noticeEl.className = 'text-center text-[11px] text-emerald-400 py-1';
-        noticeEl.innerText = 'Total Pages: ' + pdfDoc.numPages;
+        noticeEl.innerText = 'Total Pages: ' + pdfDoc.numPages + ' (Tap page to zoom)';
       }
 
       var pageNum = 1;
@@ -1048,29 +1048,50 @@ function renderPdfPagesIntoContainer(pdfUrl, container, token) {
         pdfDoc.getPage(currentPageNum).then(function (page) {
           if (token !== activeReaderToken || !pagesBox) return;
           var isMobile = window.innerWidth <= 768;
-          var availWidth = pagesBox.clientWidth || (window.innerWidth - 20);
-          var targetWidth = isMobile
-            ? Math.max(260, availWidth - 8)
-            : Math.min(980, Math.max(600, availWidth - 40));
+          var availWidth = pagesBox.clientWidth || (window.innerWidth - 16);
+          var cssWidth = isMobile
+            ? Math.max(280, availWidth - 4)
+            : Math.min(1020, Math.max(640, availWidth - 32));
 
           var unscaledViewport = page.getViewport({ scale: 1 });
-          var scale = targetWidth / unscaledViewport.width;
-          var viewport = page.getViewport({ scale: scale });
+          var dpr = Math.min(2.5, Math.max(1.5, window.devicePixelRatio || 1.5));
+          var renderScale = Math.max(dpr, (cssWidth / unscaledViewport.width) * dpr);
+          var viewport = page.getViewport({ scale: renderScale });
 
           var canvas = document.createElement('canvas');
           canvas.width = Math.floor(viewport.width);
           canvas.height = Math.floor(viewport.height);
-          canvas.className = 'bg-white rounded shadow max-w-full h-auto block';
+          canvas.style.width = cssWidth + 'px';
+          canvas.style.maxWidth = '100%';
+          canvas.style.height = 'auto';
+          canvas.style.transition = 'max-width 0.2s ease, width 0.2s ease';
+          canvas.className = 'bg-white rounded shadow block cursor-zoom-in';
+
+          var zoomed = false;
+          canvas.addEventListener('click', function () {
+            zoomed = !zoomed;
+            if (zoomed) {
+              canvas.style.maxWidth = 'none';
+              canvas.style.width = Math.round(cssWidth * 1.65) + 'px';
+              canvas.classList.remove('cursor-zoom-in');
+              canvas.classList.add('cursor-zoom-out');
+            } else {
+              canvas.style.maxWidth = '100%';
+              canvas.style.width = cssWidth + 'px';
+              canvas.classList.remove('cursor-zoom-out');
+              canvas.classList.add('cursor-zoom-in');
+            }
+          });
 
           pagesBox.appendChild(canvas);
           var ctx = canvas.getContext('2d');
           page.render({ canvasContext: ctx, viewport: viewport }).promise.then(function () {
-            setTimeout(renderNextPage, isMobile ? 20 : 5);
+            setTimeout(renderNextPage, isMobile ? 25 : 5);
           }).catch(function () {
-            setTimeout(renderNextPage, 20);
+            setTimeout(renderNextPage, 25);
           });
         }).catch(function () {
-          setTimeout(renderNextPage, 20);
+          setTimeout(renderNextPage, 25);
         });
       }
 
@@ -1106,7 +1127,6 @@ function renderPdfPagesIntoContainer(pdfUrl, container, token) {
   script.onerror = useInlineFallback;
   hostEl.appendChild(script);
 }
-
 // ----------------------------------------------------
 // INSTANT FULL-SCREEN PYQ READER ([ ] EXPAND + SHARE + BACK + MOBILE CLEAN)
 // ----------------------------------------------------
