@@ -1,12 +1,14 @@
 // ====================================================================
 // EXAMRESIZER PRO - OFFICIAL MASTER PYQ REPOSITORY ENGINE (2020-2026)
-// Instant Full-Screen Reader + View + Share + Back
+// Generated from 407 Verified Supabase Master Papers
+// [ ] Full-Screen/Minimize Toggle + Mobile Full View + View + Share + Back
 // Module: js/pyq-hub.js
 // ====================================================================
 
 let currentAuthorityKey = 'GATE';
 let currentStreamKey = '';
 let activeReaderToken = 0;
+let isReaderExpandedOnlyPaper = false;
 const SUPABASE_STORAGE_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers";
 
 const COMPREHENSIVE_AUTHORITY_CATALOG = {
@@ -897,6 +899,10 @@ function buildShareablePaperUrl(filePath) {
 
 const SHARE_ICON_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="inline-block mr-1.5 -mt-0.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>';
 
+const EXPAND_BOX_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="inline-block"><path d="M8 3H5a2 2 0 0 0-2 2v3"/><path d="M16 3h3a2 2 0 0 1 2 2v3"/><path d="M8 21H5a2 2 0 0 1-2-2v-3"/><path d="M16 21h3a2 2 0 0 0 2-2v-3"/></svg>';
+
+const MINIMIZE_BOX_SVG = '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" class="inline-block"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>';
+
 function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
   const shareUrl = buildShareablePaperUrl(filePath);
   const shareTitle = `${examName} (${year} - ${shiftName}) - ExamResizer.me`;
@@ -927,14 +933,69 @@ function sharePyqLink(examName, year, shiftName, filePath, btnEl) {
 }
 window.sharePyqLink = sharePyqLink;
 
+function hideNonPaperBannerNodes(modal, qBody) {
+  if (!modal) return;
+  const scope = qBody && qBody.parentElement ? qBody.parentElement : modal;
+  scope.querySelectorAll('div, section, article, p, h1, h2, h3, h4').forEach(function (el) {
+    if (el === qBody || el.contains(qBody)) return;
+    if (el.querySelector('#pyqPdfIframe')) return;
+    const rawText = (el.innerText || '').trim().toUpperCase();
+    if (
+      rawText.includes('EXAMINATION ARCHIVE RECORD') ||
+      rawText.includes('ACADEMIC REFERENCE SUITE') ||
+      rawText.includes('OFFICIAL QUESTION PAPER') ||
+      rawText.includes('READ-ONLY OFFICIAL QUESTION PAPER')
+    ) {
+      el.style.display = 'none';
+    }
+  });
+}
+
+function applyPaperOnlyScreenState(modal, qBody) {
+  if (!modal) return;
+  const headerBar = modal.querySelector('.flex.items-center.justify-between, header');
+  const floatingExitBtnId = 'pyqFloatingMinimizeBtn';
+  let floatingBtn = document.getElementById(floatingExitBtnId);
+
+  if (isReaderExpandedOnlyPaper) {
+    if (headerBar) headerBar.style.display = 'none';
+    if (qBody) {
+      qBody.className = 'fixed inset-0 w-screen h-screen max-w-none p-0 m-0 overflow-hidden z-[75] bg-[#070a12]';
+    }
+    if (!floatingBtn) {
+      floatingBtn = document.createElement('button');
+      floatingBtn.id = floatingExitBtnId;
+      floatingBtn.type = 'button';
+      floatingBtn.title = 'Exit Full Screen';
+      floatingBtn.setAttribute('aria-label', 'Exit Full Screen');
+      floatingBtn.className = 'fixed top-3 right-3 z-[80] px-3 py-2 rounded-xl bg-black/80 hover:bg-black text-amber-300 border border-amber-400/40 font-extrabold text-xs shadow-xl inline-flex items-center gap-1.5 cursor-pointer';
+      floatingBtn.innerHTML = MINIMIZE_BOX_SVG + '<span>Exit Full</span>';
+      floatingBtn.onclick = function () {
+        isReaderExpandedOnlyPaper = false;
+        applyPaperOnlyScreenState(modal, qBody);
+      };
+      modal.appendChild(floatingBtn);
+    } else {
+      floatingBtn.style.display = '';
+    }
+  } else {
+    if (headerBar) headerBar.style.display = '';
+    if (qBody) {
+      qBody.className = 'flex-1 w-full h-full max-w-none p-0 m-0 overflow-hidden';
+    }
+    if (floatingBtn) floatingBtn.style.display = 'none';
+  }
+}
+
 // ----------------------------------------------------
-// INSTANT FULL-SCREEN PYQ READER (PAPER ONLY + TOP SHARE ICON + BACK)
+// INSTANT FULL-SCREEN PYQ READER ([ ] EXPAND + SHARE + BACK + MOBILE CLEAN)
 // ----------------------------------------------------
 function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const modal = document.getElementById('pyqReaderModal');
   if (!modal) return;
 
   const token = ++activeReaderToken;
+  isReaderExpandedOnlyPaper = false;
   document.body.style.overflow = 'hidden';
   modal.className = 'fixed inset-0 z-[70] bg-[#070a12] flex flex-col w-screen h-screen overflow-hidden';
 
@@ -952,13 +1013,13 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   if (titleEl) titleEl.innerText = `${distinctTitle} (${year})`;
   if (tagEl) tagEl.innerText = `${year} - ${String(shiftName).toUpperCase()}`;
   if (subjEl) subjEl.innerText = `${distinctTitle} - ${year}`;
-  if (sessEl) sessEl.innerText = `${bodyTitle} - Official Question Paper`;
+  if (sessEl) sessEl.innerText = `${bodyTitle}`;
 
   const shareBtn = document.getElementById('readerTopDownloadBtn');
   if (shareBtn) {
     shareBtn.innerHTML = SHARE_ICON_SVG + '<span>Share</span>';
     shareBtn.disabled = false;
-    shareBtn.className = 'px-4 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition inline-flex items-center cursor-pointer';
+    shareBtn.className = 'px-3.5 py-2 rounded-xl luxury-action-btn text-black font-extrabold text-xs transition inline-flex items-center cursor-pointer';
     shareBtn.setAttribute('aria-label', 'Share Question Paper');
     shareBtn.onclick = function () {
       sharePyqLink(examName, year, shiftName, filePath, shareBtn);
@@ -966,8 +1027,27 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   }
 
   const closeBtn = modal.querySelector('button[onclick*="closePyqReader"]');
+  let expandBtn = document.getElementById('readerExpandBoxBtn');
+  if (!expandBtn && closeBtn && closeBtn.parentElement) {
+    expandBtn = document.createElement('button');
+    expandBtn.id = 'readerExpandBoxBtn';
+    expandBtn.type = 'button';
+    closeBtn.parentElement.insertBefore(expandBtn, closeBtn);
+  }
+  if (expandBtn) {
+    expandBtn.title = 'Full Screen Paper';
+    expandBtn.setAttribute('aria-label', 'Full Screen Paper');
+    expandBtn.className = 'px-3 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-amber-400/35 text-amber-300 font-extrabold text-xs transition inline-flex items-center justify-center cursor-pointer';
+    expandBtn.innerHTML = EXPAND_BOX_SVG;
+    expandBtn.onclick = function () {
+      isReaderExpandedOnlyPaper = !isReaderExpandedOnlyPaper;
+      expandBtn.innerHTML = isReaderExpandedOnlyPaper ? MINIMIZE_BOX_SVG : EXPAND_BOX_SVG;
+      applyPaperOnlyScreenState(modal, document.getElementById('readerQuestionsBody'));
+    };
+  }
+
   if (closeBtn) {
-    closeBtn.className = 'px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-extrabold text-xs transition cursor-pointer';
+    closeBtn.className = 'px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-amber-300 font-extrabold text-xs transition cursor-pointer';
     closeBtn.innerHTML = '&larr; Back';
     closeBtn.onclick = function () {
       closePyqReader();
@@ -978,7 +1058,10 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
     qBody.className = 'flex-1 w-full h-full max-w-none p-0 m-0 overflow-hidden';
-    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-full border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
+    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-full min-h-[82vh] border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
+
+    hideNonPaperBannerNodes(modal, qBody);
+    applyPaperOnlyScreenState(modal, qBody);
 
     const iframe = document.getElementById('pyqPdfIframe');
     (async function () {
@@ -1002,6 +1085,9 @@ window.openPyqReader = openPyqReader;
 
 function closePyqReader() {
   activeReaderToken++;
+  isReaderExpandedOnlyPaper = false;
+  const floatingBtn = document.getElementById('pyqFloatingMinimizeBtn');
+  if (floatingBtn) floatingBtn.style.display = 'none';
   const modal = document.getElementById('pyqReaderModal');
   if (modal) modal.classList.add('hidden');
   document.body.style.overflow = '';
@@ -1013,16 +1099,36 @@ function closePyqReader() {
 window.closePyqReader = closePyqReader;
 
 function activatePyqZoneOnLoad() {
-  if (typeof window.switchZone === 'function') {
-    window.switchZone('pyq-zone');
+  const fnNames = ['switchZone', 'switchToolTab', 'switchTab', 'showSection', 'openZone'];
+  for (let i = 0; i < fnNames.length; i++) {
+    const fn = window[fnNames[i]];
+    if (typeof fn === 'function') {
+      try {
+        fn('pyq-zone');
+        return;
+      } catch (_) {}
+    }
+  }
+
+  const pyqNavBtn = document.querySelector(
+    '[data-zone="pyq-zone"], [data-tab="pyq-zone"], [data-target="pyq-zone"], [onclick*="pyq-zone"]'
+  );
+  if (pyqNavBtn) {
+    pyqNavBtn.click();
     return;
   }
-  if (typeof window.switchToolTab === 'function') {
-    window.switchToolTab('pyq-zone');
-    return;
+
+  const allZones = document.querySelectorAll('[id$="-zone"], .tool-zone, .tab-content');
+  if (allZones.length > 0) {
+    allZones.forEach(function (z) {
+      if (z.id === 'pyq-zone') {
+        z.classList.remove('hidden');
+        z.style.display = '';
+      } else {
+        z.classList.add('hidden');
+      }
+    });
   }
-  const pyqNavBtn = document.querySelector('[data-zone="pyq-zone"], [onclick*="pyq-zone"]');
-  if (pyqNavBtn) pyqNavBtn.click();
 }
 
 function openSharedPyqFromUrl() {
@@ -1055,7 +1161,12 @@ document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
     const modal = document.getElementById('pyqReaderModal');
     if (modal && !modal.classList.contains('hidden')) {
-      closePyqReader();
+      if (isReaderExpandedOnlyPaper) {
+        isReaderExpandedOnlyPaper = false;
+        applyPaperOnlyScreenState(modal, document.getElementById('readerQuestionsBody'));
+      } else {
+        closePyqReader();
+      }
     }
   }
 });
