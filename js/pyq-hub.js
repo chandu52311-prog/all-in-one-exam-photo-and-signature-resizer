@@ -766,15 +766,18 @@ function getPyqSectorGuide(authKey) {
   return guides[authKey] || guides.GATE;
 }
 
-function renderPyqSectorGuide() {
-  const guideEl = document.getElementById('pyqSectorGuide');
-  if (!guideEl) return;
-  const guide = getPyqSectorGuide(currentAuthorityKey);
-  const titleEl = document.getElementById('pyqSectorGuideTitle');
-  const overviewEl = document.getElementById('pyqSectorGuideOverview');
-  if (titleEl) titleEl.textContent = guide.title;
-  if (overviewEl) {
-    overviewEl.innerHTML = `<strong class="text-white">Exam pattern overview:</strong> ${escHtml(guide.pattern)}`;
+function applySubButtonVisualState(btn, isSelected) {
+  if (!btn) return;
+  if (isSelected) {
+    btn.className = "sub-stream-btn active px-3 py-1.5 rounded-lg text-xs font-semibold transition border bg-amber-500/25 text-amber-300 border-amber-400/60";
+    btn.style.background = "linear-gradient(180deg, rgba(254, 240, 138, 0.28) 0%, rgba(245, 158, 11, 0.35) 100%)";
+    btn.style.color = "#fde68a";
+    btn.style.borderColor = "rgba(251, 191, 36, 0.75)";
+  } else {
+    btn.className = "sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20";
+    btn.style.background = "rgba(30, 41, 59, 0.65)";
+    btn.style.color = "#94a3b8";
+    btn.style.borderColor = "rgba(255, 255, 255, 0.08)";
   }
 }
 
@@ -790,22 +793,22 @@ function renderSubButtons() {
   currentStreamKey = streams[0] || '';
 
   container.innerHTML = streams.map(function (st) {
-    const isDefault = st === currentStreamKey;
     const count = (data.subStreams[st] || []).length;
     return `
       <button
         type="button"
         data-stream-name="${escHtml(st)}"
         id="sub-btn-${sanitizeId(st)}"
-        class="sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border ${
-          isDefault
-            ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-            : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20'
-        }">
+        class="sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border">
         ${escHtml(st)} <span class="opacity-75">(${count})</span>
       </button>
     `;
   }).join('');
+
+  Object.keys(data.subStreams).forEach(function (st) {
+    const btn = document.getElementById('sub-btn-' + sanitizeId(st));
+    applySubButtonVisualState(btn, st === currentStreamKey);
+  });
 
   container.onclick = function (e) {
     const btn = e.target.closest('[data-stream-name]');
@@ -823,12 +826,7 @@ function switchStream(streamName) {
 
   Object.keys(data.subStreams).forEach(function (st) {
     const btn = document.getElementById('sub-btn-' + sanitizeId(st));
-    if (btn) {
-      btn.className = "sub-stream-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition border " +
-        (st === streamName
-          ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
-          : 'bg-slate-800/60 text-slate-400 border-white/5 hover:text-white hover:border-white/20');
-    }
+    applySubButtonVisualState(btn, st === streamName);
   });
 
   renderPaperCards();
