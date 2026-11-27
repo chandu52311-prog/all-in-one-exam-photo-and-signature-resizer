@@ -9,6 +9,7 @@ let currentAuthorityKey = 'GATE';
 let currentStreamKey = '';
 let activeReaderToken = 0;
 let isReaderExpandedOnlyPaper = false;
+let isOpeningSharedPyq = false;
 const SUPABASE_STORAGE_BASE = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers";
 
 const COMPREHENSIVE_AUTHORITY_CATALOG = {
@@ -675,6 +676,14 @@ function getCatalogStats() {
   return { totalCataloged, totalAvailable, sectorCataloged, sectorAvailable };
 }
 
+function isPyqZoneCurrentlyVisible() {
+  const zone = document.getElementById('pyq-zone');
+  if (!zone) return true;
+  if (zone.classList.contains('hidden')) return false;
+  const style = window.getComputedStyle(zone);
+  return style.display !== 'none' && style.visibility !== 'hidden';
+}
+
 // ----------------------------------------------------
 // CONTROLLER: TIER-1 AUTHORITY SWITCHER (GOLD BANNER & BUTTON SYNC)
 // ----------------------------------------------------
@@ -688,13 +697,9 @@ function switchAuthority(authKey) {
   const titleEl = document.getElementById('activeAuthorityTitle');
   const descEl = document.getElementById('activeAuthorityDesc');
   const countEl = document.getElementById('activeAuthorityCount');
-  const stats = getCatalogStats();
 
   if (data && titleEl) titleEl.innerText = data.title;
   if (data && descEl) descEl.innerText = data.desc;
-  if (countEl) {
-    countEl.innerText = `Sector: ${stats.sectorCataloged} Papers (${stats.sectorAvailable} Live) | Total: ${stats.totalCataloged} Papers (${stats.totalAvailable} Live)`;
-  }
 
   const allKeys = Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG);
   allKeys.forEach(function (k) {
@@ -713,6 +718,15 @@ function switchAuthority(authKey) {
       }
     }
   });
+
+  if (!isPyqZoneCurrentlyVisible()) {
+    return;
+  }
+
+  const stats = getCatalogStats();
+  if (countEl) {
+    countEl.innerText = `Sector: ${stats.sectorCataloged} Papers (${stats.sectorAvailable} Live) | Total: ${stats.totalCataloged} Papers (${stats.totalAvailable} Live)`;
+  }
 
   renderSubButtons();
 }
@@ -1055,23 +1069,25 @@ function openPyqReader(examName, year, shiftName, bodyTitle, filePath) {
   }
 
   const candidates = resolvePdfCandidates(filePath);
+  const directUrl = candidates[0] || '';
   const qBody = document.getElementById('readerQuestionsBody');
   if (qBody) {
     qBody.className = 'flex-1 w-full h-full max-w-none p-0 m-0 overflow-hidden';
-    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="" class="w-full h-full min-h-[82vh] border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
+    qBody.innerHTML = `<iframe id="pyqPdfIframe" name="pyqFrame" src="${directUrl}#toolbar=0&navpanes=0&view=FitH" loading="lazy" class="w-full h-full min-h-[82vh] border-none block" title="${escHtml(distinctTitle)} (${escHtml(year)}) Question Paper"></iframe>`;
 
     hideNonPaperBannerNodes(modal, qBody);
     applyPaperOnlyScreenState(modal, qBody);
 
-    const iframe = document.getElementById('pyqPdfIframe');
-    (async function () {
-      const matchedUrl = await resolveFirstAvailableUrl(candidates);
-      if (token !== activeReaderToken) return;
-      const finalUrl = matchedUrl || candidates[0] || '';
-      if (iframe && finalUrl) {
-        iframe.src = finalUrl + '#toolbar=0&navpanes=0&view=FitH';
-      }
-    })();
+    if (candidates.length > 1) {
+      const iframe = document.getElementById('pyqPdfIframe');
+      resolveFirstAvailableUrl(candidates).then(function (matchedUrl) {
+        if (token !== activeReaderToken || !iframe || !matchedUrl) return;
+        const nextSrc = matchedUrl + '#toolbar=0&navpanes=0&view=FitH';
+        if (iframe.src !== nextSrc) {
+          iframe.src = nextSrc;
+        }
+      }).catch(function () {});
+    }
   }
 
   try {
@@ -1087,10 +1103,13 @@ function closePyqReader() {
   activeReaderToken++;
   isReaderExpandedOnlyPaper = false;
   const floatingBtn = document.getElementById('pyqFloatingMinimizeBtn');
-  if (floatingBtn) floatingBtn.style.display = 'none';
+  if (floatingBtn) floatingBtn.remove();
+  const iframe = document.getElementById('pyqPdfIframe');
+  if (iframe) iframe.src = 'about:blank';
   const modal = document.getElementById('pyqReaderModal');
   if (modal) modal.classList.add('hidden');
   document.body.style.overflow = '';
+  document.body.style.overflowX = '';
   try {
     const cleanUrl = window.location.origin + window.location.pathname;
     window.history.replaceState({}, '', cleanUrl);
@@ -1137,6 +1156,7 @@ function openSharedPyqFromUrl() {
     const sharedFile = params.get('pyq');
     if (!sharedFile) return;
 
+    isOpeningSharedPyq = true;
     const normalizedShared = decodeURIComponent(sharedFile).trim();
 
     for (const authKey of Object.keys(COMPREHENSIVE_AUTHORITY_CATALOG)) {
@@ -1150,12 +1170,37 @@ function openSharedPyqFromUrl() {
           switchAuthority(authKey);
           switchStream(streamName);
           openPyqReader(match.exam || streamName, match.year, match.shift || match.session || 'Master Paper', auth.title, match.file);
+          setTimeout(function () { isOpeningSharedPyq = false; }, 150);
           return;
         }
       }
     }
-  } catch (_) {}
+    isOpeningSharedPyq = false;
+  } catch (_) {
+    isOpeningSharedPyq = false;
+  }
 }
+
+function ensurePyqHubRenderedIfNeeded() {
+  if (!isPyqZoneCurrentlyVisible()) return;
+  const container = document.getElementById('papersStackContainer');
+  if (container && container.children.length === 0) {
+    switchAuthority(currentAuthorityKey || 'GATE');
+  }
+}
+window.ensurePyqHubRenderedIfNeeded = ensurePyqHubRenderedIfNeeded;
+
+document.addEventListener('click', function (e) {
+  if (isOpeningSharedPyq) return;
+  const trigger = e.target.closest('[data-zone="pyq-zone"], [data-tab="pyq-zone"], [onclick*="pyq-zone"], #nav-pyq, [id*="pyq"]');
+  if (trigger) {
+    setTimeout(function () {
+      if (!isOpeningSharedPyq) {
+        switchAuthority(currentAuthorityKey || 'GATE');
+      }
+    }, 30);
+  }
+});
 
 document.addEventListener('keydown', function (e) {
   if (e.key === 'Escape') {
@@ -1172,6 +1217,14 @@ document.addEventListener('keydown', function (e) {
 });
 
 document.addEventListener('DOMContentLoaded', function () {
-  switchAuthority('GATE');
-  openSharedPyqFromUrl();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('pyq')) {
+    setTimeout(openSharedPyqFromUrl, 50);
+    return;
+  }
+  if (isPyqZoneCurrentlyVisible()) {
+    setTimeout(function () {
+      switchAuthority('GATE');
+    }, 50);
+  }
 });
