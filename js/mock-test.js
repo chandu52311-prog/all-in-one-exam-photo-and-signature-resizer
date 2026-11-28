@@ -1,5 +1,5 @@
 // ====================================================================
-// ⏱️ EXAMRESIZER.ME - CBT MOCK ENGINE (FULL-SCREEN EXAM + EXACT ROUTING)
+// EXAMRESIZER.ME - CBT MOCK ENGINE (FULL-SCREEN EXAM + EXACT ROUTING)
 // Module: js/mock-test.js
 // ====================================================================
 (function () {
@@ -7,10 +7,13 @@
 
   const SUPABASE_URL = "https://znkwwzasysqkvtclmktd.supabase.co";
   const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2BqA77mr-KyhwkqRcYMh0g_tQbM_zE9";
-  const BUNDLE_JSON_URL = "https://znkwwzasysqkvtclmktd.supabase.co/storage/v1/object/public/exam-papers/supabase_mocks_ready.json";
+  const STORAGE_BUCKET = "exam-papers";
+  const BUNDLE_JSON_URL = `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/supabase_mocks_ready.json`;
 
-  const GOLD_ACTIVE_BTN = "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-amber-500/25 text-amber-300 shadow-md cursor-pointer";
-  const IDLE_NAV_BTN = "px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-white/10 bg-slate-800/80 text-slate-300 hover:text-white hover:border-amber-400/50 cursor-pointer";
+  const GOLD_ACTIVE_BTN =
+    "px-3.5 py-2 rounded-xl text-xs font-extrabold transition border border-amber-400 bg-gradient-to-r from-amber-500/30 to-yellow-500/20 text-amber-300 shadow-[0_0_18px_rgba(245,158,11,0.25)] cursor-pointer";
+  const IDLE_NAV_BTN =
+    "px-3.5 py-2 rounded-xl text-xs font-semibold transition border border-amber-400/15 bg-slate-900/80 text-slate-300 hover:text-amber-200 hover:border-amber-400/50 cursor-pointer";
 
   const MOCK_CONFIG = {
     EXAM: {
@@ -28,11 +31,22 @@
           "JE_EE": "SSC JE Electrical (200 Qs • 120m)",
           "JE_CE": "SSC JE Civil (200 Qs • 120m)"
         },
+        branchSpecs: {
+          "CGL": { qCount: 100, timeSec: 3600, posMark: 2.00, negMark: 0.50 },
+          "CHSL": { qCount: 100, timeSec: 3600, posMark: 2.00, negMark: 0.50 },
+          "GD": { qCount: 80, timeSec: 3600, posMark: 2.00, negMark: 0.50 },
+          "MTS": { qCount: 90, timeSec: 5400, posMark: 2.00, negMark: 0.50 },
+          "CPO": { qCount: 200, timeSec: 7200, posMark: 2.00, negMark: 0.50 },
+          "JE_ME": { qCount: 200, timeSec: 7200, posMark: 1.00, negMark: 0.25 },
+          "JE_EC": { qCount: 200, timeSec: 7200, posMark: 1.00, negMark: 0.25 },
+          "JE_EE": { qCount: 200, timeSec: 7200, posMark: 1.00, negMark: 0.25 },
+          "JE_CE": { qCount: 200, timeSec: 7200, posMark: 1.00, negMark: 0.25 }
+        },
         qCount: 100,
         timeSec: 3600,
         posMark: 2.00,
         negMark: 0.50,
-        stages: 10
+        stages: 20
       },
       RRB: {
         title: "EXAMRESIZER.ME • RRB All Exams & JE Series",
@@ -49,11 +63,23 @@
           "JE_EE": "RRB JE Electrical (150 Qs • 120m)",
           "JE_CE": "RRB JE Civil (150 Qs • 120m)"
         },
+        branchSpecs: {
+          "NTPC": { qCount: 100, timeSec: 5400, posMark: 1.00, negMark: 0.33 },
+          "ALP": { qCount: 75, timeSec: 3600, posMark: 1.00, negMark: 0.33 },
+          "GROUP_D": { qCount: 100, timeSec: 5400, posMark: 1.00, negMark: 0.33 },
+          "TECHNICIAN": { qCount: 100, timeSec: 5400, posMark: 1.00, negMark: 0.33 },
+          "RPF_SI": { qCount: 120, timeSec: 5400, posMark: 1.00, negMark: 0.33 },
+          "RPF_CONSTABLE": { qCount: 120, timeSec: 5400, posMark: 1.00, negMark: 0.33 },
+          "JE_ME": { qCount: 150, timeSec: 7200, posMark: 1.00, negMark: 0.33 },
+          "JE_EC": { qCount: 150, timeSec: 7200, posMark: 1.00, negMark: 0.33 },
+          "JE_EE": { qCount: 150, timeSec: 7200, posMark: 1.00, negMark: 0.33 },
+          "JE_CE": { qCount: 150, timeSec: 7200, posMark: 1.00, negMark: 0.33 }
+        },
         qCount: 100,
         timeSec: 5400,
         posMark: 1.00,
         negMark: 0.33,
-        stages: 10
+        stages: 20
       },
       BANKING: {
         title: "EXAMRESIZER.ME • Banking All Exams Series",
@@ -65,11 +91,18 @@
           "SBI_CLERK": "SBI Clerk (100 Qs • 60m)",
           "IBPS_RRB_PO": "IBPS RRB PO (80 Qs • 45m)"
         },
+        branchSpecs: {
+          "IBPS_PO": { qCount: 100, timeSec: 3600, posMark: 1.00, negMark: 0.25 },
+          "IBPS_CLERK": { qCount: 100, timeSec: 3600, posMark: 1.00, negMark: 0.25 },
+          "SBI_PO": { qCount: 100, timeSec: 3600, posMark: 1.00, negMark: 0.25 },
+          "SBI_CLERK": { qCount: 100, timeSec: 3600, posMark: 1.00, negMark: 0.25 },
+          "IBPS_RRB_PO": { qCount: 80, timeSec: 2700, posMark: 1.00, negMark: 0.25 }
+        },
         qCount: 100,
         timeSec: 3600,
         posMark: 1.00,
         negMark: 0.25,
-        stages: 10
+        stages: 20
       },
       APPSC: {
         title: "EXAMRESIZER.ME • APPSC Group 1 & Group 2",
@@ -78,11 +111,15 @@
           "GROUP_1": "APPSC Group 1 (150 Qs • 150m)",
           "GROUP_2": "APPSC Group 2 (150 Qs • 150m)"
         },
+        branchSpecs: {
+          "GROUP_1": { qCount: 150, timeSec: 9000, posMark: 1.00, negMark: 0.33 },
+          "GROUP_2": { qCount: 150, timeSec: 9000, posMark: 1.00, negMark: 0.33 }
+        },
         qCount: 150,
         timeSec: 9000,
         posMark: 1.00,
         negMark: 0.33,
-        stages: 10
+        stages: 20
       },
       TGPSC: {
         title: "EXAMRESIZER.ME • TGPSC Group-1 & State Cadre",
@@ -90,11 +127,14 @@
         branches: {
           "GROUP_1": "TGPSC Group-1 (150 Qs • 150m)"
         },
+        branchSpecs: {
+          "GROUP_1": { qCount: 150, timeSec: 9000, posMark: 1.00, negMark: 0.33 }
+        },
         qCount: 150,
         timeSec: 9000,
         posMark: 1.00,
         negMark: 0.33,
-        stages: 10
+        stages: 20
       },
       POWER_PSU: {
         title: "EXAMRESIZER.ME • Power Utilities & PSUs (PGCIL / GENCO / TRANSCO)",
@@ -102,11 +142,14 @@
         branches: {
           "EE": "PSU Electrical & Power Cadre (100 Qs • 120m)"
         },
+        branchSpecs: {
+          "EE": { qCount: 100, timeSec: 7200, posMark: 1.00, negMark: 0.25 }
+        },
         qCount: 100,
         timeSec: 7200,
         posMark: 1.00,
         negMark: 0.25,
-        stages: 10
+        stages: 20
       },
       GATE: {
         title: "EXAMRESIZER.ME • GATE All Branches",
@@ -120,19 +163,28 @@
           "CH": "GATE Chemical (65 Qs • 180m)",
           "IN": "GATE Instrumentation (65 Qs • 180m)"
         },
+        branchSpecs: {
+          "ME": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "EC": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "EE": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "CE": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "CS": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "CH": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 },
+          "IN": { qCount: 65, timeSec: 10800, posMark: 1.54, negMark: 0.50 }
+        },
         qCount: 65,
         timeSec: 10800,
         posMark: 1.54,
         negMark: 0.50,
-        stages: 10
+        stages: 20
       }
     },
     SUBJECT: {
-      APTITUDE: { title: "EXAMRESIZER.ME • Aptitude Mastery", prefix: "aptitude", qCount: 50, timeSec: 3600, posMark: 1.00, negMark: 0.25, stages: 20 },
-      REASONING: { title: "EXAMRESIZER.ME • Reasoning Mastery", prefix: "reasoning", qCount: 50, timeSec: 3600, posMark: 1.00, negMark: 0.25, stages: 20 },
-      GK: { title: "EXAMRESIZER.ME • GK & GS Mastery", prefix: "gk", qCount: 50, timeSec: 3600, posMark: 1.00, negMark: 0.25, stages: 20 },
-      MATHS: { title: "EXAMRESIZER.ME • Maths Mastery", prefix: "maths", qCount: 50, timeSec: 3600, posMark: 1.00, negMark: 0.25, stages: 20 },
-      ENGLISH: { title: "EXAMRESIZER.ME • English Mastery", prefix: "english", qCount: 50, timeSec: 3600, posMark: 1.00, negMark: 0.25, stages: 20 }
+      APTITUDE: { title: "EXAMRESIZER.ME • Aptitude Mastery", prefix: "aptitude", qCount: 50, timeSec: 2700, posMark: 1.00, negMark: 0.25, stages: 20 },
+      REASONING: { title: "EXAMRESIZER.ME • Reasoning Mastery", prefix: "reasoning", qCount: 50, timeSec: 2700, posMark: 1.00, negMark: 0.25, stages: 20 },
+      GK: { title: "EXAMRESIZER.ME • GK & GS Mastery", prefix: "gk", qCount: 50, timeSec: 2100, posMark: 1.00, negMark: 0.25, stages: 20 },
+      MATHS: { title: "EXAMRESIZER.ME • Maths Mastery", prefix: "maths", qCount: 50, timeSec: 3600, posMark: 2.00, negMark: 0.50, stages: 20 },
+      ENGLISH: { title: "EXAMRESIZER.ME • English Mastery", prefix: "english", qCount: 50, timeSec: 2400, posMark: 1.00, negMark: 0.25, stages: 20 }
     }
   };
 
@@ -159,6 +211,7 @@
   let currentSubjectKey = 'APTITUDE';
   let currentTestStage = 1;
 
+  const perFileCache = new Map();
   let bundleCache = null;
   let CBT_SESSION_CONFIG = null;
   let CBT_SESSION_STAGE = 1;
@@ -173,6 +226,7 @@
   let cbtSubmitted = false;
   let cbtLoadToken = 0;
   let cbtExternalWindow = null;
+  let mobilePaletteOpen = false;
 
   function ensureBaseStyles() {
     if (document.getElementById('er-cbt-gold-style')) return;
@@ -180,16 +234,19 @@
     style.id = 'er-cbt-gold-style';
     style.textContent = `
       .glass-card {
-        background: rgba(15, 23, 42, 0.88);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(251, 191, 36, 0.24);
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+        background: linear-gradient(145deg, rgba(15, 23, 42, 0.92), rgba(9, 13, 22, 0.95));
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(251, 191, 36, 0.26);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
       }
       .luxury-action-btn {
-        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 55%, #d97706 100%);
+        background: linear-gradient(135deg, #fde047 0%, #f59e0b 52%, #b45309 100%);
         color: #090d16;
-        box-shadow: 0 4px 16px rgba(245, 158, 11, 0.35);
+        box-shadow: 0 6px 20px rgba(245, 158, 11, 0.35);
+      }
+      .luxury-action-btn:hover {
+        filter: brightness(1.06);
       }
       .cbt-opt-card {
         display: flex;
@@ -197,34 +254,70 @@
         gap: 12px;
         width: 100%;
         text-align: left;
-        padding: 13px 15px;
+        padding: 13px 16px;
         border-radius: 12px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        background: rgba(30, 41, 59, 0.55);
+        border: 1px solid rgba(251, 191, 36, 0.16);
+        background: rgba(15, 23, 42, 0.78);
         color: #e2e8f0;
         cursor: pointer;
         transition: all 0.15s ease;
         word-break: break-word;
         overflow-wrap: anywhere;
       }
+      .cbt-opt-card:hover {
+        border-color: rgba(251, 191, 36, 0.48);
+        background: rgba(30, 41, 59, 0.9);
+      }
       .cbt-opt-card.is-selected {
         border: 1.5px solid #fbbf24 !important;
-        background: linear-gradient(90deg, rgba(245, 158, 11, 0.28), rgba(217, 119, 6, 0.16)) !important;
+        background: linear-gradient(90deg, rgba(245, 158, 11, 0.28), rgba(180, 83, 9, 0.16)) !important;
         color: #fef3c7 !important;
         font-weight: 700 !important;
       }
-      body.er-exam-fullscreen header,
-      body.er-exam-fullscreen nav,
-      body.er-exam-fullscreen footer,
-      body.er-exam-fullscreen #main-dashboard-hub,
-      body.er-exam-fullscreen #mock-hub-dashboard,
-      body.er-exam-fullscreen #mock-gatekeeper-screen {
+
+      /* Full-screen real exam focus during active test */
+      body.er-exam-live header,
+      body.er-exam-live nav,
+      body.er-exam-live footer,
+      body.er-exam-live #main-dashboard-hub,
+      body.er-exam-live #mock-hub-dashboard,
+      body.er-exam-live #mock-gatekeeper-screen,
+      body.er-exam-live #mock-result-screen {
         display: none !important;
       }
+      body.er-exam-live,
+      body.er-exam-live #mock-zone,
+      body.er-exam-live #mock-live-screen {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-height: 100vh !important;
+        background: #060a13 !important;
+      }
+
+      /* Mobile: single question full-screen + collapsed palette unless toggled */
       @media (max-width: 768px) {
         html, body {
           max-width: 100vw !important;
           overflow-x: hidden !important;
+        }
+        body.er-exam-live:not(.er-mobile-palette-open) [data-cbt-palette-panel],
+        body.er-exam-live:not(.er-mobile-palette-open) #cbtPaletteGrid,
+        body.er-exam-live:not(.er-mobile-palette-open) #cbtPaletteDrawer {
+          display: none !important;
+        }
+        body.er-exam-live.er-mobile-palette-open #cbtPaletteDrawer {
+          display: block !important;
+          position: fixed;
+          inset: 56px 10px 10px 10px;
+          z-index: 60;
+          overflow-y: auto;
+          background: #0d1424;
+          border: 1px solid rgba(251, 191, 36, 0.45);
+          border-radius: 14px;
+          padding: 14px;
+          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
         }
         #mock-zone,
         #mock-zone > div,
@@ -254,18 +347,39 @@
           box-sizing: border-box !important;
         }
       }
+
+      @media (min-width: 769px) {
+        #cbtMobilePaletteToggleBtn,
+        #cbtPaletteDrawer {
+          display: none !important;
+        }
+      }
     `;
     document.head.appendChild(style);
   }
 
-  function setExamFullscreenMode(active) {
-    document.body.classList.toggle('er-exam-fullscreen', Boolean(active));
+  function setExamLiveScreenMode(active) {
+    document.body.classList.toggle('er-exam-live', Boolean(active));
+    if (!active) {
+      mobilePaletteOpen = false;
+      document.body.classList.remove('er-mobile-palette-open');
+    }
     if (active && document.documentElement.requestFullscreen) {
       document.documentElement.requestFullscreen().catch(() => {});
     } else if (!active && document.fullscreenElement && document.exitFullscreen) {
       document.exitFullscreen().catch(() => {});
     }
   }
+
+  function toggleMobilePalette(forceState) {
+    mobilePaletteOpen = typeof forceState === 'boolean' ? forceState : !mobilePaletteOpen;
+    document.body.classList.toggle('er-mobile-palette-open', mobilePaletteOpen);
+    const btn = document.getElementById('cbtMobilePaletteToggleBtn');
+    if (btn) {
+      btn.innerText = mobilePaletteOpen ? '✕ Hide Qs' : '☰ Qs';
+    }
+  }
+  window.toggleMobilePalette = toggleMobilePalette;
 
   function escapeHTML(str) {
     if (str === null || str === undefined) return '';
@@ -285,9 +399,18 @@
   }
 
   function getActiveConfig() {
-    return currentMockMode === 'EXAM'
-      ? MOCK_CONFIG.EXAM[currentAuthorityKey]
-      : MOCK_CONFIG.SUBJECT[currentSubjectKey];
+    if (currentMockMode === 'EXAM') {
+      const auth = MOCK_CONFIG.EXAM[currentAuthorityKey] || MOCK_CONFIG.EXAM.SSC;
+      const spec = (auth.branchSpecs && auth.branchSpecs[currentBranchKey]) || {};
+      return {
+        ...auth,
+        qCount: spec.qCount || auth.qCount,
+        timeSec: spec.timeSec || auth.timeSec,
+        posMark: spec.posMark !== undefined ? spec.posMark : auth.posMark,
+        negMark: spec.negMark !== undefined ? spec.negMark : auth.negMark
+      };
+    }
+    return MOCK_CONFIG.SUBJECT[currentSubjectKey] || MOCK_CONFIG.SUBJECT.APTITUDE;
   }
 
   function getStorageKeyForName(name) {
@@ -364,14 +487,14 @@
 
   function getUserProgress(targetKey) {
     const cfg = getActiveConfig();
-    const maxStages = cfg ? cfg.stages : 10;
+    const maxStages = cfg ? cfg.stages : 20;
     const val = Number(currentStudent.progress[targetKey]);
     if (!Number.isInteger(val) || val < 1) return 1;
     return Math.min(val, maxStages);
   }
 
   function saveUserProgress(targetKey, nextStage, maxStagesLimit) {
-    const maxStages = maxStagesLimit || 10;
+    const maxStages = maxStagesLimit || 20;
     if (nextStage > maxStages) return;
     const raw = Number(currentStudent.progress[targetKey]);
     const current = Number.isInteger(raw) && raw >= 1 ? Math.min(raw, maxStages) : 1;
@@ -505,7 +628,7 @@
       const isUnlocked = stage <= unlockedStage;
       const isNextTarget = stage === unlockedStage;
       html += `
-        <div class="p-4 rounded-xl glass-card ${isNextTarget ? 'border-amber-400' : ''} ${!isUnlocked ? 'opacity-55' : ''} flex flex-col justify-between space-y-3">
+        <div class="p-4 rounded-xl glass-card ${isNextTarget ? 'border-amber-400' : ''} ${!isUnlocked ? 'opacity-60' : ''} flex flex-col justify-between space-y-3">
           <div>
             <div class="flex items-center justify-between text-[10px] font-black uppercase text-amber-300 mb-1">
               <span>EXAMRESIZER.ME</span>
@@ -517,7 +640,7 @@
           <div>
             ${isUnlocked
               ? `<button type="button" onclick="prepareTestStage(${stage})" class="w-full py-2.5 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer">${stage < unlockedStage ? 'Retake Mock' : 'Start Mock Test'}</button>`
-              : `<button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-slate-400 border border-white/10 font-bold text-xs cursor-not-allowed">🔒 Clear Mock ${stage - 1} First</button>`}
+              : `<button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-900/90 text-slate-400 border border-white/10 font-bold text-xs cursor-not-allowed">🔒 Clear Mock ${stage - 1} First</button>`}
           </div>
         </div>
       `;
@@ -525,7 +648,7 @@
 
     const upcomingStage = maxStages + 1;
     html += `
-      <div class="p-4 rounded-xl glass-card border border-amber-400/35 flex flex-col justify-between space-y-3 opacity-90">
+      <div class="p-4 rounded-xl glass-card border border-amber-400/40 flex flex-col justify-between space-y-3 opacity-95">
         <div>
           <div class="flex items-center justify-between text-[10px] font-black uppercase text-amber-400 mb-1">
             <span>EXAMRESIZER.ME</span>
@@ -535,7 +658,7 @@
           <p class="text-[11px] text-slate-300 mt-0.5">Coming Soon • New Verified PYQ Set</p>
         </div>
         <div>
-          <button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-800 text-amber-300 border border-amber-400/30 font-extrabold text-xs cursor-not-allowed">Coming Soon</button>
+          <button type="button" disabled class="w-full py-2.5 rounded-xl bg-slate-900 text-amber-300 border border-amber-400/35 font-extrabold text-xs cursor-not-allowed">Coming Soon</button>
         </div>
       </div>
     `;
@@ -553,7 +676,7 @@
     const isExam = currentMockMode === 'EXAM';
     const activeKey = isExam ? currentBranchKey : cfg.prefix;
     if (stage > getUserProgress(activeKey)) {
-      alert("Clear the previous mock first.");
+      alert("Clear the previous mock first (minimum 35% required to unlock next mock).");
       return;
     }
 
@@ -577,7 +700,7 @@
   function returnToMockHub() {
     cbtLoadToken++;
     clearInterval(cbtTimerInterval);
-    setExamFullscreenMode(false);
+    setExamLiveScreenMode(false);
     if (cbtExternalWindow && !cbtExternalWindow.closed) {
       try { cbtExternalWindow.close(); } catch (_) {}
     }
@@ -611,7 +734,7 @@
     btn.disabled = !ok;
     btn.className = ok
       ? 'px-7 py-3 rounded-xl luxury-action-btn font-extrabold text-xs cursor-pointer'
-      : 'px-7 py-3 rounded-xl bg-slate-700 text-slate-400 border border-white/10 font-black text-xs cursor-not-allowed';
+      : 'px-7 py-3 rounded-xl bg-slate-800 text-slate-400 border border-white/10 font-black text-xs cursor-not-allowed';
   }
   window.toggleCBTReady = toggleCBTReady;
 
@@ -621,7 +744,50 @@
     return `exam-${cfg.zone.toLowerCase()}-${activeKey.toLowerCase()}-mock-${pad}`;
   }
 
-  async function resolveMockRow(targetSlug, signal) {
+  function buildStoragePaths(isExam, cfg, activeKey) {
+    const fileName = !isExam
+      ? `SUBJECT_${String(cfg.prefix).toUpperCase()}.json`
+      : `${String(cfg.zone).toUpperCase()}_${String(activeKey).toUpperCase()}.json`;
+    const folder = !isExam ? 'mocks/subjects' : 'mocks/exams';
+    return [
+      `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${folder}/${fileName}`,
+      `${SUPABASE_URL}/storage/v1/object/public/${STORAGE_BUCKET}/${fileName}`
+    ];
+  }
+
+  async function resolveMockFromIndividualFile(isExam, cfg, activeKey, targetSlug, signal) {
+    const cacheKey = !isExam
+      ? `subj:${String(cfg.prefix).toUpperCase()}`
+      : `exam:${String(cfg.zone).toUpperCase()}_${String(activeKey).toUpperCase()}`;
+
+    let rows = perFileCache.get(cacheKey);
+    if (!rows) {
+      const urls = buildStoragePaths(isExam, cfg, activeKey);
+      for (const u of urls) {
+        try {
+          const resp = await fetch(u, { signal });
+          if (resp.ok) {
+            const parsed = await resp.json();
+            if (Array.isArray(parsed) && parsed.length > 0) {
+              rows = parsed;
+              perFileCache.set(cacheKey, rows);
+              break;
+            }
+          }
+        } catch (_) {}
+      }
+    }
+
+    if (Array.isArray(rows)) {
+      return rows.find(r => r && r.slug === targetSlug && r.status === 'ACTIVE') || null;
+    }
+    return null;
+  }
+
+  async function resolveMockRow(isExam, cfg, activeKey, targetSlug, signal) {
+    const fileRow = await resolveMockFromIndividualFile(isExam, cfg, activeKey, targetSlug, signal);
+    if (fileRow) return fileRow;
+
     try {
       const endpoint = `${SUPABASE_URL}/rest/v1/mock_tests?slug=eq.${encodeURIComponent(targetSlug)}&select=*`;
       const res = await fetch(endpoint, {
@@ -641,9 +807,9 @@
 
     if (!Array.isArray(bundleCache) || bundleCache.length === 0) {
       const res = await fetch(BUNDLE_JSON_URL, { signal });
-      if (!res.ok) throw new Error(`Bundle HTTP ${res.status}`);
+      if (!res.ok) throw new Error(`Mock fetch HTTP ${res.status}`);
       const data = await res.json();
-      if (!Array.isArray(data)) throw new Error("Bundle invalid");
+      if (!Array.isArray(data)) throw new Error("Mock payload invalid");
       bundleCache = data;
     }
     return bundleCache.find(r => r && r.slug === targetSlug && r.status === 'ACTIVE') || null;
@@ -675,7 +841,7 @@
     if (cbtTimerSeconds <= 0) submitCBT(true);
   }
 
-  function buildResultAnalysisMarkup(activeTitle, stageNum, netScore, maxMarks, pct, correctCount, wrongCount, pendingKeyCount, nextStageNum, maxStages) {
+  function buildResultAnalysisMarkup(activeTitle, stageNum, netScore, maxMarks, pct, correctCount, wrongCount, pendingKeyCount, passed, nextStageNum, maxStages) {
     const itemsHtml = CBT_ACTIVE_QUESTIONS.map((q, idx) => {
       const picked = cbtAnswers[idx];
       const hasKey = q.answer_verified && Number.isInteger(q.correct) && q.correct >= 0 && q.correct < q.options.length;
@@ -683,7 +849,7 @@
       const userStr = picked !== undefined ? `(${String.fromCharCode(65 + picked)}) ${escapeHTML(q.options[picked])}` : "Not Attempted";
       const ansStr = hasKey ? `(${String.fromCharCode(65 + q.correct)}) ${escapeHTML(q.options[q.correct])}` : "Pending Authentic Key Verification";
       return `
-        <div style="background:#0d1424;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px;margin-bottom:10px;font-size:13px;">
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:14px;margin-bottom:10px;font-size:13px;">
           <div style="font-weight:800;color:#fbbf24;margin-bottom:4px;">EXAMRESIZER.ME • Q${idx + 1} (${escapeHTML(q.section)})</div>
           <div style="color:#fff;font-weight:600;margin-bottom:6px;">${escapeHTML(q.en)}</div>
           <div style="color:${isRight ? '#34d399' : '#fb7185'};font-weight:700;margin-bottom:3px;">Your Answer: ${userStr}</div>
@@ -693,26 +859,31 @@
       `;
     }).join('');
 
-    const canGoNext = nextStageNum <= maxStages;
+    const canGoNext = passed && nextStageNum <= maxStages && nextStageNum > stageNum;
 
     return `
       <div style="max-width:1160px;margin:0 auto;padding:16px;width:100%;box-sizing:border-box;">
-        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:20px;margin-bottom:18px;">
-          <h2 style="margin:0 0 14px 0;font-size:18px;font-weight:900;color:#fff;">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Result & Analysis</h2>
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.4);border-radius:16px;padding:20px;margin-bottom:18px;">
+          <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:8px;margin-bottom:14px;">
+            <h2 style="margin:0;font-size:18px;font-weight:900;color:#fff;">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Result & Analysis</h2>
+            <span style="padding:5px 12px;border-radius:999px;font-size:11px;font-weight:900;background:${passed ? 'rgba(16,185,129,0.2)' : 'rgba(244,63,94,0.2)'};color:${passed ? '#34d399' : '#fb7185'};border:1px solid ${passed ? 'rgba(52,211,153,0.4)' : 'rgba(251,113,133,0.4)'};">
+              ${passed ? 'PASSED (≥ 35%) • NEXT UNLOCKED' : 'BELOW 35% • RETRY TO UNLOCK NEXT'}
+            </span>
+          </div>
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;text-align:center;">
-            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:12px;">
               <div style="font-size:12px;color:#94a3b8;">Net Score</div>
               <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-top:4px;">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:12px;">
               <div style="font-size:12px;color:#94a3b8;">Accuracy / %</div>
               <div style="font-size:18px;font-weight:900;color:#34d399;margin-top:4px;">${pct.toFixed(1)}%</div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:12px;">
               <div style="font-size:12px;color:#94a3b8;">Correct</div>
               <div style="font-size:18px;font-weight:900;color:#34d399;margin-top:4px;">${correctCount}</div>
             </div>
-            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
+            <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.25);border-radius:12px;padding:12px;">
               <div style="font-size:12px;color:#94a3b8;">Wrong / Key Pending</div>
               <div style="font-size:18px;font-weight:900;color:#fb7185;margin-top:4px;">${wrongCount} / ${pendingKeyCount}</div>
             </div>
@@ -724,8 +895,8 @@
         <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
           <div style="display:flex;flex-wrap:wrap;gap:10px;">
             ${canGoNext
-              ? `<button type="button" id="cbtNextMockBtn" onclick="window.__launchMockStageFromResult(${nextStageNum})" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#090d16;border:none;border-radius:10px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;">Next Mock Test (#${nextStageNum}) ➔</button>`
-              : `<span style="color:#fbbf24;font-weight:800;font-size:13px;padding:10px 4px;">All Available Mocks Completed</span>`}
+              ? `<button type="button" id="cbtNextMockBtn" onclick="window.__launchMockStageFromResult(${nextStageNum})" style="background:linear-gradient(135deg,#fde047,#d97706);color:#090d16;border:none;border-radius:10px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;">Next Mock Test (#${nextStageNum}) ➔</button>`
+              : `<span style="color:#fbbf24;font-weight:800;font-size:13px;padding:10px 4px;">${stageNum >= maxStages ? 'All 20 Mocks Completed' : 'Score ≥ 35% to Unlock Next Mock'}</span>`}
             <button type="button" id="cbtRetrySameBtn" onclick="window.__launchMockStageFromResult(${stageNum})" style="background:#1e293b;color:#fde68a;border:1px solid rgba(251,191,36,0.45);border-radius:10px;padding:11px 18px;font-weight:800;font-size:13px;cursor:pointer;">Retry Same Exam (Mock #${stageNum}) 🔁</button>
           </div>
           <button type="button" id="cbtBackToHubBtn" onclick="window.returnToMockHub()" style="background:rgba(255,255,255,0.06);color:#f8fafc;border:1px solid rgba(255,255,255,0.18);border-radius:10px;padding:11px 16px;font-weight:800;font-size:13px;cursor:pointer;">Back to Mock Hub</button>
@@ -739,7 +910,7 @@
     try {
       const doc = cbtExternalWindow.document;
       doc.body.innerHTML = markup;
-      doc.title = `Result & Analysis • Mock #${sameStageNum}`;
+      doc.title = `EXAMRESIZER.ME • Result & Analysis • Mock #${sameStageNum}`;
 
       const nextBtn = doc.getElementById('cbtNextMockBtn');
       if (nextBtn) {
@@ -779,7 +950,7 @@
 
   window.__launchMockStageFromResult = function (targetStage) {
     const cfg = CBT_SESSION_CONFIG || getActiveConfig();
-    const maxStages = cfg ? cfg.stages : 10;
+    const maxStages = cfg ? cfg.stages : 20;
     const bounded = Math.max(1, Math.min(Number(targetStage) || 1, maxStages));
     currentTestStage = bounded;
     cbtSubmitted = false;
@@ -789,9 +960,9 @@
   };
 
   function renderExternalCbtWindow(examTitle, candidateName, durMins) {
-    if (window.innerWidth <= 900) return null;
+    if (window.innerWidth <= 768) return null;
     try {
-      const win = window.open('', 'ExamResizerLiveCBT', 'popup=no,width=1366,height=820,left=0,top=0,scrollbars=yes,resizable=yes');
+      const win = window.open('', 'ExamResizerLiveCBT', 'popup=no,width=1440,height=900,left=0,top=0,scrollbars=yes,resizable=yes');
       if (!win || win.closed) return null;
 
       cbtExternalWindow = win;
@@ -818,9 +989,9 @@
       flex-direction: column;
     }
     .cbt-top {
-      background: #0d1424;
-      border-bottom: 1px solid rgba(251, 191, 36, 0.35);
-      padding: 12px 20px;
+      background: linear-gradient(90deg, #0d1424 0%, #131c31 100%);
+      border-bottom: 1px solid rgba(251, 191, 36, 0.4);
+      padding: 12px 22px;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
@@ -844,7 +1015,7 @@
       border-radius: 10px;
     }
     .btn-submit {
-      background: linear-gradient(135deg, #ef4444, #dc2626);
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
       color: #fff;
       border: none;
       font-weight: 800;
@@ -858,8 +1029,8 @@
       display: grid;
       grid-template-columns: 1fr 310px;
       gap: 16px;
-      padding: 18px 20px;
-      max-width: 1440px;
+      padding: 18px 22px;
+      max-width: 1480px;
       width: 100%;
       margin: 0 auto;
     }
@@ -868,13 +1039,13 @@
     }
     .q-panel {
       background: #0d1424;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(251, 191, 36, 0.22);
       border-radius: 14px;
-      padding: 20px;
+      padding: 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 520px;
+      min-height: 540px;
     }
     .q-meta {
       display: flex;
@@ -887,7 +1058,7 @@
       color: #fbbf24;
       font-weight: 700;
     }
-    .q-text { font-size: 16px; line-height: 1.6; font-weight: 600; color: #fff; margin-bottom: 18px; }
+    .q-text { font-size: 16px; line-height: 1.65; font-weight: 600; color: #fff; margin-bottom: 18px; }
     .opt-list { display: flex; flex-direction: column; gap: 10px; }
     .opt-item {
       display: flex;
@@ -895,7 +1066,7 @@
       gap: 10px;
       padding: 12px 14px;
       border-radius: 10px;
-      border: 1px solid rgba(255,255,255,0.14);
+      border: 1px solid rgba(251,191,36,0.16);
       background: rgba(15, 23, 42, 0.85);
       color: #e2e8f0;
       font-size: 14px;
@@ -904,7 +1075,7 @@
     }
     .opt-item.active {
       border-color: #fbbf24;
-      background: rgba(245, 158, 11, 0.24);
+      background: rgba(245, 158, 11, 0.25);
       color: #fef3c7;
       font-weight: 700;
     }
@@ -928,8 +1099,8 @@
       cursor: pointer;
     }
     .btn-next {
-      background: linear-gradient(135deg, #34d399, #10b981);
-      color: #052e16;
+      background: linear-gradient(135deg, #fde047, #d97706);
+      color: #090d16;
       border: none;
       padding: 10px 20px;
       border-radius: 10px;
@@ -939,7 +1110,7 @@
     }
     .palette-panel {
       background: #0d1424;
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(251, 191, 36, 0.22);
       border-radius: 14px;
       padding: 16px;
       display: flex;
@@ -1139,6 +1310,32 @@
     renderCbtPalette();
   };
 
+  function ensureMobilePaletteControls(liveScreen) {
+    if (!liveScreen || document.getElementById('cbtMobilePaletteToggleBtn')) return;
+    const toggleBtn = document.createElement('button');
+    toggleBtn.type = 'button';
+    toggleBtn.id = 'cbtMobilePaletteToggleBtn';
+    toggleBtn.innerText = '☰ Qs';
+    toggleBtn.className = 'px-3 py-1.5 rounded-lg text-xs font-extrabold border border-amber-400/50 bg-slate-900 text-amber-300 cursor-pointer';
+    toggleBtn.onclick = () => toggleMobilePalette();
+
+    const clockEl = document.getElementById('cbtClock');
+    if (clockEl && clockEl.parentNode) {
+      clockEl.parentNode.insertBefore(toggleBtn, clockEl);
+    }
+
+    const drawer = document.createElement('div');
+    drawer.id = 'cbtPaletteDrawer';
+    drawer.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+        <span style="font-size:13px;font-weight:900;color:#fbbf24;">EXAMRESIZER.ME • Question Palette</span>
+        <button type="button" onclick="toggleMobilePalette(false)" style="background:#1e293b;color:#fff;border:1px solid rgba(251,191,36,0.4);border-radius:8px;padding:4px 10px;font-size:12px;font-weight:700;cursor:pointer;">✕ Close</button>
+      </div>
+      <div id="cbtMobilePaletteBody"></div>
+    `;
+    liveScreen.appendChild(drawer);
+  }
+
   async function startCbtSession() {
     const token = ++cbtLoadToken;
     const startBtn = document.getElementById('startCbtBtn');
@@ -1158,7 +1355,7 @@
     const timer = setTimeout(() => controller.abort(), 20000);
 
     try {
-      const row = await resolveMockRow(targetSlug, controller.signal);
+      const row = await resolveMockRow(isExam, cfg, activeKey, targetSlug, controller.signal);
       if (!row || !Array.isArray(row.questions_json) || row.questions_json.length === 0) {
         throw new Error(`Missing mock for ${targetSlug}`);
       }
@@ -1183,10 +1380,14 @@
       if (!CBT_ACTIVE_QUESTIONS.length) throw new Error("No valid questions");
 
       cbtSubmitted = false;
+      mobilePaletteOpen = false;
       gateScreen.classList.add('hidden');
-      setExamFullscreenMode(true);
+      setExamLiveScreenMode(true);
       const liveScreen = document.getElementById('mock-live-screen');
-      if (liveScreen) liveScreen.classList.remove('hidden');
+      if (liveScreen) {
+        liveScreen.classList.remove('hidden');
+        ensureMobilePaletteControls(liveScreen);
+      }
 
       const examHeaderLabel = `EXAMRESIZER.ME • ${activeTitleAtStart} • Mock #${stageAtStart}`;
       const hdr = document.getElementById('liveExamHeaderTitle');
@@ -1200,7 +1401,8 @@
       renderCbtQuestion();
       renderCbtPalette();
 
-      const durMins = getSafeNum(row.duration_mins, Math.round(cfg.timeSec / 60));
+      const configMins = Math.round(cfg.timeSec / 60);
+      const durMins = getSafeNum(row.duration_mins, configMins);
       renderExternalCbtWindow(examHeaderLabel, currentStudent.name, durMins);
 
       cbtEndTime = Date.now() + durMins * 60 * 1000;
@@ -1211,7 +1413,7 @@
     } catch (err) {
       if (token === cbtLoadToken) {
         console.error(err);
-        alert(`Could not load mock (${targetSlug}). Check Supabase mock_tests or bundle.`);
+        alert(`Could not load mock (${targetSlug}). Check uploaded JSON files or Supabase.`);
       }
     } finally {
       clearTimeout(timer);
@@ -1267,9 +1469,8 @@
   function renderCbtPalette() {
     const grid = document.getElementById('cbtPaletteGrid');
     if (!grid) return;
-    grid.innerHTML = '';
     let answered = 0;
-    grid.innerHTML = CBT_ACTIVE_QUESTIONS.map((_, idx) => {
+    const buttonsHtml = CBT_ACTIVE_QUESTIONS.map((_, idx) => {
       const isAns = cbtAnswers[idx] !== undefined;
       const isRev = cbtReview.has(idx);
       const isVis = cbtVisited.has(idx);
@@ -1281,8 +1482,18 @@
       else if (isRev) cls = 'bg-purple-600 text-white font-extrabold';
       else if (isVis) cls = 'bg-rose-500/80 text-white font-bold';
       const ring = isCurr ? 'ring-2 ring-amber-300' : '';
-      return `<button type="button" onclick="jumpCbt(${idx})" class="w-full aspect-square rounded-md text-[10px] font-mono cursor-pointer ${cls} ${ring}">${idx + 1}</button>`;
+      return `<button type="button" onclick="jumpCbt(${idx}); toggleMobilePalette(false);" class="w-full aspect-square rounded-md text-[10px] font-mono cursor-pointer ${cls} ${ring}">${idx + 1}</button>`;
     }).join('');
+
+    grid.innerHTML = buttonsHtml;
+    const mobBody = document.getElementById('cbtMobilePaletteBody');
+    if (mobBody) {
+      mobBody.innerHTML = `
+        <div style="font-size:12px;color:#fbbf24;font-weight:800;margin-bottom:8px;">${answered} / ${CBT_ACTIVE_QUESTIONS.length} Answered</div>
+        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;">${buttonsHtml}</div>
+      `;
+    }
+
     const badge = document.getElementById('paletteAnsweredCount');
     if (badge) badge.innerText = `${answered} / ${CBT_ACTIVE_QUESTIONS.length} Answered`;
   }
@@ -1324,7 +1535,7 @@
 
     cbtSubmitted = true;
     clearInterval(cbtTimerInterval);
-    setExamFullscreenMode(false);
+    setExamLiveScreenMode(false);
 
     const cfg = CBT_SESSION_CONFIG || getActiveConfig();
     const stageNum = CBT_SESSION_STAGE || currentTestStage;
@@ -1357,6 +1568,7 @@
       correctCount,
       wrongCount,
       pendingKeyCount,
+      passed,
       nextStageNum,
       cfg.stages
     );
