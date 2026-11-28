@@ -204,6 +204,8 @@
         color: #e2e8f0;
         cursor: pointer;
         transition: all 0.15s ease;
+        word-break: break-word;
+        overflow-wrap: anywhere;
       }
       .cbt-opt-card.is-selected {
         border: 1.5px solid #fbbf24 !important;
@@ -218,6 +220,39 @@
       body.er-exam-fullscreen #mock-hub-dashboard,
       body.er-exam-fullscreen #mock-gatekeeper-screen {
         display: none !important;
+      }
+      @media (max-width: 768px) {
+        html, body {
+          max-width: 100vw !important;
+          overflow-x: hidden !important;
+        }
+        #mock-zone,
+        #mock-zone > div,
+        #mock-live-screen,
+        #mock-gatekeeper-screen,
+        #mock-result-screen,
+        #mock-zone .max-w-7xl,
+        #mock-zone .max-w-6xl,
+        #mock-zone .max-w-5xl,
+        #mock-zone .max-w-4xl {
+          width: 100% !important;
+          max-width: 100% !important;
+          margin-left: 0 !important;
+          margin-right: 0 !important;
+          padding-left: 8px !important;
+          padding-right: 8px !important;
+          box-sizing: border-box !important;
+        }
+        #cbtPaletteGrid {
+          display: grid !important;
+          grid-template-columns: repeat(5, minmax(0, 1fr)) !important;
+          gap: 6px !important;
+          width: 100% !important;
+        }
+        #mock-zone button {
+          max-width: 100% !important;
+          box-sizing: border-box !important;
+        }
       }
     `;
     document.head.appendChild(style);
@@ -235,6 +270,7 @@
   function escapeHTML(str) {
     if (str === null || str === undefined) return '';
     return String(str)
+      .replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F\uFFFD]/g, ' ')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;')
@@ -660,10 +696,10 @@
     const canGoNext = nextStageNum <= maxStages;
 
     return `
-      <div style="max-width:1160px;margin:0 auto;padding:20px;">
-        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:22px;margin-bottom:18px;">
-          <h2 style="margin:0 0 14px 0;font-size:20px;font-weight:900;color:#fff;">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Result & Analysis</h2>
-          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;text-align:center;">
+      <div style="max-width:1160px;margin:0 auto;padding:16px;width:100%;box-sizing:border-box;">
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:20px;margin-bottom:18px;">
+          <h2 style="margin:0 0 14px 0;font-size:18px;font-weight:900;color:#fff;">EXAMRESIZER.ME • ${escapeHTML(activeTitle)} • Mock #${stageNum} Result & Analysis</h2>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;text-align:center;">
             <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(251,191,36,0.2);border-radius:12px;padding:12px;">
               <div style="font-size:12px;color:#94a3b8;">Net Score</div>
               <div style="font-size:18px;font-weight:900;color:#fbbf24;margin-top:4px;">${netScore.toFixed(2)} / ${maxMarks.toFixed(2)}</div>
@@ -685,14 +721,14 @@
 
         <div style="margin-bottom:22px;">${itemsHtml}</div>
 
-        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:18px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
+        <div style="background:#0d1424;border:1px solid rgba(251,191,36,0.35);border-radius:16px;padding:16px;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;">
           <div style="display:flex;flex-wrap:wrap;gap:10px;">
             ${canGoNext
-              ? `<button type="button" id="cbtNextMockBtn" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#090d16;border:none;border-radius:10px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;">Next Mock Test (#${nextStageNum}) ➔</button>`
+              ? `<button type="button" id="cbtNextMockBtn" onclick="window.__launchMockStageFromResult(${nextStageNum})" style="background:linear-gradient(135deg,#fbbf24,#d97706);color:#090d16;border:none;border-radius:10px;padding:11px 18px;font-weight:900;font-size:13px;cursor:pointer;">Next Mock Test (#${nextStageNum}) ➔</button>`
               : `<span style="color:#fbbf24;font-weight:800;font-size:13px;padding:10px 4px;">All Available Mocks Completed</span>`}
-            <button type="button" id="cbtRetrySameBtn" style="background:#1e293b;color:#fde68a;border:1px solid rgba(251,191,36,0.45);border-radius:10px;padding:11px 18px;font-weight:800;font-size:13px;cursor:pointer;">Retry Same Exam (Mock #${stageNum}) 🔁</button>
+            <button type="button" id="cbtRetrySameBtn" onclick="window.__launchMockStageFromResult(${stageNum})" style="background:#1e293b;color:#fde68a;border:1px solid rgba(251,191,36,0.45);border-radius:10px;padding:11px 18px;font-weight:800;font-size:13px;cursor:pointer;">Retry Same Exam (Mock #${stageNum}) 🔁</button>
           </div>
-          <button type="button" id="cbtBackToHubBtn" style="background:rgba(255,255,255,0.06);color:#f8fafc;border:1px solid rgba(255,255,255,0.18);border-radius:10px;padding:11px 16px;font-weight:800;font-size:13px;cursor:pointer;">Back to Mock Hub</button>
+          <button type="button" id="cbtBackToHubBtn" onclick="window.returnToMockHub()" style="background:rgba(255,255,255,0.06);color:#f8fafc;border:1px solid rgba(255,255,255,0.18);border-radius:10px;padding:11px 16px;font-weight:800;font-size:13px;cursor:pointer;">Back to Mock Hub</button>
         </div>
       </div>
     `;
@@ -753,6 +789,7 @@
   };
 
   function renderExternalCbtWindow(examTitle, candidateName, durMins) {
+    if (window.innerWidth <= 900) return null;
     try {
       const win = window.open('', 'ExamResizerLiveCBT', 'popup=no,width=1366,height=820,left=0,top=0,scrollbars=yes,resizable=yes');
       if (!win || win.closed) return null;
@@ -770,7 +807,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${safeTitle} — Live CBT Terminal</title>
   <style>
-    * { box-sizing: border-box; }
+    *, *::before, *::after { box-sizing: border-box; }
     body {
       margin: 0;
       font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -1134,13 +1171,13 @@
       CBT_ACTIVE_QUESTIONS = row.questions_json.map((q, idx) => ({
         id: q.id || `q_${idx}`,
         section: q.section || q.subject || "General",
-        en: String(q.en || q.question || "").trim(),
-        options: Array.isArray(q.options) ? q.options.map(String) : [],
+        en: String(q.en || q.question || "").replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F\uFFFD]/g, ' ').trim(),
+        options: Array.isArray(q.options) ? q.options.map(opt => String(opt).replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F\uFFFD]/g, ' ').trim()) : [],
         correct: Number.isInteger(q.correct) ? q.correct : (Number.isInteger(q.answer_index) ? q.answer_index : null),
         answer_verified: Boolean(q.answer_verified) && (Number.isInteger(q.correct) || Number.isInteger(q.answer_index)),
         marks: getSafeNum(q.marks, cfg.posMark),
         negativeMarks: getSafeNum(q.negativeMarks, cfg.negMark),
-        explanation: String(q.explanation || q.analysis || "")
+        explanation: String(q.explanation || q.analysis || "").replace(/[\u0000-\u0008\u000B-\u001F\u007F-\u009F\uFFFD]/g, ' ').trim()
       })).filter(x => x.en && x.options.length >= 2);
 
       if (!CBT_ACTIVE_QUESTIONS.length) throw new Error("No valid questions");
@@ -1219,7 +1256,7 @@
         const isSel = picked === idx;
         return `
           <div role="button" tabindex="0" data-opt-idx="${idx}" onclick="cbtSelectOpt(${idx})" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();cbtSelectOpt(${idx});}" class="cbt-opt-card ${isSel ? 'is-selected' : ''}">
-            <input type="radio" name="cbtOptionChoice" value="${idx}" ${isSel ? 'checked' : ''} class="w-4 h-4 accent-amber-400 pointer-events-none">
+            <input type="radio" name="cbtOptionChoice" value="${idx}" ${isSel ? 'checked' : ''} class="w-4 h-4 accent-amber-400 pointer-events-none flex-shrink-0">
             <span class="leading-relaxed"><strong>(${String.fromCharCode(65 + idx)})</strong> ${escapeHTML(opt)}</span>
           </div>
         `;
@@ -1230,6 +1267,7 @@
   function renderCbtPalette() {
     const grid = document.getElementById('cbtPaletteGrid');
     if (!grid) return;
+    grid.innerHTML = '';
     let answered = 0;
     grid.innerHTML = CBT_ACTIVE_QUESTIONS.map((_, idx) => {
       const isAns = cbtAnswers[idx] !== undefined;
